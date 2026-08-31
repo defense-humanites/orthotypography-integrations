@@ -1,0 +1,25 @@
+{
+  "workspace": ["./packages/rehype"],
+  "lock": false,
+  "fmt": {
+    "include": [
+      "packages/**/*.ts",
+      "scripts/**/*.ts",
+      "scripts/**/*.mjs",
+      ".github/**/*.yml",
+      "*.json"
+    ]
+  },
+  "tasks": {
+    "check": "deno fmt --check && deno lint && deno check packages/rehype/src/mod.ts packages/rehype/tests/*.ts && deno task doc",
+    "doc": "deno doc packages/rehype/src/mod.ts",
+    "test": "deno test packages/rehype/tests",
+    "npm:build": "deno run -A scripts/build_npm.ts",
+    "npm:check": "deno task npm:build && node scripts/npm_smoke.mjs && cd npm/rehype && npm pack --dry-run"
+  },
+  "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@0.43.2",
+    "@types/hast": "npm:@types/hast@3.0.4",
+    "unified": "npm:unified@11.0.5"
+  }
+}
