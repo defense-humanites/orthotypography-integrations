@@ -1,19 +1,20 @@
 # orthotypography-integrations
 
-Intégrations de [`@orthotypography/core`](https://github.com/defense-humanites/orthotypography)
-pour les outils de l’écosystème JavaScript.
+Integrations of
+[`@orthotypography/core`](https://github.com/defense-humanites/orthotypography)
+for tools across the JavaScript ecosystem.
 
-## Paquets
+## Packages
 
-| Paquet | État | Rôle |
-|---|---|---|
-| `@orthotypography/rehype` | alpha non publiée | transformation et diagnostic des nœuds textuels HAST |
-| `@orthotypography/astro` | alpha non publiée | configuration Astro 7 au-dessus de rehype |
+| Package                   | Status            | Purpose                                             |
+| ------------------------- | ----------------- | --------------------------------------------------- |
+| `@orthotypography/rehype` | unpublished alpha | transforms and diagnoses HAST text nodes            |
+| `@orthotypography/astro`  | unpublished alpha | configures Astro 7 on top of the rehype integration |
 
-Le dépôt est organisé en espace de travail. Deno fournit l’outillage de
-développement ; les paquets publiés visent l’écosystème JavaScript en général.
+The repository is organized as a workspace. Deno provides the development
+tooling; the published packages target the JavaScript ecosystem in general.
 
-## Développement
+## Development
 
 ```sh
 deno task check
@@ -21,5 +22,5 @@ deno task test
 deno task npm:check
 ```
 
-La publication JSR et npm reste désactivée jusqu’à la première version publiée
-du cœur.
+JSR and npm publication remains disabled until the first version of the core
+package is published.

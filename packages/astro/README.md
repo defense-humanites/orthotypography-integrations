@@ -1,7 +1,7 @@
 # `@orthotypography/astro`
 
-Intégration Astro pour appliquer `@orthotypography/rehype` aux documents
-Markdown et MDX rendus avec le processeur Unified.
+An Astro integration that applies `@orthotypography/rehype` to Markdown and MDX
+documents rendered with the Unified processor.
 
 ```ts
 import {
@@ -23,15 +23,13 @@ export default defineConfig({
 });
 ```
 
-L’intégration sélectionne explicitement le processeur Unified d’Astro, requis
-pour exécuter un plugin rehype. Les options `processorOptions` permettent de
-conserver d’autres plugins remark ou rehype ; les plugins rehype qui y figurent
-s’exécutent avant orthotypography.
+The integration explicitly selects Astro's Unified processor, which is required
+to run a rehype plugin. The `processorOptions` option can preserve other remark
+or rehype plugins; any rehype plugins it contains run before orthotypography.
 
-L’intégration MDX officielle hérite de la configuration Markdown par défaut. Si
-`extendMarkdownConfig` est désactivé ou si MDX reçoit son propre processeur, la
-configuration doit y être reproduite explicitement.
+The official MDX integration inherits the Markdown configuration by default. If
+`extendMarkdownConfig` is disabled or MDX receives its own processor, the
+configuration must be reproduced there explicitly.
 
-Les modes restent obligatoires. `lint` collecte les diagnostics sans modifier le
-contenu ; `fix` remplace uniquement les valeurs des nœuds textuels autorisés par
-l’adaptateur rehype.
+Modes remain required. `lint` collects diagnostics without modifying content;
+`fix` only replaces text-node values allowed by the rehype adapter.

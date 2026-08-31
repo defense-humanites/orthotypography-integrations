@@ -1,10 +1,10 @@
 # `@orthotypography/rehype`
 
-Adaptateur rehype pour appliquer un moteur orthotypographique à des suites de
-nœuds textuels HAST sans modifier la structure de l’arbre.
+A rehype adapter that applies an orthotypographic engine to sequences of HAST
+text nodes without changing the tree structure.
 
-Le paquet est en prépublication. Tant que `@orthotypography/core` ne possède pas
-de version publiée, le moteur est fourni explicitement :
+The package is in prerelease. Until a version of `@orthotypography/core` is
+published, the engine must be supplied explicitly:
 
 ```ts
 import {
@@ -21,8 +21,7 @@ const plugin = rehypeOrthotypography({
 });
 ```
 
-Les modes sont intentionnellement explicites : `lint` produit des diagnostics
-rapportés par `segmentId`, tandis que `fix` remplace uniquement la valeur des
-nœuds. Les éléments de bloc, le HTML brut et `code`, `pre`, `script`, `style`
-forment des frontières. Les prédicats `exclude` et `protect` permettent à une
-intégration d’ajuster cette politique.
+Modes are intentionally explicit: `lint` produces diagnostics associated with
+their `segmentId`, while `fix` only replaces node values. Block elements, raw
+HTML, and `code`, `pre`, `script`, and `style` form boundaries. The `exclude`
+and `protect` predicates let an integration adjust this policy.
