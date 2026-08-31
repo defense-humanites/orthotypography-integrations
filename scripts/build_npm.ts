@@ -4,8 +4,15 @@ import denoConfig from "../packages/rehype/deno.json" with { type: "json" };
 await emptyDir("./npm/rehype");
 
 await build({
-  entryPoints: ["./packages/rehype/src/mod.ts"],
+  entryPoints: [{ name: ".", path: "./packages/rehype/src/mod.ts" }],
   outDir: "./npm/rehype",
+  esModule: true,
+  scriptModule: false,
+  declaration: "separate",
+  declarationMap: true,
+  typeCheck: "single",
+  test: false,
+  compilerOptions: { target: "ES2022" },
   shims: {},
   package: {
     name: denoConfig.name,
