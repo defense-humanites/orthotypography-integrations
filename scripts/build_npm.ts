@@ -66,7 +66,7 @@ await build({
     sideEffects: false,
     dependencies: {
       "@astrojs/markdown-remark": "^7.2.4",
-      "@orthotypography/rehype": astroConfig.version,
+      "@orthotypography/rehype": "file:../rehype",
     },
     peerDependencies: {
       astro: "^7.0.0",
@@ -75,10 +75,17 @@ await build({
   mappings: {
     "@orthotypography/rehype": {
       name: "@orthotypography/rehype",
-      version: astroConfig.version,
+      version: "file:../rehype",
     },
   },
   postBuild() {
+    const packagePath = "npm/astro/package.json";
+    const packageJson = JSON.parse(Deno.readTextFileSync(packagePath));
+    packageJson.dependencies["@orthotypography/rehype"] = astroConfig.version;
+    Deno.writeTextFileSync(
+      packagePath,
+      `${JSON.stringify(packageJson, null, 2)}\n`,
+    );
     Deno.copyFileSync("LICENSE", "npm/astro/LICENSE");
     Deno.copyFileSync(
       "packages/astro/README.md",
