@@ -43,10 +43,10 @@ jobs:
       - run: deno task check
       - run: deno task test
       - run: >-
-          deno publish --dry-run --check=all
+          deno publish --dry-run --check
           --config packages/rehype/deno.json
       - run: >-
-          deno publish --dry-run --check=all
+          deno publish --dry-run --check
           --config packages/astro/deno.json
       - run: deno task npm:check
       - name: Resolve registry state
@@ -58,12 +58,12 @@ jobs:
       - name: Publish rehype to JSR
         if: steps.registry.outputs.rehype_jsr_exists != 'true'
         run: >-
-          deno publish --check=all
+          deno publish --check
           --config packages/rehype/deno.json
       - name: Publish Astro to JSR
         if: steps.registry.outputs.astro_jsr_exists != 'true'
         run: >-
-          deno publish --check=all
+          deno publish --check
           --config packages/astro/deno.json
       - name: Install trusted-publishing npm client
         if: >-
