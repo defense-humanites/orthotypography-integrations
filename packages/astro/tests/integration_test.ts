@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isUnifiedProcessor, unified } from "@astrojs/markdown-remark";
+import { isUnifiedProcessor, type unified } from "@astrojs/markdown-remark";
 import type { AstroIntegration } from "astro";
 import orthotypography, {
   type AstroOrthotypographyOptions,
