@@ -19,7 +19,7 @@
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@0.43.2",
-    "@types/hast": "npm:@types/hast@3.0.4",
+    "hast": "npm:@types/hast@3.0.4",
     "unified": "npm:unified@11.0.5"
   }
 }

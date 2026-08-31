@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import type { Root } from "@types/hast";
+import type { Root } from "hast";
 import { unified } from "unified";
 import {
   rehypeOrthotypography,
