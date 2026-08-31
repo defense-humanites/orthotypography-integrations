@@ -42,8 +42,12 @@ jobs:
           "${{ github.event.release.tag_name || inputs.tag }}"
       - run: deno task check
       - run: deno task test
-      - run: deno publish --dry-run --check=all packages/rehype
-      - run: deno publish --dry-run --check=all packages/astro
+      - run: >-
+          deno publish --dry-run --check=all
+          --config packages/rehype/deno.json
+      - run: >-
+          deno publish --dry-run --check=all
+          --config packages/astro/deno.json
       - run: deno task npm:check
       - name: Resolve registry state
         id: registry
@@ -53,10 +57,14 @@ jobs:
           scripts/release_registry.ts
       - name: Publish rehype to JSR
         if: steps.registry.outputs.rehype_jsr_exists != 'true'
-        run: deno publish --check=all packages/rehype
+        run: >-
+          deno publish --check=all
+          --config packages/rehype/deno.json
       - name: Publish Astro to JSR
         if: steps.registry.outputs.astro_jsr_exists != 'true'
-        run: deno publish --check=all packages/astro
+        run: >-
+          deno publish --check=all
+          --config packages/astro/deno.json
       - name: Install trusted-publishing npm client
         if: >-
           steps.registry.outputs.rehype_npm_exists != 'true' ||
