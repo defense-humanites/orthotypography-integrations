@@ -14,6 +14,7 @@
     "check": "deno fmt --check && deno lint && deno check packages/rehype/src/mod.ts packages/rehype/tests/*.ts packages/astro/src/mod.ts packages/astro/tests/*.ts scripts/*.ts && deno task doc",
     "doc": "deno doc packages/rehype/src/mod.ts packages/astro/src/mod.ts",
     "test": "deno test packages/rehype/tests && deno test --allow-env=VSCODE_TEXTMATE_DEBUG,ASTRO_PERFORMANCE_BENCHMARK packages/astro/tests",
+    "publish:check": "deno publish --dry-run --check=all packages/rehype && deno publish --dry-run --check=all packages/astro",
     "npm:build": "deno run -A scripts/build_npm.ts",
     "npm:check": "deno task npm:build && cd npm/astro && npm install --no-save --no-package-lock ../rehype && cd ../.. && node scripts/npm_smoke.mjs && cd npm/rehype && npm pack --dry-run && cd ../astro && npm pack --dry-run"
   },
