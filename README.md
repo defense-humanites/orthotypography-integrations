@@ -8,7 +8,7 @@ pour les outils de l’écosystème JavaScript.
 | Paquet | État | Rôle |
 |---|---|---|
 | `@orthotypography/rehype` | alpha non publiée | transformation et diagnostic des nœuds textuels HAST |
-| `@orthotypography/astro` | prévu | configuration Astro au-dessus de rehype |
+| `@orthotypography/astro` | alpha non publiée | configuration Astro 7 au-dessus de rehype |
 
 Le dépôt est organisé en espace de travail. Deno fournit l’outillage de
 développement ; les paquets publiés visent l’écosystème JavaScript en général.

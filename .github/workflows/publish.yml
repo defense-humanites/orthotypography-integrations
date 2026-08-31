@@ -3,13 +3,19 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to resume
+        required: true
+        type: string
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: publish-${{ github.event.release.tag_name }}
+  group: publish-${{ github.event.release.tag_name || inputs.tag }}
   cancel-in-progress: false
 
 jobs:
@@ -20,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
@@ -28,11 +34,49 @@ jobs:
         with:
           node-version: 22.14.0
           registry-url: https://registry.npmjs.org
+      - name: Resolve release metadata
+        id: release
+        run: >-
+          deno run --allow-read --allow-env --allow-write
+          scripts/release_metadata.ts
+          "${{ github.event.release.tag_name || inputs.tag }}"
       - run: deno task check
       - run: deno task test
       - run: deno publish --dry-run --check=all packages/rehype
+      - run: deno publish --dry-run --check=all packages/astro
       - run: deno task npm:check
-      - run: deno publish --check=all packages/rehype
+      - name: Resolve registry state
+        id: registry
+        run: >-
+          deno run --allow-net=jsr.io,registry.npmjs.org
+          --allow-read --allow-env --allow-write
+          scripts/release_registry.ts
+      - name: Publish rehype to JSR
+        if: steps.registry.outputs.rehype_jsr_exists != 'true'
+        run: deno publish --check=all packages/rehype
+      - name: Publish Astro to JSR
+        if: steps.registry.outputs.astro_jsr_exists != 'true'
+        run: deno publish --check=all packages/astro
       - name: Install trusted-publishing npm client
+        if: >-
+          steps.registry.outputs.rehype_npm_exists != 'true' ||
+          steps.registry.outputs.astro_npm_exists != 'true'
         run: npm install --global npm@11.5.1
-      - run: npm publish ./npm/rehype --access public --provenance
+      - name: Publish rehype to npm
+        if: steps.registry.outputs.rehype_npm_exists != 'true'
+        run: >-
+          npm publish ./npm/rehype
+          --tag "${{ steps.release.outputs.npm_tag }}"
+          --access public
+          --provenance
+      - name: Publish Astro to npm
+        if: steps.registry.outputs.astro_npm_exists != 'true'
+        run: >-
+          npm publish ./npm/astro
+          --tag "${{ steps.release.outputs.npm_tag }}"
+          --access public
+          --provenance
+      - name: Verify complete release
+        run: >-
+          deno run --allow-net=jsr.io,registry.npmjs.org
+          --allow-read scripts/release_registry.ts --require-all

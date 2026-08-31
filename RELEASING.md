@@ -11,4 +11,21 @@ Avant la première publication :
 2. remplacer l’injection provisoire du moteur par un pont documenté vers cette
    version, sans supprimer le contrat structurel testable ;
 3. valider les métadonnées JSR et npm ;
-4. créer une release portant la version du paquet concerné.
+4. créer les paquets `@orthotypography/rehype` et
+   `@orthotypography/astro` sur JSR et configurer leur publication de confiance
+   npm ;
+5. créer une release portant la version commune aux deux paquets.
+
+`rehype` est toujours publié avant `astro`, car le second en dépend. Les deux
+paquets conservent une version commune pendant la phase alpha.
+
+## Reprise d’une publication partielle
+
+Avant chaque écriture, le workflow vérifie séparément la version exacte de
+chaque paquet sur JSR et npm. Une version déjà présente est laissée intacte ;
+seuls les couples paquet-registre manquants sont publiés. La vérification finale
+attend que les quatre versions soient visibles.
+
+Pour reprendre une publication, relancer le workflow échoué ou déclencher
+manuellement `Publish` avec le tag de release existant. Le tag doit toujours
+correspondre à la version commune déclarée dans les deux fichiers `deno.json`.

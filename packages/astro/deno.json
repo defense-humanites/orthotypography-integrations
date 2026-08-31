@@ -1,0 +1,9 @@
+{
+  "name": "@orthotypography/astro",
+  "version": "0.1.0-alpha.0",
+  "license": "MIT",
+  "exports": "./src/mod.ts",
+  "publish": {
+    "include": ["README.md", "src/**/*.ts"]
+  }
+}

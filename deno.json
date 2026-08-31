@@ -1,5 +1,5 @@
 {
-  "workspace": ["./packages/rehype"],
+  "workspace": ["./packages/rehype", "./packages/astro"],
   "lock": false,
   "fmt": {
     "include": [
@@ -11,14 +11,16 @@
     ]
   },
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check packages/rehype/src/mod.ts packages/rehype/tests/*.ts && deno task doc",
-    "doc": "deno doc packages/rehype/src/mod.ts",
-    "test": "deno test packages/rehype/tests",
+    "check": "deno fmt --check && deno lint && deno check packages/rehype/src/mod.ts packages/rehype/tests/*.ts packages/astro/src/mod.ts packages/astro/tests/*.ts scripts/*.ts && deno task doc",
+    "doc": "deno doc packages/rehype/src/mod.ts packages/astro/src/mod.ts",
+    "test": "deno test packages/rehype/tests packages/astro/tests",
     "npm:build": "deno run -A scripts/build_npm.ts",
-    "npm:check": "deno task npm:build && node scripts/npm_smoke.mjs && cd npm/rehype && npm pack --dry-run"
+    "npm:check": "deno task npm:build && cd npm/astro && npm install --no-save --no-package-lock ../rehype && cd ../.. && node scripts/npm_smoke.mjs && cd npm/rehype && npm pack --dry-run && cd ../astro && npm pack --dry-run"
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@0.43.2",
+    "@astrojs/markdown-remark": "npm:@astrojs/markdown-remark@7.2.4",
+    "astro": "npm:astro@7.2.9",
     "hast": "npm:@types/hast@3.0.4",
     "unified": "npm:unified@11.0.5"
   }
