@@ -1,6 +1,10 @@
 {
   "workspace": ["./packages/rehype", "./packages/astro"],
   "lock": false,
+  "minimumDependencyAge": {
+    "age": "P1D",
+    "exclude": ["jsr:@orthotypography/core"]
+  },
   "fmt": {
     "include": [
       "packages/**/*.ts",
