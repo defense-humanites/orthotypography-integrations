@@ -72,6 +72,8 @@ jobs:
         run: npm install --global npm@11.5.1
       - name: Publish rehype to npm
         if: steps.registry.outputs.rehype_npm_exists != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >-
           npm publish ./npm/rehype
           --tag "${{ steps.release.outputs.npm_tag }}"
@@ -79,6 +81,8 @@ jobs:
           --provenance
       - name: Publish Astro to npm
         if: steps.registry.outputs.astro_npm_exists != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >-
           npm publish ./npm/astro
           --tag "${{ steps.release.outputs.npm_tag }}"

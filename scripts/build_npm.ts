@@ -19,13 +19,22 @@ await build({
     name: rehypeConfig.name,
     version: rehypeConfig.version,
     description: "Rehype adapter for source-backed orthotypography rules",
+    author: "Antoine Boquet",
     license: rehypeConfig.license,
+    homepage:
+      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/rehype#readme",
     repository: {
       type: "git",
       url:
         "git+https://github.com/defense-humanites/orthotypography-integrations.git",
       directory: "packages/rehype",
     },
+    bugs: {
+      url:
+        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+    },
+    keywords: ["rehype", "typography", "orthotypography", "hast", "unicode"],
+    engines: { node: ">=18" },
     sideEffects: false,
   },
   postBuild() {
@@ -56,13 +65,22 @@ await build({
     version: astroConfig.version,
     description:
       "Astro integration for source-backed orthotypography rules via rehype",
+    author: "Antoine Boquet",
     license: astroConfig.license,
+    homepage:
+      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/astro#readme",
     repository: {
       type: "git",
       url:
         "git+https://github.com/defense-humanites/orthotypography-integrations.git",
       directory: "packages/astro",
     },
+    bugs: {
+      url:
+        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+    },
+    keywords: ["astro", "rehype", "typography", "orthotypography", "unicode"],
+    engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
       "@astrojs/markdown-remark": "^7.2.4",
