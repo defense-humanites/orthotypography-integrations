@@ -8,12 +8,10 @@ n’est pas égale à `true`.
 Avant la première publication :
 
 1. publier une version compatible de `@orthotypography/core` ;
-2. remplacer l’injection provisoire du moteur par un pont documenté vers cette
-   version, sans supprimer le contrat structurel testable ;
-3. valider les métadonnées JSR et npm ;
-4. créer les paquets `@orthotypography/rehype` et `@orthotypography/astro` sur
+2. valider les métadonnées JSR et npm ;
+3. créer les paquets `@orthotypography/rehype` et `@orthotypography/astro` sur
    JSR ;
-5. créer une release portant la version commune aux deux paquets.
+4. créer une release portant la version commune aux deux paquets.
 
 Les paquets npm sont créés par leur première publication et n’ont pas à être
 réservés. Comme leur publication de confiance ne peut être configurée qu’après

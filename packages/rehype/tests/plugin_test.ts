@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import {
+  type RuntimeRule,
+  SAFE_PUNCTUATION_RULES,
+} from "@orthotypography/core";
+import {
   type AdapterDiagnostic,
   type AdapterPipelineResult,
   type AdapterTextNodeInput,
@@ -8,9 +12,26 @@ import {
   type TextNodePipelineRunner,
 } from "../src/mod.ts";
 
+const testRule = {} as RuntimeRule;
+
+Deno.test("adapter uses the published core runner by default", () => {
+  const tree: HastRoot = {
+    type: "root",
+    children: [{ type: "text", value: "Bonjour , monde." }],
+  };
+
+  rehypeOrthotypography({
+    rules: SAFE_PUNCTUATION_RULES,
+    locale: "fr-FR",
+    mode: "fix",
+  })(tree);
+
+  assert.equal(tree.children[0].value, "Bonjour, monde.");
+});
+
 function fixRunner(
   calls: AdapterTextNodeInput[][],
-): TextNodePipelineRunner<string> {
+): TextNodePipelineRunner {
   return (nodes, _rules, options): AdapterPipelineResult => {
     calls.push(nodes.map((node) => ({ ...node })));
     return {
@@ -48,7 +69,7 @@ Deno.test("inline descendants form one logical text run", () => {
 
   rehypeOrthotypography({
     runTextNodePipeline: fixRunner(calls),
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "fix",
   })(tree);
@@ -88,7 +109,7 @@ Deno.test("block and excluded subtrees are logical run boundaries", () => {
 
   rehypeOrthotypography({
     runTextNodePipeline: fixRunner(calls),
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "fix",
   })(tree);
@@ -121,7 +142,7 @@ Deno.test("protected inline content stays inside its logical run", () => {
 
   rehypeOrthotypography({
     runTextNodePipeline: fixRunner(calls),
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "fix",
     protect: (node) => node.data?.immutable === true,
@@ -147,7 +168,7 @@ Deno.test("lint diagnostics are reported without mutating the tree", () => {
     ruleId: "test",
     message: "test diagnostic",
   };
-  const runner: TextNodePipelineRunner<string> = (nodes) => ({
+  const runner: TextNodePipelineRunner = (nodes) => ({
     value: nodes.map(({ value }) => value).join(""),
     nodes,
     diagnostics: [diagnostic],
@@ -162,7 +183,7 @@ Deno.test("lint diagnostics are reported without mutating the tree", () => {
 
   rehypeOrthotypography({
     runTextNodePipeline: runner,
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "lint",
     onDiagnostic: (value) => reported.push(value),
@@ -174,7 +195,7 @@ Deno.test("lint diagnostics are reported without mutating the tree", () => {
 });
 
 Deno.test("adapter rejects reordered pipeline output", () => {
-  const runner: TextNodePipelineRunner<string> = (nodes) => ({
+  const runner: TextNodePipelineRunner = (nodes) => ({
     value: nodes.map(({ value }) => value).join(""),
     nodes: [...nodes].reverse(),
     diagnostics: [],
@@ -192,7 +213,7 @@ Deno.test("adapter rejects reordered pipeline output", () => {
     () =>
       rehypeOrthotypography({
         runTextNodePipeline: runner,
-        rules: ["test"],
+        rules: [testRule],
         locale: "fr-FR",
         mode: "fix",
       })(tree),

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import type { RuntimeRule } from "@orthotypography/core";
 import type { Root } from "hast";
 import { unified } from "unified";
 import {
@@ -6,17 +7,18 @@ import {
   type TextNodePipelineRunner,
 } from "../src/mod.ts";
 
-const runner: TextNodePipelineRunner<string> = (nodes) => ({
+const runner: TextNodePipelineRunner = (nodes) => ({
   value: nodes.map(({ value }) => value).join(""),
   nodes,
   diagnostics: [],
   appliedRuleIds: [],
 });
+const testRule = {} as RuntimeRule;
 
 Deno.test("plugin signature is accepted by unified for a HAST root", async () => {
   const processor = unified().use(rehypeOrthotypography, {
     runTextNodePipeline: runner,
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "lint",
   });

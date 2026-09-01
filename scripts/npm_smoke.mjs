@@ -21,6 +21,10 @@ async function importPackage(directory) {
 
 const rehype = await importPackage("rehype");
 assert.equal(typeof rehype.module.rehypeOrthotypography, "function");
+assert.equal(
+  rehype.packageJson.dependencies["@orthotypography/core"],
+  "0.1.0-alpha.0",
+);
 
 const astro = await importPackage("astro");
 assert.equal(typeof astro.module.default, "function");

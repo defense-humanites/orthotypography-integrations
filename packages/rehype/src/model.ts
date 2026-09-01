@@ -53,9 +53,9 @@ export interface AdapterPipelineResult {
 }
 
 /** Structural contract implemented by core's `runTextNodePipeline`. */
-export type TextNodePipelineRunner<Rule = unknown> = (
+export type TextNodePipelineRunner = (
   nodes: readonly AdapterTextNodeInput[],
-  rules: readonly Rule[],
+  rules: readonly RuntimeRule[],
   options: { readonly locale: string; readonly mode: "lint" | "fix" },
 ) => AdapterPipelineResult;
 
@@ -64,9 +64,10 @@ export type NodePredicate = (
   ancestors: readonly HastNode[],
 ) => boolean;
 
-export interface RehypeOrthotypographyOptions<Rule = unknown> {
-  readonly runTextNodePipeline: TextNodePipelineRunner<Rule>;
-  readonly rules: readonly Rule[];
+export interface RehypeOrthotypographyOptions {
+  /** Optional structural override; core's runner is used by default. */
+  readonly runTextNodePipeline?: TextNodePipelineRunner;
+  readonly rules: readonly RuntimeRule[];
   readonly locale: string;
   readonly mode: "lint" | "fix";
   /** Additional subtree exclusions. Excluded content is a run boundary. */
@@ -76,3 +77,4 @@ export interface RehypeOrthotypographyOptions<Rule = unknown> {
   /** Receives source diagnostics after every logical run. */
   readonly onDiagnostic?: (diagnostic: AdapterDiagnostic) => void;
 }
+import type { RuntimeRule } from "@orthotypography/core";

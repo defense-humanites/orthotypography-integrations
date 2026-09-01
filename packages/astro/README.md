@@ -4,17 +4,13 @@ An Astro integration that applies `@orthotypography/rehype` to Markdown and MDX
 documents rendered with the Unified processor.
 
 ```ts
-import {
-  IMPRIMERIE_NATIONALE_RULES,
-  runTextNodePipeline,
-} from "@orthotypography/core";
+import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
 import orthotypography from "@orthotypography/astro";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
   integrations: [
     orthotypography({
-      runTextNodePipeline,
       rules: IMPRIMERIE_NATIONALE_RULES,
       locale: "fr-FR",
       mode: "lint",

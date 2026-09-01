@@ -13,8 +13,8 @@ import type { AstroIntegration } from "astro";
 export type AstroUnifiedOptions = UnifiedProcessorOptions;
 
 /** Configuration shared with the rehype adapter and Astro's Markdown processor. */
-export interface AstroOrthotypographyOptions<Rule = unknown>
-  extends RehypeOrthotypographyOptions<Rule> {
+export interface AstroOrthotypographyOptions
+  extends RehypeOrthotypographyOptions {
   /**
    * Unified processor options. Any rehype plugins supplied here run before
    * orthotypography.
@@ -29,12 +29,12 @@ export interface AstroOrthotypographyOptions<Rule = unknown>
  * This integration deliberately selects Astro's Unified processor because a
  * rehype plugin cannot run in the default Satteri processor.
  */
-export function orthotypography<Rule = unknown>(
-  options: AstroOrthotypographyOptions<Rule>,
+export function orthotypography(
+  options: AstroOrthotypographyOptions,
 ): AstroIntegration {
   const { processorOptions = {}, ...rehypeOptions } = options;
   const plugin = rehypeOrthotypography as unknown as RehypePlugin<
-    [RehypeOrthotypographyOptions<Rule>]
+    [RehypeOrthotypographyOptions]
   >;
 
   return {

@@ -36,6 +36,15 @@ await build({
     keywords: ["rehype", "typography", "orthotypography", "hast", "unicode"],
     engines: { node: ">=18" },
     sideEffects: false,
+    dependencies: {
+      "@orthotypography/core": "0.1.0-alpha.0",
+    },
+  },
+  mappings: {
+    "@orthotypography/core": {
+      name: "@orthotypography/core",
+      version: "0.1.0-alpha.0",
+    },
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "npm/rehype/LICENSE");

@@ -1,3 +1,4 @@
+import { runTextNodePipeline as runCoreTextNodePipeline } from "@orthotypography/core";
 import type {
   AdapterDiagnostic,
   AdapterTextNodeInput,
@@ -73,8 +74,8 @@ function isExcluded(
 }
 
 /** Creates a rehype-compatible transformer without importing unified at runtime. */
-export function rehypeOrthotypography<Rule = unknown>(
-  options: RehypeOrthotypographyOptions<Rule>,
+export function rehypeOrthotypography(
+  options: RehypeOrthotypographyOptions,
 ): (tree: HastRoot, file?: VFileLike) => void {
   if (options.mode !== "lint" && options.mode !== "fix") {
     throw new Error(
@@ -84,6 +85,8 @@ export function rehypeOrthotypography<Rule = unknown>(
 
   return (tree, file): void => {
     const diagnostics: AdapterDiagnostic[] = [];
+    const runTextNodePipeline = options.runTextNodePipeline ??
+      runCoreTextNodePipeline;
 
     const processContainer = (
       container: HastNode,
@@ -94,7 +97,7 @@ export function rehypeOrthotypography<Rule = unknown>(
 
       const flush = (): void => {
         if (run.length === 0) return;
-        const result = options.runTextNodePipeline(
+        const result = runTextNodePipeline(
           run.map(({ input }) => input),
           options.rules,
           { locale: options.locale, mode: options.mode },

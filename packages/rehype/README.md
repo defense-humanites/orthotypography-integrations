@@ -3,18 +3,14 @@
 A rehype adapter that applies an orthotypographic engine to sequences of HAST
 text nodes without changing the tree structure.
 
-The package is in prerelease. Until a version of `@orthotypography/core` is
-published, the engine must be supplied explicitly:
+The package uses `@orthotypography/core` directly while keeping the adapter's
+tree policy independently testable:
 
 ```ts
-import {
-  IMPRIMERIE_NATIONALE_RULES,
-  runTextNodePipeline,
-} from "@orthotypography/core";
+import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
 import { rehypeOrthotypography } from "@orthotypography/rehype";
 
 const plugin = rehypeOrthotypography({
-  runTextNodePipeline,
   rules: IMPRIMERIE_NATIONALE_RULES,
   locale: "fr-FR",
   mode: "lint",

@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
+import type { RuntimeRule } from "@orthotypography/core";
 import { isUnifiedProcessor, type unified } from "@astrojs/markdown-remark";
 import type { AstroIntegration } from "astro";
 import orthotypography, {
   type AstroOrthotypographyOptions,
 } from "../src/mod.ts";
 
-const runner: AstroOrthotypographyOptions<string>["runTextNodePipeline"] = (
+const runner: NonNullable<
+  AstroOrthotypographyOptions["runTextNodePipeline"]
+> = (
   nodes,
 ) => ({
   value: nodes.map(({ value }) => value).join(""),
@@ -13,6 +16,7 @@ const runner: AstroOrthotypographyOptions<string>["runTextNodePipeline"] = (
   diagnostics: [],
   appliedRuleIds: [],
 });
+const testRule = {} as RuntimeRule;
 
 function setup(integration: AstroIntegration): Record<string, unknown> {
   let update: Record<string, unknown> | undefined;
@@ -34,7 +38,7 @@ Deno.test("Astro integration selects Unified and appends the rehype adapter", ()
   const previousPlugin = () => undefined;
   const integration = orthotypography({
     runTextNodePipeline: runner,
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "lint",
     processorOptions: {
@@ -65,10 +69,10 @@ Deno.test("Astro integration selects Unified and appends the rehype adapter", ()
 Deno.test("each integration owns an isolated processor configuration", () => {
   const options = {
     runTextNodePipeline: runner,
-    rules: ["test"],
+    rules: [testRule],
     locale: "fr-FR",
     mode: "fix",
-  } satisfies AstroOrthotypographyOptions<string>;
+  } satisfies AstroOrthotypographyOptions;
 
   const first = (setup(orthotypography(options)).markdown as {
     processor: { options: { rehypePlugins: unknown[] } };
