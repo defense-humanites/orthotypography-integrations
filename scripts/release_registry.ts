@@ -43,7 +43,11 @@ async function fetchMetadata(
   fetcher: Fetcher,
 ): Promise<unknown> {
   const response = await fetcher(url, {
-    headers: { accept: "application/json" },
+    cache: "no-store",
+    headers: {
+      accept: "application/json",
+      "cache-control": "no-cache",
+    },
   });
   if (response.status === 404) return { versions: {} };
   if (!response.ok) {
@@ -54,23 +58,46 @@ async function fetchMetadata(
   return await response.json();
 }
 
+async function versionEndpointExists(
+  url: string,
+  label: string,
+  fetcher: Fetcher,
+): Promise<boolean> {
+  const response = await fetcher(url, {
+    cache: "no-store",
+    headers: {
+      accept: "application/json",
+      "cache-control": "no-cache",
+    },
+  });
+  if (response.status === 404) return false;
+  if (!response.ok) {
+    throw new Error(
+      `${label} registry returned ${response.status} ${response.statusText}`,
+    );
+  }
+  return true;
+}
+
 /** Resolves whether one exact immutable package version exists. */
 export async function fetchRegistryPresence(
   packageName: string,
   version: string,
   fetcher: Fetcher = fetch,
 ): Promise<RegistryPresence> {
-  const [jsrMetadata, npmMetadata] = await Promise.all([
+  const [jsrMetadata, npm] = await Promise.all([
     fetchMetadata(`https://jsr.io/${packageName}/meta.json`, "JSR", fetcher),
-    fetchMetadata(
-      `https://registry.npmjs.org/${encodeURIComponent(packageName)}`,
+    versionEndpointExists(
+      `https://registry.npmjs.org/${encodeURIComponent(packageName)}/${
+        encodeURIComponent(version)
+      }`,
       "npm",
       fetcher,
     ),
   ]);
   return {
     jsr: hasVersion(jsrMetadata, version, "JSR"),
-    npm: hasVersion(npmMetadata, version, "npm"),
+    npm,
   };
 }
 
@@ -104,7 +131,7 @@ async function writeOutputs(): Promise<void> {
 }
 
 async function requireCompleteRelease(): Promise<void> {
-  const attempts = 12;
+  const attempts = 30;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     const states = await allPresence();
     if (states.every(([, presence]) => presence.jsr && presence.npm)) return;
@@ -117,7 +144,7 @@ async function requireCompleteRelease(): Promise<void> {
         }`,
       );
     }
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
+    await new Promise((resolve) => setTimeout(resolve, 10_000));
   }
 }
 

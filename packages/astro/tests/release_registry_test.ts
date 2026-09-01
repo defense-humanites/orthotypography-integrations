@@ -16,7 +16,7 @@ Deno.test("registry state distinguishes a partial package publication", async ()
     return Promise.resolve(
       url.includes("jsr.io")
         ? response({ versions: { "0.1.0-alpha.0": {} } })
-        : response({ versions: {} }),
+        : response({ error: "not found" }, 404),
     );
   };
 
@@ -30,7 +30,7 @@ Deno.test("registry state distinguishes a partial package publication", async ()
   );
   assert.deepEqual(requested, [
     "https://jsr.io/@orthotypography/astro/meta.json",
-    "https://registry.npmjs.org/%40orthotypography%2Fastro",
+    "https://registry.npmjs.org/%40orthotypography%2Fastro/0.1.0-alpha.0",
   ]);
 });
 
