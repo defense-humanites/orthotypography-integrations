@@ -62,7 +62,6 @@ await build({
   scriptModule: false,
   declaration: "separate",
   declarationMap: true,
-  // The workspace dependency is not available from npm before the first alpha.
   // Source types are checked by `deno task check`; npm:check installs the
   // freshly generated rehype package before running the Astro smoke test.
   typeCheck: false,

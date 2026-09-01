@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
-import type { RuntimeRule } from "@orthotypography/core";
-import { isUnifiedProcessor, type unified } from "@astrojs/markdown-remark";
+import {
+  type RuntimeRule,
+  SAFE_PUNCTUATION_RULES,
+} from "@orthotypography/core";
+import {
+  isUnifiedProcessor,
+  markdownConfigDefaults,
+  type unified,
+} from "@astrojs/markdown-remark";
 import type { AstroIntegration } from "astro";
 import orthotypography, {
   type AstroOrthotypographyOptions,
@@ -85,4 +92,20 @@ Deno.test("each integration owns an isolated processor configuration", () => {
   assert.notEqual(first.options.rehypePlugins, second.options.rehypePlugins);
   assert.equal(first.options.rehypePlugins.length, 1);
   assert.equal(second.options.rehypePlugins.length, 1);
+});
+
+Deno.test("Astro's Unified renderer applies the published core", async () => {
+  const update = setup(orthotypography({
+    rules: SAFE_PUNCTUATION_RULES,
+    locale: "fr-FR",
+    mode: "fix",
+    processorOptions: { smartypants: false },
+  }));
+  const processor = (update.markdown as {
+    processor: ReturnType<typeof unified>;
+  }).processor;
+  const renderer = await processor.createRenderer(markdownConfigDefaults);
+  const result = await renderer.render("Bonjour , monde.");
+
+  assert.equal(result.code.trim(), "<p>Bonjour, monde.</p>");
 });
