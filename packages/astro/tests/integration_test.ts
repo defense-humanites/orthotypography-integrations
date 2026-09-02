@@ -88,10 +88,10 @@ Deno.test("each integration owns an isolated processor configuration", () => {
     mode: "fix",
   } satisfies AstroOrthotypographyOptions;
 
-  const first = (setup(orthotypography(options)).markdown as {
+  const first = (setup(orthotypography(options), unified()).markdown as {
     processor: { options: { rehypePlugins: unknown[] } };
   }).processor;
-  const second = (setup(orthotypography(options)).markdown as {
+  const second = (setup(orthotypography(options), unified()).markdown as {
     processor: { options: { rehypePlugins: unknown[] } };
   }).processor;
 
