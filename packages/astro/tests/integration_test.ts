@@ -6,7 +6,7 @@ import {
 import {
   isUnifiedProcessor,
   markdownConfigDefaults,
-  type unified,
+  unified,
 } from "@astrojs/markdown-remark";
 import { isSatteriProcessor, satteri } from "@astrojs/markdown-satteri";
 import type { AstroIntegration } from "astro";
@@ -28,7 +28,9 @@ const testRule = {} as RuntimeRule;
 
 function setup(
   integration: AstroIntegration,
-  processor = satteri(),
+  processor:
+    | ReturnType<typeof satteri>
+    | ReturnType<typeof unified> = satteri(),
 ): Record<string, unknown> {
   let update: Record<string, unknown> | undefined;
   const hook = integration.hooks["astro:config:setup"];
