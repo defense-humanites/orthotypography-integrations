@@ -57,5 +57,8 @@ Deno.test("native Sätteri plugin exposes lint diagnostics", async () => {
 
   assert.equal(result.html.trim(), "<p>Bonjour , monde.</p>");
   assert.equal(observed.length, 1);
-  assert.equal(result.data.orthotypographyDiagnostics?.length, 1);
+  const diagnostics = result.data["orthotypographyDiagnostics"] as
+    | readonly unknown[]
+    | undefined;
+  assert.equal(diagnostics?.length, 1);
 });

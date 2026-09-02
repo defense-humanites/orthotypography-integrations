@@ -10,12 +10,6 @@ import {
 } from "satteri";
 import type { SatteriOrthotypographyOptions } from "./model.ts";
 
-declare module "satteri" {
-  interface DataMap {
-    orthotypographyDiagnostics?: readonly RuleDiagnostic[];
-  }
-}
-
 const blockTags = new Set([
   "address",
   "article",
@@ -220,7 +214,7 @@ export function satteriOrthotypography(
   return defineHastPlugin({
     name: "@orthotypography/satteri",
     after(root, context) {
-      context.data.orthotypographyDiagnostics = processRoot(
+      context.data["orthotypographyDiagnostics"] = processRoot(
         root,
         context,
         options,
