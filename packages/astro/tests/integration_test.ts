@@ -8,6 +8,10 @@ import {
   markdownConfigDefaults,
   type unified,
 } from "@astrojs/markdown-remark";
+import {
+  isSatteriProcessor,
+  satteri,
+} from "@astrojs/markdown-satteri";
 import type { AstroIntegration } from "astro";
 import orthotypography, {
   type AstroOrthotypographyOptions,
@@ -25,11 +29,15 @@ const runner: NonNullable<
 });
 const testRule = {} as RuntimeRule;
 
-function setup(integration: AstroIntegration): Record<string, unknown> {
+function setup(
+  integration: AstroIntegration,
+  processor = satteri(),
+): Record<string, unknown> {
   let update: Record<string, unknown> | undefined;
   const hook = integration.hooks["astro:config:setup"];
   assert.equal(typeof hook, "function");
   hook!({
+    config: { markdown: { processor } },
     updateConfig(value: Record<string, unknown>) {
       update = value as Record<string, unknown>;
       return value as never;
@@ -92,6 +100,43 @@ Deno.test("each integration owns an isolated processor configuration", () => {
   assert.notEqual(first.options.rehypePlugins, second.options.rehypePlugins);
   assert.equal(first.options.rehypePlugins.length, 1);
   assert.equal(second.options.rehypePlugins.length, 1);
+});
+
+Deno.test("Astro integration preserves Sätteri and appends its native plugin", async () => {
+  const processor = satteri({ features: { smartPunctuation: false } });
+  const integration = orthotypography({
+    rules: SAFE_PUNCTUATION_RULES,
+    locale: "fr-FR",
+    mode: "fix",
+  });
+  const update = setup(integration, processor);
+  const configured = (update.markdown as { processor: typeof processor })
+    .processor;
+
+  assert.equal(configured, processor);
+  assert.ok(isSatteriProcessor(configured));
+  assert.equal(configured.options.hastPlugins.length, 1);
+  const renderer = await configured.createRenderer(markdownConfigDefaults);
+  const result = await renderer.render("Bonjour , monde.");
+  assert.equal(result.code.trim(), "<p>Bonjour, monde.</p>");
+});
+
+Deno.test("Astro integration preserves an explicit Unified processor", () => {
+  const processor = unified({ smartypants: false });
+  const update = setup(
+    orthotypography({
+      rules: SAFE_PUNCTUATION_RULES,
+      locale: "fr-FR",
+      mode: "fix",
+    }),
+    processor,
+  );
+  const configured = (update.markdown as { processor: typeof processor })
+    .processor;
+
+  assert.equal(configured, processor);
+  assert.ok(isUnifiedProcessor(configured));
+  assert.equal(configured.options.rehypePlugins.length, 1);
 });
 
 Deno.test("Astro's Unified renderer applies the published core", async () => {

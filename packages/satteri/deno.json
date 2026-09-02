@@ -1,5 +1,5 @@
 {
-  "name": "@orthotypography/astro",
+  "name": "@orthotypography/satteri",
   "version": "0.1.0-alpha.1",
   "license": "MIT",
   "exports": "./src/mod.ts",

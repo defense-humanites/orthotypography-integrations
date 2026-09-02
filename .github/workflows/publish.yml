@@ -47,6 +47,9 @@ jobs:
           --config packages/rehype/deno.json
       - run: >-
           deno publish --dry-run --check
+          --config packages/satteri/deno.json
+      - run: >-
+          deno publish --dry-run --check
           --config packages/astro/deno.json
       - run: deno task npm:check
       - name: Resolve registry state
@@ -60,6 +63,11 @@ jobs:
         run: >-
           deno publish --check
           --config packages/rehype/deno.json
+      - name: Publish Sätteri to JSR
+        if: steps.registry.outputs.satteri_jsr_exists != 'true'
+        run: >-
+          deno publish --check
+          --config packages/satteri/deno.json
       - name: Publish Astro to JSR
         if: steps.registry.outputs.astro_jsr_exists != 'true'
         run: >-
@@ -68,6 +76,7 @@ jobs:
       - name: Install trusted-publishing npm client
         if: >-
           steps.registry.outputs.rehype_npm_exists != 'true' ||
+          steps.registry.outputs.satteri_npm_exists != 'true' ||
           steps.registry.outputs.astro_npm_exists != 'true'
         run: npm install --global npm@11.5.1
       - name: Publish rehype to npm
@@ -76,6 +85,15 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >-
           npm publish ./npm/rehype
+          --tag "${{ steps.release.outputs.npm_tag }}"
+          --access public
+          --provenance
+      - name: Publish Sätteri to npm
+        if: steps.registry.outputs.satteri_npm_exists != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: >-
+          npm publish ./npm/satteri
           --tag "${{ steps.release.outputs.npm_tag }}"
           --access public
           --provenance

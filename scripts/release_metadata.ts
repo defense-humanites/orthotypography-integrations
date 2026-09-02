@@ -1,9 +1,15 @@
 import astroConfig from "../packages/astro/deno.json" with { type: "json" };
 import rehypeConfig from "../packages/rehype/deno.json" with { type: "json" };
+import satteriConfig from "../packages/satteri/deno.json" with {
+  type: "json",
+};
 
-if (astroConfig.version !== rehypeConfig.version) {
+if (
+  astroConfig.version !== rehypeConfig.version ||
+  satteriConfig.version !== rehypeConfig.version
+) {
   throw new Error(
-    `Package versions differ: astro=${astroConfig.version}, rehype=${rehypeConfig.version}`,
+    `Package versions differ: astro=${astroConfig.version}, rehype=${rehypeConfig.version}, satteri=${satteriConfig.version}`,
   );
 }
 

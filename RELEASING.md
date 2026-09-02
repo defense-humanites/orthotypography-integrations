@@ -9,8 +9,8 @@ Avant la première publication :
 
 1. publier une version compatible de `@orthotypography/core` ;
 2. valider les métadonnées JSR et npm ;
-3. créer les paquets `@orthotypography/rehype` et `@orthotypography/astro` sur
-   JSR ;
+3. créer les paquets `@orthotypography/rehype`, `@orthotypography/satteri` et
+   `@orthotypography/astro` sur JSR ;
 4. créer une release portant la version commune aux deux paquets.
 
 Les paquets npm sont créés par leur première publication et n’ont pas à être
@@ -22,15 +22,16 @@ configurer `.github/workflows/publish.yml` et l’environnement `release` comme
 éditeur de confiance de chaque paquet, puis supprimer `NPM_TOKEN` ; les releases
 suivantes utiliseront automatiquement OIDC.
 
-`rehype` est toujours publié avant `astro`, car le second en dépend. Les deux
-paquets conservent une version commune pendant la phase alpha.
+Les adaptateurs `rehype` et `satteri` sont toujours publiés avant `astro`, qui
+dépend des deux. Les trois paquets conservent une version commune pendant la
+phase alpha.
 
 ## Reprise d’une publication partielle
 
 Avant chaque écriture, le workflow vérifie séparément la version exacte de
 chaque paquet sur JSR et npm. Une version déjà présente est laissée intacte ;
 seuls les couples paquet-registre manquants sont publiés. La vérification finale
-attend que les quatre versions soient visibles.
+attend que les six versions soient visibles.
 
 Pour reprendre une publication, relancer le workflow échoué ou déclencher
 manuellement `Publish` avec le tag de release existant. Le tag doit toujours

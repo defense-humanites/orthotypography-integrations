@@ -1,5 +1,8 @@
 import astroConfig from "../packages/astro/deno.json" with { type: "json" };
 import rehypeConfig from "../packages/rehype/deno.json" with { type: "json" };
+import satteriConfig from "../packages/satteri/deno.json" with {
+  type: "json",
+};
 
 export interface RegistryPresence {
   readonly jsr: boolean;
@@ -7,7 +10,7 @@ export interface RegistryPresence {
 }
 
 export interface PackageRelease {
-  readonly key: "astro" | "rehype";
+  readonly key: "astro" | "rehype" | "satteri";
   readonly name: string;
   readonly version: string;
 }
@@ -19,6 +22,11 @@ type Fetcher = (
 
 const packages: readonly PackageRelease[] = [
   { key: "rehype", name: rehypeConfig.name, version: rehypeConfig.version },
+  {
+    key: "satteri",
+    name: satteriConfig.name,
+    version: satteriConfig.version,
+  },
   { key: "astro", name: astroConfig.name, version: astroConfig.version },
 ];
 
