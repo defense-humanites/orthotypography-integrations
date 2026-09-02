@@ -72,7 +72,8 @@ await build({
   package: {
     name: satteriConfig.name,
     version: satteriConfig.version,
-    description: "Native Sätteri adapter for source-backed orthotypography rules",
+    description:
+      "Native Sätteri adapter for source-backed orthotypography rules",
     author: "Antoine Boquet",
     license: satteriConfig.license,
     homepage:

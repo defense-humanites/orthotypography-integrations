@@ -1,7 +1,7 @@
 import type {
   RuleDiagnostic,
-  RuntimeRule,
   runTextNodePipeline,
+  RuntimeRule,
 } from "@orthotypography/core";
 import type { HastNode } from "satteri";
 

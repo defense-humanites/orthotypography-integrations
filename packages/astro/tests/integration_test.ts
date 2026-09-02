@@ -8,10 +8,7 @@ import {
   markdownConfigDefaults,
   type unified,
 } from "@astrojs/markdown-remark";
-import {
-  isSatteriProcessor,
-  satteri,
-} from "@astrojs/markdown-satteri";
+import { isSatteriProcessor, satteri } from "@astrojs/markdown-satteri";
 import type { AstroIntegration } from "astro";
 import orthotypography, {
   type AstroOrthotypographyOptions,

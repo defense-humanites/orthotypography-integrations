@@ -1,6 +1,6 @@
 import {
-  type RehypePlugin,
   isUnifiedProcessor,
+  type RehypePlugin,
   unified,
   type UnifiedProcessorOptions,
 } from "@astrojs/markdown-remark";

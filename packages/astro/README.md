@@ -36,14 +36,14 @@ export default defineConfig({
 ```
 
 The integration detects Astro's current Markdown processor. It appends the
-native `@orthotypography/satteri` plugin to Sätteri, including Astro 7's default,
-or `@orthotypography/rehype` to an explicitly configured Unified processor.
-Existing processor features and plugins are preserved.
+native `@orthotypography/satteri` plugin to Sätteri, including Astro 7's
+default, or `@orthotypography/rehype` to an explicitly configured Unified
+processor. Existing processor features and plugins are preserved.
 
 Passing the legacy `processorOptions` option explicitly selects Unified and
 places its remark or rehype plugins before orthotypography. This compatibility
-path is useful while migrating an existing alpha configuration, but new
-projects should configure their processor directly through Astro.
+path is useful while migrating an existing alpha configuration, but new projects
+should configure their processor directly through Astro.
 
 The official MDX integration inherits the Markdown configuration by default. If
 `extendMarkdownConfig` is disabled or MDX receives its own processor, the
