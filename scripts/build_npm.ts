@@ -186,8 +186,8 @@ await buildPackage("astro", {
     dependencies: {
       "@astrojs/markdown-remark": "^7.2.4",
       "@astrojs/markdown-satteri": "^0.3.8",
-      "@orthotypography/rehype": "file:../rehype",
-      "@orthotypography/satteri": "file:../satteri",
+      "@orthotypography/rehype": astroConfig.version,
+      "@orthotypography/satteri": astroConfig.version,
     },
     peerDependencies: {
       astro: "^7.0.0",
@@ -196,11 +196,11 @@ await buildPackage("astro", {
   mappings: {
     "@orthotypography/rehype": {
       name: "@orthotypography/rehype",
-      version: "file:../rehype",
+      version: astroConfig.version,
     },
     "@orthotypography/satteri": {
       name: "@orthotypography/satteri",
-      version: "file:../satteri",
+      version: astroConfig.version,
     },
   },
   postBuild() {
