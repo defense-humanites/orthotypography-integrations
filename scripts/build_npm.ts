@@ -149,9 +149,10 @@ await buildPackage("astro", {
   declaration: "separate",
   declarationMap: true,
   // Source types are checked by `deno task check`; npm:check installs the
-  // freshly generated rehype package before running the Astro smoke test.
+  // freshly generated adapters before running the Astro smoke test.
   typeCheck: false,
   test: false,
+  skipNpmInstall: true,
   compilerOptions: { target: "ES2022" },
   shims: {},
   package: {
