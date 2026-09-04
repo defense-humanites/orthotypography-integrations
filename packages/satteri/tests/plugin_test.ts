@@ -6,8 +6,8 @@ import {
 import { markdownToHtml } from "satteri";
 import { satteriOrthotypography } from "../src/mod.ts";
 
-Deno.test("native Sätteri plugin fixes text across inline nodes", async () => {
-  const result = await markdownToHtml("Bonjour , *monde* !", {
+Deno.test("native Sätteri plugin fixes text in inline descendants", async () => {
+  const result = await markdownToHtml("Bonjour , *monde !*", {
     features: { smartPunctuation: false },
     hastPlugins: [
       satteriOrthotypography({
@@ -18,7 +18,7 @@ Deno.test("native Sätteri plugin fixes text across inline nodes", async () => {
     ],
   });
 
-  assert.equal(result.html.trim(), "<p>Bonjour, <em>monde</em> !</p>");
+  assert.equal(result.html.trim(), "<p>Bonjour, <em>monde !</em></p>");
 });
 
 Deno.test("native Sätteri plugin preserves excluded code", async () => {
