@@ -32,7 +32,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: deno task npm:build
+      - run: deno task npm:build:rehype
+      - run: deno task npm:build:satteri
+      - run: deno task npm:build:astro
       - run: deno task npm:install
       - run: deno task npm:smoke
       - run: deno task npm:pack

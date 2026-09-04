@@ -5,9 +5,30 @@ import satteriConfig from "../packages/satteri/deno.json" with {
   type: "json",
 };
 
-await emptyDir("./npm");
+type PackageName = "rehype" | "satteri" | "astro";
 
-await build({
+const packageNames: readonly PackageName[] = ["rehype", "satteri", "astro"];
+const selectedPackage = Deno.args[0] as PackageName | undefined;
+if (
+  selectedPackage !== undefined && !packageNames.includes(selectedPackage)
+) {
+  throw new Error(`Unknown npm package: ${selectedPackage}`);
+}
+
+await emptyDir(
+  selectedPackage === undefined ? "./npm" : `./npm/${selectedPackage}`,
+);
+
+async function buildPackage(
+  name: PackageName,
+  options: Parameters<typeof build>[0],
+): Promise<void> {
+  if (selectedPackage === undefined || selectedPackage === name) {
+    await build(options);
+  }
+}
+
+await buildPackage("rehype", {
   entryPoints: [{ name: ".", path: "./packages/rehype/src/mod.ts" }],
   outDir: "./npm/rehype",
   esModule: true,
@@ -60,7 +81,7 @@ await build({
   },
 });
 
-await build({
+await buildPackage("satteri", {
   entryPoints: [{ name: ".", path: "./packages/satteri/src/mod.ts" }],
   outDir: "./npm/satteri",
   esModule: true,
@@ -120,7 +141,7 @@ await build({
   },
 });
 
-await build({
+await buildPackage("astro", {
   entryPoints: [{ name: ".", path: "./packages/astro/src/mod.ts" }],
   outDir: "./npm/astro",
   esModule: true,
