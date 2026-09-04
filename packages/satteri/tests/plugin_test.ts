@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {
-  HIGH_PUNCTUATION_RULES,
+  IMPRIMERIE_NATIONALE_PUNCTUATION_RULES,
   SAFE_PUNCTUATION_RULES,
 } from "@orthotypography/core";
 import { markdownToHtml } from "satteri";
@@ -11,7 +11,7 @@ Deno.test("native Sätteri plugin fixes text across inline nodes", async () => {
     features: { smartPunctuation: false },
     hastPlugins: [
       satteriOrthotypography({
-        rules: [...SAFE_PUNCTUATION_RULES, ...HIGH_PUNCTUATION_RULES],
+        rules: IMPRIMERIE_NATIONALE_PUNCTUATION_RULES,
         locale: "fr-FR",
         mode: "fix",
       }),
