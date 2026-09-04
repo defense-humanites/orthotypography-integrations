@@ -65,7 +65,10 @@ await build({
   scriptModule: false,
   declaration: "separate",
   declarationMap: true,
-  typeCheck: "single",
+  // Source types are checked by `deno task check`; npm:check imports the
+  // generated package. Letting dnt type-check Sätteri's N-API dependency can
+  // stall while resolving its platform bindings.
+  typeCheck: false,
   test: false,
   compilerOptions: { target: "ES2022" },
   shims: {},
