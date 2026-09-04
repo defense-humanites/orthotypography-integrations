@@ -23,6 +23,7 @@ jobs:
   npm-package:
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: denoland/setup-deno@v2
@@ -31,4 +32,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: deno task npm:check
+      - run: deno task npm:build
+      - run: deno task npm:install
+      - run: deno task npm:smoke
+      - run: deno task npm:pack

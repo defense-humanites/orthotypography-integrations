@@ -24,7 +24,10 @@
     "test": "deno test packages/rehype/tests && deno test --allow-env --allow-sys --allow-ffi packages/satteri/tests && deno test --allow-env --allow-sys --allow-ffi packages/astro/tests",
     "publish:check": "deno publish --dry-run --check --config packages/rehype/deno.json && deno publish --dry-run --check --config packages/satteri/deno.json && deno publish --dry-run --check --config packages/astro/deno.json",
     "npm:build": "deno run -A scripts/build_npm.ts",
-    "npm:check": "deno task npm:build && cd npm/astro && npm install --no-save --no-package-lock ../rehype ../satteri && cd ../.. && node scripts/npm_smoke.mjs && cd npm/rehype && npm pack --dry-run && cd ../satteri && npm pack --dry-run && cd ../astro && npm pack --dry-run"
+    "npm:install": "cd npm/astro && npm install --no-save --no-package-lock ../rehype ../satteri",
+    "npm:smoke": "node scripts/npm_smoke.mjs",
+    "npm:pack": "cd npm/rehype && npm pack --dry-run && cd ../satteri && npm pack --dry-run && cd ../astro && npm pack --dry-run",
+    "npm:check": "deno task npm:build && deno task npm:install && deno task npm:smoke && deno task npm:pack"
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@0.43.2",
