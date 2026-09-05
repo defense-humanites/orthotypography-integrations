@@ -14,7 +14,7 @@ npm install @orthotypography/core@alpha @orthotypography/astro@alpha
 With Deno or another JSR client:
 
 ```sh
-deno add jsr:@orthotypography/core@0.1.0-alpha.0 jsr:@orthotypography/astro@0.1.0-alpha.1
+deno add jsr:@orthotypography/core@0.1.0-alpha.1 jsr:@orthotypography/astro@0.1.0-alpha.1
 ```
 
 ## Usage
@@ -50,4 +50,5 @@ The official MDX integration inherits the Markdown configuration by default. If
 configuration must be reproduced there explicitly.
 
 Modes remain required. `lint` collects diagnostics without modifying content;
-`fix` only replaces text-node values allowed by the selected HAST adapter.
+`fix` replaces allowed text-node values and exposes source-coordinate changes
+through the selected HAST adapter.

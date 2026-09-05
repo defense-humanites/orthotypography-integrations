@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   IMPRIMERIE_NATIONALE_PUNCTUATION_RULES,
   SAFE_PUNCTUATION_RULES,
+  type TextChange,
 } from "@orthotypography/core";
 import { markdownToHtml } from "satteri";
 import { satteriOrthotypography } from "../src/mod.ts";
@@ -61,4 +62,26 @@ Deno.test("native Sätteri plugin exposes lint diagnostics", async () => {
     | readonly unknown[]
     | undefined;
   assert.equal(diagnostics?.length, 1);
+});
+
+Deno.test("native Sätteri plugin exposes source-coordinate changes", async () => {
+  const observed: TextChange[] = [];
+  const result = await markdownToHtml("Bonjour , monde.", {
+    features: { smartPunctuation: false },
+    hastPlugins: [
+      satteriOrthotypography({
+        rules: SAFE_PUNCTUATION_RULES,
+        locale: "fr-FR",
+        mode: "fix",
+        onChange(change) {
+          observed.push(change);
+        },
+      }),
+    ],
+  });
+
+  assert.equal(result.html.trim(), "<p>Bonjour, monde.</p>");
+  assert.equal(observed.length, 1);
+  assert.equal(observed[0].expected, " ,");
+  assert.deepEqual(result.data["orthotypographyChanges"], observed);
 });

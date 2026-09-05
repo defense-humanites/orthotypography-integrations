@@ -2,6 +2,7 @@ import type {
   RuleDiagnostic,
   runTextNodePipeline,
   RuntimeRule,
+  TextChange,
 } from "@orthotypography/core";
 import type { HastNode } from "satteri";
 
@@ -22,4 +23,6 @@ export interface SatteriOrthotypographyOptions {
   readonly protect?: SatteriNodePredicate;
   /** Receives source diagnostics while the document is compiled. */
   readonly onDiagnostic?: (diagnostic: RuleDiagnostic) => void;
+  /** Receives source-coordinate fixes while the document is compiled. */
+  readonly onChange?: (change: TextChange) => void;
 }

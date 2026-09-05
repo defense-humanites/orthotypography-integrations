@@ -23,5 +23,5 @@ deno task test
 deno task npm:check
 ```
 
-All adapters use the published `@orthotypography/core@0.1.0-alpha.0` directly.
+All adapters use the published `@orthotypography/core@0.1.0-alpha.1` directly.
 Publication remains gated by the repository variable `PUBLISH_ENABLED`.

@@ -1,6 +1,7 @@
 import {
   type RuleDiagnostic,
   runTextNodePipeline,
+  type TextChange,
 } from "@orthotypography/core";
 import {
   defineHastPlugin,
@@ -89,8 +90,12 @@ function processRoot(
   root: Readonly<HastNode>,
   context: HastVisitorContext,
   options: SatteriOrthotypographyOptions,
-): readonly RuleDiagnostic[] {
+): {
+  readonly diagnostics: readonly RuleDiagnostic[];
+  readonly changes: readonly TextChange[];
+} {
   const diagnostics: RuleDiagnostic[] = [];
+  const changes: TextChange[] = [];
   const runPipeline = options.runTextNodePipeline ?? runTextNodePipeline;
 
   const processContainer = (
@@ -141,6 +146,10 @@ function processRoot(
             : { node: nodesById.get(diagnostic.segmentId) }),
           severity: "warning",
         });
+      }
+      for (const change of result.changes) {
+        changes.push(change);
+        options.onChange?.(change);
       }
       run = [];
     };
@@ -198,7 +207,7 @@ function processRoot(
   };
 
   processContainer(root, [], []);
-  return diagnostics;
+  return { diagnostics, changes };
 }
 
 /** Creates a native Sätteri HAST plugin backed by orthotypography core. */
@@ -214,11 +223,13 @@ export function satteriOrthotypography(
   return defineHastPlugin({
     name: "@orthotypography/satteri",
     after(root, context) {
-      context.data["orthotypographyDiagnostics"] = processRoot(
+      const result = processRoot(
         root,
         context,
         options,
       );
+      context.data["orthotypographyDiagnostics"] = result.diagnostics;
+      context.data["orthotypographyChanges"] = result.changes;
     },
   });
 }

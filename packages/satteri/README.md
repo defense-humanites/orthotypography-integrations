@@ -14,7 +14,7 @@ npm install @orthotypography/core@alpha @orthotypography/satteri@alpha satteri
 With Deno or another JSR client:
 
 ```sh
-deno add jsr:@orthotypography/core@0.1.0-alpha.0 jsr:@orthotypography/satteri@0.1.0-alpha.1 npm:satteri@0.10.5
+deno add jsr:@orthotypography/core@0.1.0-alpha.1 jsr:@orthotypography/satteri@0.1.0-alpha.1 npm:satteri@0.10.5
 ```
 
 ## Usage
@@ -39,3 +39,5 @@ The plugin processes logical text runs across inline HAST nodes while preserving
 block boundaries, raw HTML, and `code`, `pre`, `script`, and `style` elements.
 Diagnostics are passed to `onDiagnostic`, reported through Sätteri, and stored
 in `result.data.orthotypographyDiagnostics` for direct Sätteri consumers.
+Source-coordinate fixes are passed to `onChange` and stored in
+`result.data.orthotypographyChanges`.

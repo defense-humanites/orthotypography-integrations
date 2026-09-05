@@ -14,7 +14,7 @@ npm install @orthotypography/core@alpha @orthotypography/rehype@alpha
 With Deno or another JSR client:
 
 ```sh
-deno add jsr:@orthotypography/core@0.1.0-alpha.0 jsr:@orthotypography/rehype@0.1.0-alpha.1
+deno add jsr:@orthotypography/core@0.1.0-alpha.1 jsr:@orthotypography/rehype@0.1.0-alpha.1
 ```
 
 ## Usage
@@ -34,6 +34,7 @@ const plugin = rehypeOrthotypography({
 ```
 
 Modes are intentionally explicit: `lint` produces diagnostics associated with
-their `segmentId`, while `fix` only replaces node values. Block elements, raw
+their `segmentId`, while `fix` replaces node values and exposes source-coordinate
+changes through `onChange` and `file.data.orthotypographyChanges`. Block elements, raw
 HTML, and `code`, `pre`, `script`, and `style` form boundaries. The `exclude`
 and `protect` predicates let an integration adjust this policy.

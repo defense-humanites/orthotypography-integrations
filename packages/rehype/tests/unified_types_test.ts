@@ -10,6 +10,7 @@ import {
 const runner: TextNodePipelineRunner = (nodes) => ({
   value: nodes.map(({ value }) => value).join(""),
   nodes,
+  changes: [],
   diagnostics: [],
   appliedRuleIds: [],
 });

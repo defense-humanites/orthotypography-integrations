@@ -63,13 +63,13 @@ await buildPackage("rehype", {
     engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
-      "@orthotypography/core": "0.1.0-alpha.0",
+      "@orthotypography/core": "0.1.0-alpha.1",
     },
   },
   mappings: {
     "@orthotypography/core": {
       name: "@orthotypography/core",
-      version: "0.1.0-alpha.0",
+      version: "0.1.0-alpha.1",
     },
   },
   postBuild() {
@@ -118,14 +118,14 @@ await buildPackage("satteri", {
     engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
-      "@orthotypography/core": "0.1.0-alpha.0",
+      "@orthotypography/core": "0.1.0-alpha.1",
       "satteri": "^0.10.5",
     },
   },
   mappings: {
     "@orthotypography/core": {
       name: "@orthotypography/core",
-      version: "0.1.0-alpha.0",
+      version: "0.1.0-alpha.1",
     },
     "satteri": {
       name: "satteri",

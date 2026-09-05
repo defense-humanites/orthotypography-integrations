@@ -21,6 +21,7 @@ const runner: NonNullable<
 ) => ({
   value: nodes.map(({ value }) => value).join(""),
   nodes,
+  changes: [],
   diagnostics: [],
   appliedRuleIds: [],
 });

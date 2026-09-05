@@ -23,14 +23,14 @@ const rehype = await importPackage("rehype");
 assert.equal(typeof rehype.module.rehypeOrthotypography, "function");
 assert.equal(
   rehype.packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.0",
+  "0.1.0-alpha.1",
 );
 
 const satteri = await importPackage("satteri");
 assert.equal(typeof satteri.module.satteriOrthotypography, "function");
 assert.equal(
   satteri.packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.0",
+  "0.1.0-alpha.1",
 );
 assert.equal(satteri.packageJson.dependencies.satteri, "^0.10.5");
 

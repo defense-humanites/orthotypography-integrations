@@ -1,3 +1,5 @@
+import type { RuntimeRule, TextChange } from "@orthotypography/core";
+
 /** Minimal HAST shape consumed without taking ownership of the tree model. */
 export interface HastNode {
   readonly type: string;
@@ -48,6 +50,7 @@ export interface AdapterDiagnostic extends AdapterDiagnosticLocation {
 export interface AdapterPipelineResult {
   readonly value: string;
   readonly nodes: readonly AdapterTextNodeOutput[];
+  readonly changes: readonly TextChange[];
   readonly diagnostics: readonly AdapterDiagnostic[];
   readonly appliedRuleIds: readonly string[];
 }
@@ -76,5 +79,6 @@ export interface RehypeOrthotypographyOptions {
   readonly protect?: NodePredicate;
   /** Receives source diagnostics after every logical run. */
   readonly onDiagnostic?: (diagnostic: AdapterDiagnostic) => void;
+  /** Receives source-coordinate fixes after every logical run. */
+  readonly onChange?: (change: TextChange) => void;
 }
-import type { RuntimeRule } from "@orthotypography/core";

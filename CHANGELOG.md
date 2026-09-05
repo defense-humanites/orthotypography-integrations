@@ -12,6 +12,9 @@
   des segments exclus.
 - Extension de la publication coordonnée et de sa reprise partielle aux trois
   paquets sur JSR et npm.
+- Mise à niveau vers `@orthotypography/core@0.1.0-alpha.1`.
+- Exposition des changements localisés par `onChange` et
+  `orthotypographyChanges` dans Rehype, Sätteri et Astro.
 
 ## 0.1.0-alpha.0 — 2026-09-01
 

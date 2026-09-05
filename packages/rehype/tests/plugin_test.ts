@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
   type RuntimeRule,
   SAFE_PUNCTUATION_RULES,
+  type TextChange,
 } from "@orthotypography/core";
 import {
   type AdapterDiagnostic,
@@ -29,6 +30,28 @@ Deno.test("adapter uses the published core runner by default", () => {
   assert.equal(tree.children[0].value, "Bonjour, monde.");
 });
 
+Deno.test("adapter exposes source-coordinate changes", () => {
+  const tree: HastRoot = {
+    type: "root",
+    children: [{ type: "text", value: "Bonjour , monde." }],
+  };
+  const file = { data: {} as Record<string, unknown> };
+  const observed: TextChange[] = [];
+
+  rehypeOrthotypography({
+    rules: SAFE_PUNCTUATION_RULES,
+    locale: "fr-FR",
+    mode: "fix",
+    onChange: (change) => observed.push(change),
+  })(tree, file);
+
+  assert.equal(observed.length, 1);
+  assert.equal(observed[0].segmentId, "0");
+  assert.equal(observed[0].expected, " ,");
+  assert.equal(observed[0].replacement, ",");
+  assert.deepEqual(file.data.orthotypographyChanges, observed);
+});
+
 function fixRunner(
   calls: AdapterTextNodeInput[][],
 ): TextNodePipelineRunner {
@@ -42,6 +65,7 @@ function fixRunner(
           ? node.value.replace("«", "«\u00a0").replace("»", "\u00a0»")
           : node.value,
       })),
+      changes: [],
       diagnostics: [],
       appliedRuleIds: ["test"],
     };
@@ -171,6 +195,7 @@ Deno.test("lint diagnostics are reported without mutating the tree", () => {
   const runner: TextNodePipelineRunner = (nodes) => ({
     value: nodes.map(({ value }) => value).join(""),
     nodes,
+    changes: [],
     diagnostics: [diagnostic],
     appliedRuleIds: ["test"],
   });
@@ -198,6 +223,7 @@ Deno.test("adapter rejects reordered pipeline output", () => {
   const runner: TextNodePipelineRunner = (nodes) => ({
     value: nodes.map(({ value }) => value).join(""),
     nodes: [...nodes].reverse(),
+    changes: [],
     diagnostics: [],
     appliedRuleIds: [],
   });

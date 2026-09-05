@@ -7,6 +7,7 @@ import type {
   RehypeOrthotypographyOptions,
   VFileLike,
 } from "./model.ts";
+import type { TextChange } from "@orthotypography/core";
 
 const blockTags = new Set([
   "address",
@@ -85,6 +86,7 @@ export function rehypeOrthotypography(
 
   return (tree, file): void => {
     const diagnostics: AdapterDiagnostic[] = [];
+    const changes: TextChange[] = [];
     const runTextNodePipeline = options.runTextNodePipeline ??
       runCoreTextNodePipeline;
 
@@ -118,6 +120,10 @@ export function rehypeOrthotypography(
         for (const diagnostic of result.diagnostics) {
           diagnostics.push(diagnostic);
           options.onDiagnostic?.(diagnostic);
+        }
+        for (const change of result.changes) {
+          changes.push(change);
+          options.onChange?.(change);
         }
         run = [];
       };
@@ -179,6 +185,7 @@ export function rehypeOrthotypography(
     processContainer(tree, [], []);
     if (file !== undefined) {
       file.data.orthotypographyDiagnostics = diagnostics;
+      file.data.orthotypographyChanges = changes;
     }
   };
 }
