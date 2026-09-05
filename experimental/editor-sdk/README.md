@@ -88,6 +88,11 @@ processes.
 
 ## Adapter responsibilities
 
+An initial [Google Docs request compiler](../../docs/google-docs-preview.md) is
+available separately in `src/google-docs.ts`. It produces review-only native
+request payloads from caller-supplied body-text ranges. It performs no network
+requests and does not yet provide extraction or native style preservation.
+
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
   undo/redo.

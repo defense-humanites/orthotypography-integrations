@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Prévisualisation de requêtes Google Docs : traduction des corrections en
+  opérations natives ordonnées avec révision obligatoire, sans accès réseau.
 - Adaptateur de référence en mémoire : commit atomique de lots complets,
   contrôle des conflits et simulation d'éditions concurrentes.
 - Ajout d’un SDK expérimental pour les éditeurs de documents : plans immuables,
