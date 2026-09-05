@@ -1,6 +1,6 @@
 # Historique des changements
 
-## 0.1.0-alpha.1 — non publié
+## 0.1.0-alpha.1 — 2026-09-05
 
 - Ajout de l’adaptateur natif `@orthotypography/satteri` fondé sur les hooks
   HAST de document, avec conservation des suites textuelles multi-nœuds.
