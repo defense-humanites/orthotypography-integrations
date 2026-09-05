@@ -56,6 +56,36 @@ run and node order, IDs, locale, text, and protection. It also revalidates every
 change through core. No document is modified by either function. Empty
 corrections produce an empty batch. All changed runs form one indivisible batch.
 
+## In-memory reference adapter
+
+```ts
+import { createMemoryDocument } from "./src/mod.ts";
+
+const document = createMemoryDocument(source);
+const snapshot = document.read();
+const plan = prepareDocumentPlan(snapshot, IMPRIMERIE_NATIONALE_RULES);
+const batch = validateDocumentPlan(plan, snapshot);
+const corrected = document.commit(batch);
+```
+
+`commit` accepts only original batches from this module session and rechecks the
+complete plan against the current state. It stages all runs before swapping the
+state synchronously, so a failure leaves the document unchanged. A nonempty
+batch advances the revision once; an empty batch preserves it but still checks
+for conflicts. Read snapshots are deeply frozen and detached from caller input.
+
+Use `document.replaceRuns(expectedRevision, runs)` to simulate external text,
+structure, language, or protection edits between validation and commit. Every
+successful replacement advances the revision, even if the original text is
+restored. A stale batch must be replaced with a fresh plan. Revisions are opaque
+and unique within one adapter lifetime; do not use separate instances as writers
+for the same document.
+
+This adapter models extracted text only. Its synchronous state swap demonstrates
+atomicity within one JavaScript instance; it does not implement native
+formatting, selections, undo, persistence, or coordination between workers or
+processes.
+
 ## Adapter responsibilities
 
 - Read text and its revision consistently. Advance the revision for relevant

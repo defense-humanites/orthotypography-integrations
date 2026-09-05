@@ -2,8 +2,11 @@
 
 ## Non publié
 
+- Adaptateur de référence en mémoire : commit atomique de lots complets,
+  contrôle des conflits et simulation d'éditions concurrentes.
 - Ajout d’un SDK expérimental pour les éditeurs de documents : plans immuables,
-  diagnostics source, lots de corrections et validation de la révision documentaire.
+  diagnostics source, lots de corrections et validation de la révision
+  documentaire.
 - Tests séparés contre le commit du cœur introduisant `applyTextChanges`.
 
 ## 0.1.0-alpha.1 — 2026-09-05
@@ -14,8 +17,8 @@
   l’adaptateur natif et Unified reçoit l’adaptateur rehype.
 - Maintien de `processorOptions` comme chemin de compatibilité explicite vers
   Unified.
-- Ajout des validations de rendu Sätteri direct et Astro, des diagnostics et
-  des segments exclus.
+- Ajout des validations de rendu Sätteri direct et Astro, des diagnostics et des
+  segments exclus.
 - Extension de la publication coordonnée et de sa reprise partielle aux trois
   paquets sur JSR et npm.
 - Mise à niveau vers `@orthotypography/core@0.1.0-alpha.1`.
@@ -31,6 +34,5 @@
 - Association des diagnostics aux segments textuels sources.
 - Ajout de l’intégration `@orthotypography/astro` pour le processeur Unified
   d’Astro 7 et sa configuration Markdown/MDX héritée.
-- Génération des deux paquets npm et publication coordonnée sur JSR et npm,
-  avec reprise explicite des publications partielles.
-
+- Génération des deux paquets npm et publication coordonnée sur JSR et npm, avec
+  reprise explicite des publications partielles.

@@ -8,21 +8,23 @@ ces éditeurs n'est introduite dans cette étape.
 
 `prepareDocumentPlan(snapshot, rules)` copie et fige l'instantané, puis analyse
 chaque suite logique séparément en modes `lint` et `fix`. Le plan expose les
-diagnostics source, les changements et les nœuds de prévisualisation. Les offsets
-restent exprimés en unités UTF-16 dans chaque nœud source. Un identifiant de nœud
-est unique dans sa suite ; un identifiant de suite est unique dans le document.
+diagnostics source, les changements et les nœuds de prévisualisation. Les
+offsets restent exprimés en unités UTF-16 dans chaque nœud source. Un
+identifiant de nœud est unique dans sa suite ; un identifiant de suite est
+unique dans le document.
 
-`validateDocumentPlan(plan, currentSnapshot)` compare l'identité du document,
-sa révision et l'intégralité du contexte extrait. Il vérifie à nouveau les
+`validateDocumentPlan(plan, currentSnapshot)` compare l'identité du document, sa
+révision et l'intégralité du contexte extrait. Il vérifie à nouveau les
 changements avec `applyTextChanges`, puis retourne un lot complet. Il n'écrit
-jamais dans l'éditeur. Un plan n'est accepté que s'il provient de la même instance
-du module ; la sérialisation et la sélection partielle sont exclues de cette API.
+jamais dans l'éditeur. Un plan n'est accepté que s'il provient de la même
+instance du module ; la sérialisation et la sélection partielle sont exclues de
+cette API.
 
 La vérification de `expected` seule ne suffit pas : un mot voisin peut avoir
 changé sans modifier la sous-chaîne visée. La comparaison complète couvre aussi
-les identifiants, l'ordre, la langue et les protections, y compris les suites sans
-correction. Les métadonnées natives non extraites, notamment les styles, doivent
-être couvertes par la révision fournie par l'adaptateur.
+les identifiants, l'ordre, la langue et les protections, y compris les suites
+sans correction. Les métadonnées natives non extraites, notamment les styles,
+doivent être couvertes par la révision fournie par l'adaptateur.
 
 ## Application native
 
@@ -32,10 +34,10 @@ par position décroissants dans chaque suite. L'adaptateur construit les plages
 natives et détermine l'ordre global éventuellement nécessaire entre suites.
 
 L'adaptateur doit vérifier la révision à l'intérieur de l'opération atomique
-native, préserver les styles et garantir l'annulation de l'ensemble en cas
-de conflit ou d'échec d'écriture. Une validation JavaScript préalable
-n'empêche pas une modification concurrente entre lecture et écriture. Si l'hôte
-ne fournit pas de mécanisme équivalent, limiter l'intégration à l'analyse et à la
+native, préserver les styles et garantir l'annulation de l'ensemble en cas de
+conflit ou d'échec d'écriture. Une validation JavaScript préalable n'empêche pas
+une modification concurrente entre lecture et écriture. Si l'hôte ne fournit pas
+de mécanisme équivalent, limiter l'intégration à l'analyse et à la
 prévisualisation tant que cette garantie n'est pas résolue.
 
 ## Versionnement et suite
@@ -46,7 +48,18 @@ Ce module ne figure pas dans le workspace des paquets publiés et ne sera pas
 publié par les workflows existants. Deno sert uniquement au développement ; le
 code de production utilise des fonctions JavaScript standard.
 
-La prochaine étape est un adaptateur de référence en mémoire, capable de simuler
-une révision concurrente entre validation et commit, puis un premier adaptateur
-natif dont les garanties auront été vérifiées. La publication du SDK nécessite
-une nouvelle version du cœur et son intégration explicite aux builds JSR/npm.
+L'adaptateur de référence `createMemoryDocument` expose `read`, `commit` et
+`replaceRuns`. Il accepte uniquement les lots originaux du module, revalide le
+plan lors du commit et prépare toutes les suites avant un remplacement synchrone
+de l'état. Les instantanés sont figés ; une erreur ne produit aucune écriture
+partielle. Un lot vide conserve la révision mais reste soumis aux contrôles.
+
+`replaceRuns` simule les éditions concurrentes avec contrôle de révision. Chaque
+remplacement réussi avance la révision, même si le texte initial est rétabli.
+Ces révisions sont opaques et propres à la durée de vie d'une instance. Cette
+référence ne modélise ni les styles natifs, ni la sélection, ni l'historique
+d'annulation, ni la coordination entre processus.
+
+La prochaine étape est un premier adaptateur natif dont les garanties de
+transaction auront été vérifiées. La publication du SDK nécessite une nouvelle
+version du cœur et son intégration explicite aux builds JSR/npm.

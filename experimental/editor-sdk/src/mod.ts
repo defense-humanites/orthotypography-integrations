@@ -50,6 +50,7 @@ export interface DocumentBatch {
 }
 
 const plans = new WeakSet<DocumentPlan>();
+const batches = new WeakMap<DocumentBatch, DocumentPlan>();
 
 function freeze<T>(value: T): T {
   if (value !== null && typeof value === "object") {
@@ -174,9 +175,82 @@ export function validateDocumentPlan(
       ),
     };
   }).filter((run) => run.changes.length > 0);
-  return freeze({
+  const batch = freeze({
     documentId: snapshot.documentId,
     expectedRevision: snapshot.revision,
     runs,
+  });
+  batches.set(batch, plan);
+  return batch;
+}
+
+/** In-memory reference adapter; it does not model native formatting or undo. */
+export interface MemoryDocument {
+  /** Returns a detached-from-input, deeply frozen snapshot. */
+  read(): DocumentSnapshot;
+  /** Revalidates and commits a complete, original SDK batch synchronously. */
+  commit(batch: DocumentBatch): DocumentSnapshot;
+  /** Simulates an external edit, including structure and protection changes. */
+  replaceRuns(
+    expectedRevision: string,
+    runs: readonly DocumentRun[],
+  ): DocumentSnapshot;
+}
+
+/**
+ * Owns a document for one adapter lifetime. Revisions are opaque and never reused.
+ * All writes stage a complete snapshot before a single synchronous state swap.
+ */
+export function createMemoryDocument(
+  initial: DocumentSnapshot,
+): MemoryDocument {
+  let current = copySnapshot(initial);
+  const initialRevision = current.revision;
+  let generation = 0n;
+
+  function replace(
+    expectedRevision: string,
+    runs: readonly DocumentRun[],
+  ): DocumentSnapshot {
+    const before = current;
+    if (before.revision !== expectedRevision) {
+      throw new Error("Stale document revision; prepare a new plan");
+    }
+    const nextGeneration = generation + 1n;
+    const next = copySnapshot({
+      documentId: before.documentId,
+      revision: `${initialRevision}:${nextGeneration}`,
+      runs,
+    });
+    // Input accessors must not overwrite a reentrant external edit.
+    if (current !== before) {
+      throw new Error("Stale document revision; prepare a new plan");
+    }
+    generation = nextGeneration;
+    current = next;
+    return current;
+  }
+
+  return Object.freeze({
+    read: () => current,
+    commit(batch: DocumentBatch): DocumentSnapshot {
+      const plan = batches.get(batch);
+      if (!plan) {
+        throw new Error(
+          "Unknown document batch; validate a plan in this session",
+        );
+      }
+      validateDocumentPlan(plan, current);
+      if (batch.runs.length === 0) return current;
+      const changes = new Map(batch.runs.map((run) => [run.id, run.changes]));
+      const runs = current.runs.map((run) => ({
+        ...run,
+        nodes: applyTextChanges(run.nodes, changes.get(run.id) ?? []).map(
+          (node, index) => ({ ...run.nodes[index], value: node.value }),
+        ),
+      }));
+      return replace(batch.expectedRevision, runs);
+    },
+    replaceRuns: replace,
   });
 }
