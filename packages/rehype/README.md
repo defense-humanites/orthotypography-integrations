@@ -34,7 +34,8 @@ const plugin = rehypeOrthotypography({
 ```
 
 Modes are intentionally explicit: `lint` produces diagnostics associated with
-their `segmentId`, while `fix` replaces node values and exposes source-coordinate
-changes through `onChange` and `file.data.orthotypographyChanges`. Block elements, raw
-HTML, and `code`, `pre`, `script`, and `style` form boundaries. The `exclude`
-and `protect` predicates let an integration adjust this policy.
+their `segmentId`, while `fix` replaces node values and exposes
+source-coordinate changes through `onChange` and
+`file.data.orthotypographyChanges`. Block elements, raw HTML, and `code`, `pre`,
+`script`, and `style` form boundaries. The `exclude` and `protect` predicates
+let an integration adjust this policy.
