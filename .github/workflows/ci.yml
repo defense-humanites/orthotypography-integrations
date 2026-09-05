@@ -38,3 +38,16 @@ jobs:
       - run: deno task npm:install
       - run: deno task npm:smoke
       - run: deno task npm:pack
+
+  editor-sdk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: experimental/editor-sdk
+    steps:
+      - uses: actions/checkout@v5
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno task check
+      - run: deno task test

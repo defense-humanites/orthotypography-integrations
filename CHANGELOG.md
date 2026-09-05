@@ -1,5 +1,11 @@
 # Historique des changements
 
+## Non publié
+
+- Ajout d’un SDK expérimental pour les éditeurs de documents : plans immuables,
+  diagnostics source, lots de corrections et validation de la révision documentaire.
+- Tests séparés contre le commit du cœur introduisant `applyTextChanges`.
+
 ## 0.1.0-alpha.1 — 2026-09-05
 
 - Ajout de l’adaptateur natif `@orthotypography/satteri` fondé sur les hooks
@@ -27,3 +33,4 @@
   d’Astro 7 et sa configuration Markdown/MDX héritée.
 - Génération des deux paquets npm et publication coordonnée sur JSR et npm,
   avec reprise explicite des publications partielles.
+

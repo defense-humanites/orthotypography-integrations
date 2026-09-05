@@ -5,6 +5,7 @@
     "./packages/astro"
   ],
   "lock": false,
+  "exclude": ["experimental/"],
   "minimumDependencyAge": {
     "age": "P1D",
     "exclude": ["jsr:@orthotypography/core"]
@@ -19,6 +20,8 @@
     ]
   },
   "tasks": {
+    "editor:check": "cd experimental/editor-sdk && deno task check",
+    "editor:test": "cd experimental/editor-sdk && deno task test",
     "check": "deno fmt --check && deno lint && deno check packages/rehype/src/mod.ts packages/rehype/tests/*.ts packages/satteri/src/mod.ts packages/satteri/tests/*.ts packages/astro/src/mod.ts packages/astro/tests/*.ts scripts/*.ts && deno task doc",
     "doc": "deno doc packages/rehype/src/mod.ts packages/satteri/src/mod.ts packages/astro/src/mod.ts",
     "test": "deno test packages/rehype/tests && deno test --allow-env --allow-sys --allow-ffi packages/satteri/tests && deno test --allow-env --allow-sys --allow-ffi packages/astro/tests",
