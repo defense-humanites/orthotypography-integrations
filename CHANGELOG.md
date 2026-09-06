@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Prévisualisation Google Docs avec restauration explicite des styles des
+  insertions intérieures, hors liens et frontières de paragraphes.
 - Extraction des paragraphes Google Docs et de leurs plages UTF-16, avec
   parcours des onglets imbriqués et refus des structures non prises en charge.
 

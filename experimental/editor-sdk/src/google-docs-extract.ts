@@ -1,5 +1,6 @@
 import type { DocumentRun, DocumentSnapshot } from "./mod.ts";
 import type { GoogleDocsNodeRange } from "./google-docs.ts";
+import { copyGoogleDocsTextStyle } from "./google-docs-style.ts";
 
 /** Body-only snapshot and ranges from one unfiltered documents.get response. */
 export interface GoogleDocsExtraction {
@@ -46,7 +47,8 @@ function rejectSuggestions(value: unknown): void {
  * Extracts plain body paragraphs, including nested tabs, without network access.
  * Requires a full GET with includeTabsContent=true and SUGGESTIONS_INLINE.
  * Rejects unsupported body structures rather than silently omitting their text.
- * Locale is explicit; styles, headers, footers and footnotes are not extracted.
+ * Locale is explicit; raw text styles are retained only on native ranges.
+ * Headers, footers and footnotes are not extracted.
  */
 export function extractGoogleDocsBody(
   response: unknown,
@@ -151,6 +153,9 @@ export function extractGoogleDocsBody(
               tabId,
               startIndex: partStart,
               endIndex: partStart + value.length,
+              textStyle: copyGoogleDocsTextStyle(
+                object(part.textRun).textStyle ?? {},
+              ),
             }),
           );
         }

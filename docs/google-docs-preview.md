@@ -77,16 +77,18 @@ Il faudra traiter explicitement les onglets, suggestions et éléments non
 textuels lors de l'extraction.
 
 Google détermine automatiquement le style des insertions à partir du voisinage.
-Le compilateur ne rétablit pas encore les styles. La conservation des styles,
-liens et autres propriétés natives doit donc être implémentée et testée avant
-l'activation d'une écriture. La révision conditionnelle ne résout pas ce point.
+Le compilateur textuel ne rétablit pas les styles. Un second mode expérimental
+restaure désormais un sous-ensemble des styles (voir ci-dessous). Les liens, les
+frontières de paragraphes et les effets natifs restent à tester avant
+l'activation d'une écriture. La révision conditionnelle ne résout pas ces
+points.
 
 Aucun transport HTTP, OAuth, retry ou commit automatique n'est inclus. Les tests
 rejouent les requêtes sur des chaînes, vérifient leur résultat contre les
 prévisualisations du SDK et couvrent les refus. Ils ne constituent pas une
 validation dans Google Docs. L’extracteur dispose maintenant de fixtures
-synthétiques (voir ci-dessous). La prochaine étape est la politique de
-conservation des styles, puis un test natif.
+synthétiques (voir ci-dessous). La prochaine étape est la validation native du
+sous-ensemble de styles et l'étude des cas encore refusés.
 
 Sources officielles consultées le 5 septembre 2026 : références `batchUpdate` et
 `Request` ci-dessus. Le module reste hors des paquets publiés.
@@ -124,10 +126,10 @@ Le parcours inclut récursivement les onglets enfants. Les indices doivent être
 contigus, entiers et conformes aux longueurs UTF-16. L'extraction échoue en
 entier sur un tableau, une table des matières, un objet intégré ou positionné,
 un saut de section autre que celui d'ouverture, ou une suggestion non vide. Les
-styles textuels sont acceptés en entrée mais ne sont ni conservés ni
-réappliqués. Les corps d'en-tête, de pied de page et de note restent hors du
-périmètre ; une référence de note dans un paragraphe fait échouer ce paragraphe
-et l'extraction.
+styles textuels sont copiés et figés dans `ranges[].textStyle`, sans ajout au
+cœur ni à l'instantané neutre. Les corps d'en-tête, de pied de page et de note
+restent hors du périmètre ; une référence de note dans un paragraphe fait
+échouer ce paragraphe et l'extraction.
 
 Les tests utilisent des fixtures synthétiques conformes au sous-ensemble retenu.
 Ils rejouent une sortie du compilateur, vérifient les onglets imbriqués, les
@@ -142,3 +144,50 @@ Références officielles vérifiées le 6 septembre 2026 :
   pour la structure, les suggestions et la révision. Google indique que la
   révision dépend de l'utilisateur et n'est disponible qu'avec un accès en
   modification ; elle ne doit pas être partagée entre utilisateurs.
+
+## Prévisualisation avec styles : sous-ensemble prudent
+
+```ts
+import { previewGoogleDocsStyledRequests } from "../experimental/editor-sdk/src/google-docs-style.ts";
+
+const styledPreview = previewGoogleDocsStyledRequests(plan, snapshot, ranges);
+```
+
+Ce mode conserve le lot textuel et ajoute immédiatement après chaque insertion
+une requête `updateTextStyle` couvrant le texte inséré. Le style choisi est
+celui du nœud source auquel le cœur attribue le changement, y compris pour une
+espace déplacée entre deux nœuds. Il ne provient pas du voisinage après
+modification.
+
+Le masque énumère les propriétés textuelles prises en charge, y compris celles
+absentes du style source : les valeurs omises sont ainsi réinitialisées, selon
+le mécanisme documenté par Google. Les valeurs booléennes explicites `false`
+restent distinctes de l'absence de propriété. Les styles hérités restent
+hérités, sans résolution artificielle en valeurs visuelles. Le masque n'utilise
+pas `*`.
+
+Le sous-ensemble accepte les cinq indicateurs booléens, les couleurs RGB ou
+transparentes, la taille en points, la famille et le poids de police, et le
+décalage de ligne de base. Il exige une métadonnée de style sur chaque plage (un
+objet vide représente un style hérité). Il refuse les propriétés inconnues ou
+invalides, tout lien dans les plages fournies, les insertions ambiguës au même
+indice et celles touchant un début ou une fin de paragraphe. Ces bornes sont
+aussi suivies au fil des suppressions et insertions précédentes.
+
+Ces restrictions répondent aux effets documentés de Google : modifier un lien
+peut affecter les liens voisins et les autres propriétés ; une plage de style
+peut être étendue aux retours à la ligne adjacents et affecter une puce. Le mode
+textuel reste disponible pour la prévisualisation des cas refusés ; aucun repli
+automatique vers une écriture sans styles n'est effectué.
+
+Les plages et leurs styles doivent toujours provenir de la même réponse complète
+que l'instantané. La validation locale ne prouve pas leur correspondance avec
+Google. Les tests rejouent les opérations sur des caractères munis de styles,
+avec simulation de l'héritage du voisin à l'insertion. Ils valident la
+traduction, pas les effets réels de l'éditeur, ses sélections ou son historique
+d'annulation.
+
+Sources vérifiées le 6 septembre 2026 :
+[TextStyle](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents#TextStyle)
+et
+[UpdateTextStyleRequest](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents/request#UpdateTextStyleRequest).

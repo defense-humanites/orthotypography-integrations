@@ -95,7 +95,14 @@ request payloads from caller-supplied body-text ranges. The companion
 body paragraphs and ranges from a full Google Docs GET response, including
 nested tabs. It requires `SUGGESTIONS_INLINE`, rejects suggestions and
 unsupported body structures, and takes an explicit locale. Neither module
-performs network requests or provides native style preservation.
+performs network requests. Raw text styles are retained on native ranges,
+outside the editor-neutral snapshot. `previewGoogleDocsStyledRequests`, from
+`src/google-docs-style.ts`, additionally restores source-node styles on interior
+insertions using an explicit reset mask. This opt-in mode requires style
+metadata for every range and rejects links, unsupported properties, ambiguous
+insertions, and paragraph-edge insertions. Its behavior is tested with synthetic
+request replay, not a live Google Docs document; it is not a general
+style-preservation guarantee. The original text-only preview remains unchanged.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including

@@ -3,6 +3,7 @@ import {
   type DocumentSnapshot,
   validateDocumentPlan,
 } from "./mod.ts";
+import type { GoogleDocsTextStyle } from "./google-docs-style.ts";
 
 /** Native body-text range extracted from the same Google Docs revision. */
 export interface GoogleDocsNodeRange {
@@ -11,6 +12,8 @@ export interface GoogleDocsNodeRange {
   readonly tabId: string;
   readonly startIndex: number;
   readonly endIndex: number;
+  /** Original TextRun style; required only by the styled preview. */
+  readonly textStyle?: GoogleDocsTextStyle;
 }
 
 /** Supported body-text operations. Formatting operations are not generated. */
