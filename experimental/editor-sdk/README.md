@@ -90,8 +90,12 @@ processes.
 
 An initial [Google Docs request compiler](../../docs/google-docs-preview.md) is
 available separately in `src/google-docs.ts`. It produces review-only native
-request payloads from caller-supplied body-text ranges. It performs no network
-requests and does not yet provide extraction or native style preservation.
+request payloads from caller-supplied body-text ranges. The companion
+`extractGoogleDocsBody` function in `src/google-docs-extract.ts` extracts plain
+body paragraphs and ranges from a full Google Docs GET response, including
+nested tabs. It requires `SUGGESTIONS_INLINE`, rejects suggestions and
+unsupported body structures, and takes an explicit locale. Neither module
+performs network requests or provides native style preservation.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including

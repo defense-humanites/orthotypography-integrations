@@ -2,6 +2,9 @@
 
 ## Non publié
 
+- Extraction des paragraphes Google Docs et de leurs plages UTF-16, avec
+  parcours des onglets imbriqués et refus des structures non prises en charge.
+
 - Prévisualisation de requêtes Google Docs : traduction des corrections en
   opérations natives ordonnées avec révision obligatoire, sans accès réseau.
 - Adaptateur de référence en mémoire : commit atomique de lots complets,

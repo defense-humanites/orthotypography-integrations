@@ -84,8 +84,61 @@ l'activation d'une écriture. La révision conditionnelle ne résout pas ce poin
 Aucun transport HTTP, OAuth, retry ou commit automatique n'est inclus. Les tests
 rejouent les requêtes sur des chaînes, vérifient leur résultat contre les
 prévisualisations du SDK et couvrent les refus. Ils ne constituent pas une
-validation dans Google Docs. La prochaine étape est un extracteur documenté et
-ses fixtures, puis la politique de conservation des styles et un test natif.
+validation dans Google Docs. L’extracteur dispose maintenant de fixtures
+synthétiques (voir ci-dessous). La prochaine étape est la politique de
+conservation des styles, puis un test natif.
 
 Sources officielles consultées le 5 septembre 2026 : références `batchUpdate` et
 `Request` ci-dessus. Le module reste hors des paquets publiés.
+
+## Extraction des paragraphes
+
+`extractGoogleDocsBody(response, locale)`, dans `src/google-docs-extract.ts`,
+transforme une réponse JSON complète en `{ snapshot, ranges }`, sans accès
+réseau. Les deux objets proviennent ainsi de la même lecture et sont
+profondément figés.
+
+```ts
+import { extractGoogleDocsBody } from "../experimental/editor-sdk/src/google-docs-extract.ts";
+
+// response : réponse complète de documents.get obtenue par le futur transport.
+const { snapshot, ranges } = extractGoogleDocsBody(response, "fr-FR");
+const plan = prepareDocumentPlan(snapshot, IMPRIMERIE_NATIONALE_RULES);
+const preview = previewGoogleDocsRequests(plan, snapshot, ranges);
+```
+
+Le futur transport devra demander `includeTabsContent=true` et
+`suggestionsViewMode=SUGGESTIONS_INLINE`, sans masque de champs. La fonction
+exige des onglets renseignés, une identité documentaire et une révision. Elle ne
+peut pas détecter un JSON tronqué qui conserverait une apparence cohérente : ne
+pas fournir de réponse filtrée ou fabriquée dans un usage natif.
+
+Chaque paragraphe forme une suite indépendante. Les limites entre `TextRun` sont
+conservées ; seul le dernier retour à la ligne du paragraphe est retiré. Un
+paragraphe vide conserve une suite sans nœuds. Les identifiants dérivent de
+l'onglet et de l'indice source : ils sont locaux à la révision, pas persistants.
+La langue est imposée explicitement pour l'ensemble de l'extraction ; aucune
+inférence de langue ni de protection native n'est effectuée.
+
+Le parcours inclut récursivement les onglets enfants. Les indices doivent être
+contigus, entiers et conformes aux longueurs UTF-16. L'extraction échoue en
+entier sur un tableau, une table des matières, un objet intégré ou positionné,
+un saut de section autre que celui d'ouverture, ou une suggestion non vide. Les
+styles textuels sont acceptés en entrée mais ne sont ni conservés ni
+réappliqués. Les corps d'en-tête, de pied de page et de note restent hors du
+périmètre ; une référence de note dans un paragraphe fait échouer ce paragraphe
+et l'extraction.
+
+Les tests utilisent des fixtures synthétiques conformes au sous-ensemble retenu.
+Ils rejouent une sortie du compilateur, vérifient les onglets imbriqués, les
+paragraphes vides et les refus. Aucun essai sur un compte Google n'a été
+réalisé.
+
+Références officielles vérifiées le 6 septembre 2026 :
+
+- [documents.get](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents/get)
+  pour les paramètres de lecture ;
+- [Document, Tab et TextRun](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents)
+  pour la structure, les suggestions et la révision. Google indique que la
+  révision dépend de l'utilisateur et n'est disponible qu'avec un accès en
+  modification ; elle ne doit pas être partagée entre utilisateurs.
