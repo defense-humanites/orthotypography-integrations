@@ -83,12 +83,14 @@ frontières de paragraphes et les effets natifs restent à tester avant
 l'activation d'une écriture. La révision conditionnelle ne résout pas ces
 points.
 
-Aucun transport HTTP, OAuth, retry ou commit automatique n'est inclus. Les tests
-rejouent les requêtes sur des chaînes, vérifient leur résultat contre les
-prévisualisations du SDK et couvrent les refus. Ils ne constituent pas une
-validation dans Google Docs. L’extracteur dispose maintenant de fixtures
-synthétiques (voir ci-dessous). Une [validation native limitée](google-docs-live-validation.md) couvre désormais
-les corrections, certains styles et le refus d’une révision périmée. L’étude des
+Aucun client HTTP, OAuth, parseur d'erreurs fournisseur ou retry n'est inclus.
+Le contrat abstrait `google-docs-transport.ts` orchestre désormais une lecture,
+une écriture conditionnelle unique et une relecture vérifiée ; l'implémentation
+de ses deux opérations reste à la charge de l'hôte. Les tests rejouent les
+requêtes sur des chaînes, vérifient leur résultat contre les prévisualisations
+du SDK et couvrent les refus. Une
+[validation native limitée](google-docs-live-validation.md) couvre désormais les
+corrections, certains styles et le refus d’une révision périmée. L’étude des
 autres styles et des cas encore refusés reste à faire.
 
 Sources officielles consultées le 5 septembre 2026 : références `batchUpdate` et
@@ -110,7 +112,7 @@ const plan = prepareDocumentPlan(snapshot, IMPRIMERIE_NATIONALE_RULES);
 const preview = previewGoogleDocsRequests(plan, snapshot, ranges);
 ```
 
-Le futur transport devra demander `includeTabsContent=true` et
+Le transport reçoit l'obligation de demander `includeTabsContent=true` et
 `suggestionsViewMode=SUGGESTIONS_INLINE`, sans masque de champs. La fonction
 exige des onglets renseignés, une identité documentaire et une révision. Elle ne
 peut pas détecter un JSON tronqué qui conserverait une apparence cohérente : ne
@@ -134,7 +136,8 @@ restent hors du périmètre ; une référence de note dans un paragraphe fait
 
 Les tests utilisent des fixtures synthétiques conformes au sous-ensemble retenu.
 Ils rejouent une sortie du compilateur, vérifient les onglets imbriqués, les
-paragraphes vides et les refus. Une [validation réelle limitée](google-docs-live-validation.md) a depuis été
+paragraphes vides et les refus. Une
+[validation réelle limitée](google-docs-live-validation.md) a depuis été
 réalisée sur un document jetable, avec une fixture de relecture anonymisée.
 
 Références officielles vérifiées le 6 septembre 2026 :
@@ -192,3 +195,30 @@ Sources vérifiées le 6 septembre 2026 :
 [TextStyle](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents#TextStyle)
 et
 [UpdateTextStyleRequest](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents/request#UpdateTextStyleRequest).
+
+## Contrat de transport
+
+`normalizeGoogleDocsDocument(transport, documentId, locale, rules, options)`
+relie la lecture, l'extraction, la préparation du plan et le compilateur textuel
+ou stylé. Le transport ne reçoit que deux opérations abstraites : `read`, avec
+les exigences de lecture complète, et `write`, avec l'identité documentaire, les
+requêtes et `requiredRevisionId` séparés.
+
+L'écriture renvoie un résultat discriminé. `revision-conflict` devient un état
+normal que l'appelant peut présenter avant de préparer un nouveau plan depuis
+une nouvelle lecture ; le SDK ne réessaie jamais le lot périmé. Les échecs
+`permission`, `invalid-request`, `transient` et `unknown` produisent une
+`GoogleDocsTransportFailure` typée. Le transport doit classifier la réponse de
+son fournisseur : le SDK ne dépend d'aucun code HTTP ni texte d'erreur Google.
+
+Après une réussite déclarée, une seconde lecture complète doit présenter une
+nouvelle révision et reproduire le texte prévu dans chaque paragraphe, dans le
+même onglet. En mode stylé, les styles sont comparés par unité UTF-16, ce qui
+tolère la fusion ou la division des `TextRun` par Google. Toute divergence lève
+`GoogleDocsReadbackError` ; elle n'entraîne ni retry ni tentative de réparation.
+Un plan vide évite l'écriture et la seconde lecture.
+
+Ce contrat ne fournit toujours ni authentification, ni client réseau, ni
+conversion implicite d'une réponse aplatie, ni garantie de sélection ou
+d'annulation. Il rend ces responsabilités explicites et testables sans lier le
+SDK à un environnement d'exécution.

@@ -107,6 +107,26 @@ covering nested tabs, mixed styles, UTF-16 offsets, idempotence, and
 stale-revision rejection. This is not a general style-preservation guarantee.
 The original text-only preview remains unchanged.
 
+`normalizeGoogleDocsDocument`, from `src/google-docs-transport.ts`, composes the
+extractor and either request compiler behind a minimal asynchronous transport
+interface. The host must provide complete inline-suggestions reads and map its
+provider responses to the explicit write result categories. The orchestrator:
+
+- reads and extracts once, prepares one plan, and writes its complete request
+  batch once with the original required revision;
+- returns `revision-conflict` without retrying or reconstructing the stale plan;
+- throws `GoogleDocsTransportFailure` for classified permission,
+  invalid-request, transient, and unknown failures;
+- performs one complete readback after a reported success and throws
+  `GoogleDocsReadbackError` unless document identity, revision, paragraph text,
+  tab placement, and (in styled mode) source styles reproduce the plan;
+- skips both the write and second read when the plan is unchanged.
+
+The interface contains no HTTP client, OAuth flow, provider error parser, retry
+policy, or connector-specific response conversion. In particular, an adapter for
+a flattened connector response must reconstruct and validate native tab topology
+before returning it from `read`.
+
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
   undo/redo.

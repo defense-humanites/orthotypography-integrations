@@ -2,6 +2,9 @@
 
 ## Non publié
 
+- Contrat de transport Google Docs sans authentification intégrée : lecture
+  complète, écriture conditionnelle unique, conflits typés et relecture
+  vérifiée.
 - Prévisualisation Google Docs avec restauration explicite des styles des
   insertions intérieures, hors liens et frontières de paragraphes.
 - Extraction des paragraphes Google Docs et de leurs plages UTF-16, avec

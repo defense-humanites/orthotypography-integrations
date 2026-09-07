@@ -81,8 +81,10 @@ listes, les liens, les suggestions, les tableaux, les contrôles, les sélection
 l'annulation et les effets de collaboration restent hors de cette validation.
 Les refus et le périmètre expérimental existants restent en vigueur.
 
-La prochaine étape est un contrat de transport explicite : lecture complète,
-validation de la réponse, écriture conditionnelle, classification des conflits
-et relecture. Il devra rester indépendant des connecteurs de cette session et ne
-jamais reconstruire un plan ancien après un conflit. Aucun paquet n'a été publié
-et aucun adaptateur natif général n'est annoncé.
+Le contrat de transport explicite a ensuite été ajouté : lecture complète,
+validation de la réponse, écriture conditionnelle unique, classification des
+conflits et relecture. Il reste indépendant des connecteurs de cette session et
+ne reconstruit jamais un plan ancien après un conflit. La prochaine étape est un
+adaptateur fournisseur concret et isolé, avec sa conversion de réponse et sa
+classification d'erreurs. Aucun paquet n'a été publié et aucun adaptateur natif
+général n'est annoncé.
