@@ -87,8 +87,9 @@ Aucun transport HTTP, OAuth, retry ou commit automatique n'est inclus. Les tests
 rejouent les requêtes sur des chaînes, vérifient leur résultat contre les
 prévisualisations du SDK et couvrent les refus. Ils ne constituent pas une
 validation dans Google Docs. L’extracteur dispose maintenant de fixtures
-synthétiques (voir ci-dessous). La prochaine étape est la validation native du
-sous-ensemble de styles et l'étude des cas encore refusés.
+synthétiques (voir ci-dessous). Une [validation native limitée](google-docs-live-validation.md) couvre désormais
+les corrections, certains styles et le refus d’une révision périmée. L’étude des
+autres styles et des cas encore refusés reste à faire.
 
 Sources officielles consultées le 5 septembre 2026 : références `batchUpdate` et
 `Request` ci-dessus. Le module reste hors des paquets publiés.
@@ -133,8 +134,8 @@ restent hors du périmètre ; une référence de note dans un paragraphe fait
 
 Les tests utilisent des fixtures synthétiques conformes au sous-ensemble retenu.
 Ils rejouent une sortie du compilateur, vérifient les onglets imbriqués, les
-paragraphes vides et les refus. Aucun essai sur un compte Google n'a été
-réalisé.
+paragraphes vides et les refus. Une [validation réelle limitée](google-docs-live-validation.md) a depuis été
+réalisée sur un document jetable, avec une fixture de relecture anonymisée.
 
 Références officielles vérifiées le 6 septembre 2026 :
 

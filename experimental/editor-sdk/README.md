@@ -101,8 +101,11 @@ outside the editor-neutral snapshot. `previewGoogleDocsStyledRequests`, from
 insertions using an explicit reset mask. This opt-in mode requires style
 metadata for every range and rejects links, unsupported properties, ambiguous
 insertions, and paragraph-edge insertions. Its behavior is tested with synthetic
-request replay, not a live Google Docs document; it is not a general
-style-preservation guarantee. The original text-only preview remains unchanged.
+request replay and a
+[limited live Google Docs validation](../../docs/google-docs-live-validation.md)
+covering nested tabs, mixed styles, UTF-16 offsets, idempotence, and
+stale-revision rejection. This is not a general style-preservation guarantee.
+The original text-only preview remains unchanged.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
