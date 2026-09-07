@@ -84,7 +84,8 @@ Les refus et le périmètre expérimental existants restent en vigueur.
 Le contrat de transport explicite a ensuite été ajouté : lecture complète,
 validation de la réponse, écriture conditionnelle unique, classification des
 conflits et relecture. Il reste indépendant des connecteurs de cette session et
-ne reconstruit jamais un plan ancien après un conflit. La prochaine étape est un
-adaptateur fournisseur concret et isolé, avec sa conversion de réponse et sa
-classification d'erreurs. Aucun paquet n'a été publié et aucun adaptateur natif
-général n'est annoncé.
+ne reconstruit jamais un plan ancien après un conflit. Un adaptateur REST Google
+Docs isolé le complète désormais avec `fetch` et un fournisseur de jeton
+injectés. Il reste à valider cet adaptateur directement contre l'API avec des
+identifiants fournis par l'application hôte. Aucun paquet n'a été publié et
+aucun adaptateur natif général n'est annoncé.

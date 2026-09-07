@@ -127,6 +127,20 @@ policy, or connector-specific response conversion. In particular, an adapter for
 a flattened connector response must reconstruct and validate native tab topology
 before returning it from `read`.
 
+`createGoogleDocsRestTransport`, from `src/google-docs-rest.ts`, is the isolated
+Google Docs v1 implementation. It uses an injected `getAccessToken` callback and
+an injectable standards-compatible `fetch`; it does not acquire, refresh, store,
+or log credentials. Reads request complete tab content with inline suggestions.
+Writes send the compiler requests and `requiredRevisionId` unchanged to
+`documents.batchUpdate`. HTTP 401/403 responses become permission failures,
+408/429/5xx responses become transient failures, and other 400 responses become
+invalid requests. The live-observed Google `INVALID_ARGUMENT` response is
+recognized as a revision conflict only when its message states that the required
+revision does not match the latest revision. Unknown or changed provider error
+shapes remain `unknown` or `invalid-request`; they are never guessed to be safe
+conflicts. Network failures are classified without exposing their raw diagnostic
+messages.
+
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
   undo/redo.

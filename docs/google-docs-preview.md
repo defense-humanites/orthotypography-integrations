@@ -83,10 +83,11 @@ frontières de paragraphes et les effets natifs restent à tester avant
 l'activation d'une écriture. La révision conditionnelle ne résout pas ces
 points.
 
-Aucun client HTTP, OAuth, parseur d'erreurs fournisseur ou retry n'est inclus.
-Le contrat abstrait `google-docs-transport.ts` orchestre désormais une lecture,
-une écriture conditionnelle unique et une relecture vérifiée ; l'implémentation
-de ses deux opérations reste à la charge de l'hôte. Les tests rejouent les
+Aucun mécanisme OAuth, stockage de jeton ou retry n'est inclus. Le contrat
+abstrait `google-docs-transport.ts` orchestre désormais une lecture, une
+écriture conditionnelle unique et une relecture vérifiée. Un adaptateur REST
+isolé peut implémenter ses deux opérations avec un jeton et `fetch` injectés ;
+les autres hôtes peuvent fournir leur propre transport. Les tests rejouent les
 requêtes sur des chaînes, vérifient leur résultat contre les prévisualisations
 du SDK et couvrent les refus. Une
 [validation native limitée](google-docs-live-validation.md) couvre désormais les
@@ -222,3 +223,29 @@ Ce contrat ne fournit toujours ni authentification, ni client réseau, ni
 conversion implicite d'une réponse aplatie, ni garantie de sélection ou
 d'annulation. Il rend ces responsabilités explicites et testables sans lier le
 SDK à un environnement d'exécution.
+
+## Adaptateur REST isolé
+
+`createGoogleDocsRestTransport`, dans `google-docs-rest.ts`, implémente ce
+contrat pour l'API Google Docs v1. L'hôte injecte `getAccessToken` et peut
+injecter une fonction `fetch` compatible avec les standards du Web. Le module
+n'acquiert, ne rafraîchit, ne conserve et ne journalise aucun jeton.
+
+La lecture appelle `documents.get` avec `includeTabsContent=true` et
+`suggestionsViewMode=SUGGESTIONS_INLINE`, sans masque de champs. L'écriture
+transmet les requêtes et `requiredRevisionId` sans les transformer à
+`documents.batchUpdate`. Il n'existe toujours aucun retry automatique.
+
+L'adaptateur classe 401 et 403 comme échecs d'autorisation, 408, 429 et 5xx
+comme échecs transitoires, et les autres réponses 400 comme requêtes invalides.
+Le conflit de révision observé pendant la validation réelle est reconnu
+uniquement si Google renvoie à la fois `INVALID_ARGUMENT` et un message
+indiquant que la révision exigée ne correspond pas à la dernière révision. Cette
+reconnaissance étroite évite de traiter une autre requête invalide comme un
+conflit pouvant être replanifié. Une évolution du message fournisseur sera donc
+classée prudemment comme `invalid-request` jusqu'à vérification.
+
+Les échecs réseau ne reproduisent pas leurs diagnostics bruts dans le résultat,
+afin de ne pas propager accidentellement des détails sensibles. Les erreurs de
+lecture utilisent `GoogleDocsRestReadError`; les écritures renvoient les
+catégories du contrat commun.

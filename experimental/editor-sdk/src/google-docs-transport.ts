@@ -38,17 +38,19 @@ export type GoogleDocsWriteResult =
     readonly message?: string;
   };
 
+export interface GoogleDocsWriteInput {
+  readonly documentId: string;
+  readonly requests: readonly (
+    | GoogleDocsTextRequest
+    | GoogleDocsStyleRequest
+  )[];
+  readonly requiredRevisionId: string;
+}
+
 /** Minimal authenticated boundary implemented outside this package. */
 export interface GoogleDocsTransport {
   read(documentId: string, options: GoogleDocsReadOptions): Promise<unknown>;
-  write(input: {
-    readonly documentId: string;
-    readonly requests: readonly (
-      | GoogleDocsTextRequest
-      | GoogleDocsStyleRequest
-    )[];
-    readonly requiredRevisionId: string;
-  }): Promise<GoogleDocsWriteResult>;
+  write(input: GoogleDocsWriteInput): Promise<GoogleDocsWriteResult>;
 }
 
 export type GoogleDocsNormalizationPreview =

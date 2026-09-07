@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Adaptateur REST Google Docs isolé avec `fetch` et fournisseur de jeton
+  injectés, sans stockage d'identifiants ni nouvelle tentative automatique.
 - Contrat de transport Google Docs sans authentification intégrée : lecture
   complète, écriture conditionnelle unique, conflits typés et relecture
   vérifiée.
