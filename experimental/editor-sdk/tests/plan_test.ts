@@ -6,6 +6,8 @@ import {
   runTextNodePipeline,
 } from "@orthotypography/core";
 import {
+  type DocumentBatch,
+  type DocumentPlan,
   type DocumentSnapshot,
   prepareDocumentPlan,
   validateDocumentPlan,
@@ -182,6 +184,28 @@ Deno.test("plans cannot be forged, cloned, filtered or deserialized", () => {
       /Unknown document plan/,
     );
   }
+});
+
+Deno.test("plans and batches cannot be reconstructed structurally", () => {
+  const snapshot = source();
+  const plan = prepareDocumentPlan(snapshot, rules);
+  const batch = validateDocumentPlan(plan, snapshot);
+  // @ts-expect-error plans are opaque values created only by the SDK
+  const reconstructedPlan: DocumentPlan = {
+    source: plan.source,
+    runs: plan.runs,
+  };
+  // @ts-expect-error batches are opaque values created only by the SDK
+  const reconstructedBatch: DocumentBatch = {
+    documentId: batch.documentId,
+    expectedRevision: batch.expectedRevision,
+    runs: batch.runs,
+  };
+  assert.throws(
+    () => validateDocumentPlan(reconstructedPlan, snapshot),
+    /Unknown document plan/,
+  );
+  assert.notEqual(reconstructedBatch, batch);
 });
 
 Deno.test("protected nodes retain text and participate in quote context", () => {

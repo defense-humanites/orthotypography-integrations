@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Plans et lots du SDK rendus nominaux afin d'interdire leur reconstruction
+  structurelle en TypeScript, conformément aux contrôles d'origine à l'exécution.
 - Points d'entrée expérimentaux distincts pour le SDK neutre et l'intégration
   Google Docs, sans ajout au workspace ni aux paquets publiés.
 - Revue Google Docs en deux phases : préparation sans écriture puis consommation

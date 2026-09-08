@@ -9,16 +9,16 @@ ces éditeurs n'est introduite dans cette étape.
 `prepareDocumentPlan(snapshot, rules)` copie et fige l'instantané, puis analyse
 chaque suite logique séparément en modes `lint` et `fix`. Le plan expose les
 diagnostics source, les changements et les nœuds de prévisualisation. Les
-offsets restent exprimés en unités UTF-16 dans chaque nœud source. Un
-identifiant de nœud est unique dans sa suite ; un identifiant de suite est
-unique dans le document.
+offsets restent exprimés en unités UTF-16 dans chaque nœud source. Le plan est
+un type nominal opaque. Un identifiant de nœud est unique dans sa suite ; un
+identifiant de suite est unique dans le document.
 
 `validateDocumentPlan(plan, currentSnapshot)` compare l'identité du document, sa
 révision et l'intégralité du contexte extrait. Il vérifie à nouveau les
 changements avec `applyTextChanges`, puis retourne un lot complet. Il n'écrit
 jamais dans l'éditeur. Un plan n'est accepté que s'il provient de la même
-instance du module ; la sérialisation et la sélection partielle sont exclues de
-cette API.
+instance du module ; le lot validé possède la même opacité nominale. La
+sérialisation et la sélection partielle sont exclues de cette API.
 
 La vérification de `expected` seule ne suffit pas : un mot voisin peut avoir
 changé sans modifier la sous-chaîne visée. La comparaison complète couvre aussi

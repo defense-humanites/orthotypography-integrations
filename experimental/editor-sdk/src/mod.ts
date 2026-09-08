@@ -8,6 +8,9 @@ import {
   type TextNodeOutput,
 } from "@orthotypography/core";
 
+const documentPlanBrand: unique symbol = Symbol("DocumentPlan");
+const documentBatchBrand: unique symbol = Symbol("DocumentBatch");
+
 /** One logical text run; a paragraph or semantic boundary ends a run. */
 export interface DocumentRun {
   readonly id: string;
@@ -30,8 +33,9 @@ export interface PlannedRun {
   readonly preview: readonly TextNodeOutput[];
 }
 
-/** Frozen, session-local plan created only by prepareDocumentPlan. */
+/** Opaque, frozen, session-local plan created only by prepareDocumentPlan. */
 export interface DocumentPlan {
+  readonly [documentPlanBrand]: true;
   readonly source: DocumentSnapshot;
   readonly runs: readonly PlannedRun[];
 }
@@ -42,8 +46,9 @@ export interface DocumentBatchRun {
   readonly changes: readonly TextChange[];
 }
 
-/** All runs must be committed together against expectedRevision. */
+/** Opaque batch whose runs must be committed together against expectedRevision. */
 export interface DocumentBatch {
+  readonly [documentBatchBrand]: true;
   readonly documentId: string;
   readonly expectedRevision: string;
   readonly runs: readonly DocumentBatchRun[];
@@ -136,7 +141,11 @@ export function prepareDocumentPlan(
       preview: fix.nodes,
     };
   });
-  const plan = freeze({ source: snapshot, runs });
+  const plan: DocumentPlan = freeze({
+    [documentPlanBrand]: true,
+    source: snapshot,
+    runs,
+  });
   plans.add(plan);
   return plan;
 }
@@ -175,7 +184,8 @@ export function validateDocumentPlan(
       ),
     };
   }).filter((run) => run.changes.length > 0);
-  const batch = freeze({
+  const batch: DocumentBatch = freeze({
+    [documentBatchBrand]: true,
     documentId: snapshot.documentId,
     expectedRevision: snapshot.revision,
     runs,

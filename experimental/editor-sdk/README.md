@@ -46,10 +46,10 @@ refer to the original run's UTF-16 node coordinates. Use `changes`, never a
 diagnostic's `replacement`, to build native edits. `preview` is display data;
 replacing whole native text nodes can destroy formatting.
 
-Plans are detached and deeply frozen. Keep the original plan object in the same
-module session: cloned, filtered, reconstructed, or deserialized plans are
-rejected. Plan persistence and partial acceptance are deliberately outside this
-first API.
+Plans and batches are nominal opaque values as well as detached and deeply
+frozen objects. Keep the originals in the same module session: cloned, filtered,
+reconstructed, or deserialized values are rejected. Plan persistence and partial
+acceptance are deliberately outside this first API.
 
 Validation checks document identity, revision, and the full extracted context:
 run and node order, IDs, locale, text, and protection. It also revalidates every
