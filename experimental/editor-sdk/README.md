@@ -182,6 +182,7 @@ const review = await prepareGoogleDocsReview(
   { preserveStyles: true },
 );
 // Display review.plan diagnostics and preview here; this has not written.
+// review.mode discriminates text-only and style-preserving request payloads.
 if (accepted) {
   const outcome = await commitGoogleDocsReview(transport, review);
 } else {
@@ -198,6 +199,11 @@ structurally. Explicitly discard a rejected or closed review to make that
 decision irreversible in the current module session. The server-side revision
 condition remains authoritative if the document changes while the user is
 reviewing.
+
+Every review exposes a stable `mode` discriminant. `"text"` contains only delete
+and insert requests; `"preserve-styles"` may additionally contain supported
+style restoration requests. Consumers should narrow on this field rather than
+infer the payload shape from application state.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including

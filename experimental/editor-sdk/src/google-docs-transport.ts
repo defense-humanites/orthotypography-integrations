@@ -59,13 +59,26 @@ export type GoogleDocsNormalizationPreview =
 
 const googleDocsReviewBrand: unique symbol = Symbol("GoogleDocsReview");
 
-/** Opaque, session-local review returned only by prepareGoogleDocsReview. */
-export interface GoogleDocsReview {
+interface GoogleDocsReviewBase {
   readonly [googleDocsReviewBrand]: true;
   readonly before: DocumentSnapshot;
   readonly plan: DocumentPlan;
-  readonly preview: GoogleDocsNormalizationPreview;
 }
+
+/** Opaque review whose preview contains text operations only. */
+export interface GoogleDocsTextReview extends GoogleDocsReviewBase {
+  readonly mode: "text";
+  readonly preview: GoogleDocsRequestPreview;
+}
+
+/** Opaque review whose preview also restores supported source styles. */
+export interface GoogleDocsStyledReview extends GoogleDocsReviewBase {
+  readonly mode: "preserve-styles";
+  readonly preview: GoogleDocsStyledPreview;
+}
+
+/** Session-local review returned only by prepareGoogleDocsReview. */
+export type GoogleDocsReview = GoogleDocsTextReview | GoogleDocsStyledReview;
 
 export type GoogleDocsNormalizationResult =
   | (GoogleDocsReview & { readonly status: "unchanged" })
@@ -78,7 +91,6 @@ export type GoogleDocsNormalizationResult =
 interface GoogleDocsReviewState {
   readonly transport: GoogleDocsTransport;
   readonly source: ReturnType<typeof extractGoogleDocsBody>;
-  readonly styled: boolean;
   readonly locale: string;
   status: "prepared" | "committing" | "committed" | "discarded";
 }
@@ -220,19 +232,28 @@ export async function prepareGoogleDocsReview(
   }
   const plan = prepareDocumentPlan(before.snapshot, rules);
   const styled = options.preserveStyles === true;
-  const preview = styled
-    ? previewGoogleDocsStyledRequests(plan, before.snapshot, before.ranges)
-    : previewGoogleDocsRequests(plan, before.snapshot, before.ranges);
-  const review: GoogleDocsReview = Object.freeze({
-    [googleDocsReviewBrand]: true as const,
-    before: before.snapshot,
-    plan,
-    preview,
-  });
+  const review: GoogleDocsReview = styled
+    ? Object.freeze({
+      [googleDocsReviewBrand]: true as const,
+      mode: "preserve-styles" as const,
+      before: before.snapshot,
+      plan,
+      preview: previewGoogleDocsStyledRequests(
+        plan,
+        before.snapshot,
+        before.ranges,
+      ),
+    })
+    : Object.freeze({
+      [googleDocsReviewBrand]: true as const,
+      mode: "text" as const,
+      before: before.snapshot,
+      plan,
+      preview: previewGoogleDocsRequests(plan, before.snapshot, before.ranges),
+    });
   reviews.set(review, {
     transport,
     source: before,
-    styled,
     locale,
     status: "prepared",
   });
@@ -290,7 +311,12 @@ export async function commitGoogleDocsReview(
     }),
     state.locale,
   );
-  verifyReadback(state.source, review.plan, after, state.styled);
+  verifyReadback(
+    state.source,
+    review.plan,
+    after,
+    review.mode === "preserve-styles",
+  );
   return Object.freeze({ ...review, status: "applied", after: after.snapshot });
 }
 

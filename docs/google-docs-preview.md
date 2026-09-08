@@ -275,3 +275,8 @@ erreurs de provenance, de transport ou de cycle de vie sont exposées par
 serveur reste la protection contre une modification intervenue pendant la
 revue. Après un conflit, l'application doit préparer et présenter une nouvelle
 revue depuis une nouvelle lecture.
+
+Le champ discriminant `mode` vaut `text` pour une prévisualisation textuelle et
+`preserve-styles` lorsque les requêtes de restauration des styles sont incluses.
+L'interface consommatrice doit utiliser ce champ pour préciser le type de
+`preview`, sans le déduire d'un état extérieur à la revue.

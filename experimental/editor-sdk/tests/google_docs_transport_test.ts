@@ -41,6 +41,7 @@ Deno.test("review separates preparation from one explicit commit", async () => {
     rules,
     { preserveStyles: true },
   );
+  assert.equal(review.mode, "preserve-styles");
   assert.equal(mock.reads.length, 1);
   assert.equal(mock.writes.length, 0);
   assert.ok(Object.isFrozen(review));
@@ -103,8 +104,16 @@ Deno.test("review is nominal and cannot be reconstructed structurally", async ()
     "fr-FR",
     rules,
   );
+  assert.equal(review.mode, "text");
+  if (review.mode !== "text") assert.fail("Expected a text-only review");
+  assert.ok(
+    review.preview.body.requests.every((request) =>
+      "deleteContentRange" in request || "insertText" in request
+    ),
+  );
   // @ts-expect-error reconstructed data is not an opaque GoogleDocsReview
   const reconstructed: GoogleDocsReview = {
+    mode: "text",
     before: review.before,
     plan: review.plan,
     preview: review.preview,
