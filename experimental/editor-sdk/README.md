@@ -194,9 +194,9 @@ success, conflict, failure, and concurrent calls cannot cause it to be replayed.
 Cloned, reconstructed, deserialized, or already consumed reviews are rejected.
 The review type is nominal, so ordinary TypeScript code cannot reconstruct it
 structurally. Explicitly discard a rejected or closed review to make that
-decision irreversible in the current module session.
-The server-side revision condition remains authoritative if the document changes
-while the user is reviewing.
+decision irreversible in the current module session. The server-side revision
+condition remains authoritative if the document changes while the user is
+reviewing.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
