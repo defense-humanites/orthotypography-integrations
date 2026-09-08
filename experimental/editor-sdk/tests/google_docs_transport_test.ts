@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { IMPRIMERIE_NATIONALE_PUNCTUATION_RULES as rules } from "@orthotypography/core";
 import {
+  commitGoogleDocsReview,
   GoogleDocsReadbackError,
   type GoogleDocsTransport,
   GoogleDocsTransportFailure,
   normalizeGoogleDocsDocument,
+  prepareGoogleDocsReview,
 } from "../src/google-docs-transport.ts";
 import { after, before } from "./fixtures/google_docs_live.ts";
 
@@ -26,6 +28,37 @@ function transport(
   };
   return { value, reads, writes };
 }
+
+Deno.test("review separates preparation from one explicit commit", async () => {
+  const mock = transport();
+  const review = await prepareGoogleDocsReview(
+    mock.value,
+    "live-fixture",
+    "fr-FR",
+    rules,
+    { preserveStyles: true },
+  );
+  assert.equal(mock.reads.length, 1);
+  assert.equal(mock.writes.length, 0);
+  assert.ok(Object.isFrozen(review));
+  await assert.rejects(
+    commitGoogleDocsReview(mock.value, structuredClone(review)),
+    /Unknown Google Docs review/,
+  );
+  await assert.rejects(
+    commitGoogleDocsReview(transport().value, review),
+    /original transport/,
+  );
+  const firstCommit = commitGoogleDocsReview(mock.value, review);
+  await assert.rejects(
+    commitGoogleDocsReview(mock.value, review),
+    /already committed/,
+  );
+  const result = await firstCommit;
+  assert.equal(result.status, "applied");
+  assert.equal(mock.reads.length, 2);
+  assert.equal(mock.writes.length, 1);
+});
 
 Deno.test("transport applies once with exact read and revision contracts", async () => {
   const mock = transport();
@@ -56,16 +89,22 @@ Deno.test("transport applies once with exact read and revision contracts", async
 
 Deno.test("transport returns revision conflicts without retry or readback", async () => {
   const mock = transport({ ok: false, kind: "revision-conflict" });
-  const result = await normalizeGoogleDocsDocument(
+  const review = await prepareGoogleDocsReview(
     mock.value,
     "live-fixture",
     "fr-FR",
     rules,
     { preserveStyles: true },
   );
+  const result = await commitGoogleDocsReview(mock.value, review);
   assert.equal(result.status, "revision-conflict");
   assert.equal(mock.writes.length, 1);
   assert.equal(mock.reads.length, 1);
+  await assert.rejects(
+    commitGoogleDocsReview(mock.value, review),
+    /already committed/,
+  );
+  assert.equal(mock.writes.length, 1);
 });
 
 Deno.test("transport exposes classified non-conflict failures", async () => {

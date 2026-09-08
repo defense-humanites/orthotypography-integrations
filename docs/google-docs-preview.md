@@ -258,7 +258,15 @@ et la sérialisation, pas l'accès réseau, le flux OAuth ou une nouvelle exécu
 contre le service Google.
 
 L'appel à `normalizeGoogleDocsDocument` constitue une demande d'écriture lorsque
-le plan n'est pas vide. Une interface imposant une revue humaine doit utiliser
-les fonctions de préparation et de prévisualisation de plus bas niveau, puis
-n'appeler sa frontière d'écriture qu'après acceptation explicite. Le SDK ne
-confond pas préparation d'un plan et consentement de l'utilisateur.
+le plan n'est pas vide. Pour une revue humaine, `prepareGoogleDocsReview`
+effectue seulement la lecture, l'extraction et la prévisualisation ;
+`commitGoogleDocsReview` reçoit ensuite le même objet après acceptation
+explicite. Seul l'objet original, figé et associé à l'instance de transport qui
+l'a lu, est accepté. Les clones, reconstructions et objets désérialisés sont
+refusés.
+
+Une revue est consommée avant son unique tentative d'écriture. Une réussite, un
+conflit, un autre échec ou deux appels concurrents ne peuvent donc pas rejouer
+le lot. La condition de révision du serveur reste la protection contre une
+modification intervenue pendant la revue. Après un conflit, l'application doit
+préparer et présenter une nouvelle revue depuis une nouvelle lecture.

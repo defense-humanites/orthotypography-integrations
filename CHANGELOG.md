@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Revue Google Docs en deux phases : préparation sans écriture puis consommation
+  unique du même objet figé avec son transport et sa révision d'origine.
 - Adaptateur REST Google Docs isolé avec `fetch` et fournisseur de jeton
   injectés, sans stockage d'identifiants ni nouvelle tentative automatique ;
   test de composition complet sur la fixture issue de la validation réelle.

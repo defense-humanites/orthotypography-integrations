@@ -57,19 +57,29 @@ export type GoogleDocsNormalizationPreview =
   | GoogleDocsRequestPreview
   | GoogleDocsStyledPreview;
 
-interface GoogleDocsNormalizationBase {
+export interface GoogleDocsReview {
   readonly before: DocumentSnapshot;
   readonly plan: DocumentPlan;
   readonly preview: GoogleDocsNormalizationPreview;
 }
 
 export type GoogleDocsNormalizationResult =
-  | (GoogleDocsNormalizationBase & { readonly status: "unchanged" })
-  | (GoogleDocsNormalizationBase & { readonly status: "revision-conflict" })
-  | (GoogleDocsNormalizationBase & {
+  | (GoogleDocsReview & { readonly status: "unchanged" })
+  | (GoogleDocsReview & { readonly status: "revision-conflict" })
+  | (GoogleDocsReview & {
     readonly status: "applied";
     readonly after: DocumentSnapshot;
   });
+
+interface GoogleDocsReviewState {
+  readonly transport: GoogleDocsTransport;
+  readonly source: ReturnType<typeof extractGoogleDocsBody>;
+  readonly styled: boolean;
+  readonly locale: string;
+  status: "prepared" | "committing" | "committed";
+}
+
+const reviews = new WeakMap<GoogleDocsReview, GoogleDocsReviewState>();
 
 /** Non-conflict write failure reported explicitly by the host adapter. */
 export class GoogleDocsTransportFailure extends Error {
@@ -172,18 +182,14 @@ function verifyReadback(
   }
 }
 
-/**
- * Reads, plans, conditionally writes once, and verifies one full readback.
- * Revision conflicts are returned for replanning by the caller; they are never
- * retried. Other write failures and readback mismatches throw typed errors.
- */
-export async function normalizeGoogleDocsDocument(
+/** Reads once and prepares an immutable, session-local review without writing. */
+export async function prepareGoogleDocsReview(
   transport: GoogleDocsTransport,
   documentId: string,
   locale: string,
   rules: readonly RuntimeRule[],
   options: { readonly preserveStyles?: boolean } = {},
-): Promise<GoogleDocsNormalizationResult> {
+): Promise<GoogleDocsReview> {
   const readOptions = Object.freeze({
     includeTabsContent: true as const,
     suggestionsViewMode: "SUGGESTIONS_INLINE" as const,
@@ -200,25 +206,85 @@ export async function normalizeGoogleDocsDocument(
   const preview = styled
     ? previewGoogleDocsStyledRequests(plan, before.snapshot, before.ranges)
     : previewGoogleDocsRequests(plan, before.snapshot, before.ranges);
-  const base = { before: before.snapshot, plan, preview };
-  if (preview.body.requests.length === 0) {
-    return Object.freeze({ ...base, status: "unchanged" });
+  const review = Object.freeze({ before: before.snapshot, plan, preview });
+  reviews.set(review, {
+    transport,
+    source: before,
+    styled,
+    locale,
+    status: "prepared",
+  });
+  return review;
+}
+
+/**
+ * Commits one original review exactly once and verifies one full readback.
+ * Revision conflicts consume the review and are returned without retry.
+ */
+export async function commitGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  review: GoogleDocsReview,
+): Promise<GoogleDocsNormalizationResult> {
+  const state = reviews.get(review);
+  if (!state) {
+    throw new Error(
+      "Unknown Google Docs review; prepare it in this module session",
+    );
+  }
+  if (state.transport !== transport) {
+    throw new Error("Google Docs review requires its original transport");
+  }
+  if (state.status !== "prepared") {
+    throw new Error("Google Docs review was already committed");
+  }
+  state.status = "committing";
+  if (review.preview.body.requests.length === 0) {
+    state.status = "committed";
+    return Object.freeze({ ...review, status: "unchanged" });
   }
   const result = await transport.write({
-    documentId: preview.documentId,
-    requests: preview.body.requests,
-    requiredRevisionId: preview.body.writeControl.requiredRevisionId,
+    documentId: review.preview.documentId,
+    requests: review.preview.body.requests,
+    requiredRevisionId: review.preview.body.writeControl.requiredRevisionId,
   });
+  state.status = "committed";
   if (!result.ok) {
     if (result.kind === "revision-conflict") {
-      return Object.freeze({ ...base, status: "revision-conflict" });
+      return Object.freeze({ ...review, status: "revision-conflict" });
     }
     throw new GoogleDocsTransportFailure(result.kind, result.message);
   }
   const after = extractGoogleDocsBody(
-    await transport.read(documentId, readOptions),
-    locale,
+    await transport.read(review.before.documentId, {
+      includeTabsContent: true,
+      suggestionsViewMode: "SUGGESTIONS_INLINE",
+    }),
+    state.locale,
   );
-  verifyReadback(before, plan, after, styled);
-  return Object.freeze({ ...base, status: "applied", after: after.snapshot });
+  verifyReadback(state.source, review.plan, after, state.styled);
+  return Object.freeze({ ...review, status: "applied", after: after.snapshot });
+}
+
+/**
+ * Reads, plans, conditionally writes once, and verifies one full readback.
+ * Use prepareGoogleDocsReview and commitGoogleDocsReview when acceptance must
+ * occur between preview and write.
+ */
+export async function normalizeGoogleDocsDocument(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options: { readonly preserveStyles?: boolean } = {},
+): Promise<GoogleDocsNormalizationResult> {
+  return await commitGoogleDocsReview(
+    transport,
+    await prepareGoogleDocsReview(
+      transport,
+      documentId,
+      locale,
+      rules,
+      options,
+    ),
+  );
 }

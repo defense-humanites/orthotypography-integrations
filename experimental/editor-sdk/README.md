@@ -163,9 +163,34 @@ if (result.status === "revision-conflict") {
 ```
 
 Calling `normalizeGoogleDocsDocument` authorizes the transport to write when the
-prepared plan is nonempty. Applications that require human review should use the
-lower-level extraction and preview functions, display that immutable plan, and
-only invoke their write boundary after explicit acceptance.
+prepared plan is nonempty. Applications that require human review can separate
+the two phases without reconstructing any SDK object:
+
+```ts
+import {
+  commitGoogleDocsReview,
+  prepareGoogleDocsReview,
+} from "./src/google-docs-transport.ts";
+
+const review = await prepareGoogleDocsReview(
+  transport,
+  documentId,
+  "fr-FR",
+  IMPRIMERIE_NATIONALE_RULES,
+  { preserveStyles: true },
+);
+// Display review.plan diagnostics and preview here; this has not written.
+if (accepted) {
+  const outcome = await commitGoogleDocsReview(transport, review);
+}
+```
+
+Only the original frozen review object can be committed, with the same transport
+instance that read it. A review is consumed before its single write attempt:
+success, conflict, failure, and concurrent calls cannot cause it to be replayed.
+Cloned, reconstructed, deserialized, or already consumed reviews are rejected.
+The server-side revision condition remains authoritative if the document changes
+while the user is reviewing.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
