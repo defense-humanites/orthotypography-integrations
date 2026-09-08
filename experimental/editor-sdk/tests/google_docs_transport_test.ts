@@ -6,6 +6,8 @@ import {
   GoogleDocsReadbackError,
   type GoogleDocsReview,
   GoogleDocsReviewError,
+  type GoogleDocsStyledReview,
+  type GoogleDocsTextReview,
   type GoogleDocsTransport,
   GoogleDocsTransportFailure,
   normalizeGoogleDocsDocument,
@@ -34,7 +36,7 @@ function transport(
 
 Deno.test("review separates preparation from one explicit commit", async () => {
   const mock = transport();
-  const review = await prepareGoogleDocsReview(
+  const review: GoogleDocsStyledReview = await prepareGoogleDocsReview(
     mock.value,
     "live-fixture",
     "fr-FR",
@@ -65,6 +67,8 @@ Deno.test("review separates preparation from one explicit commit", async () => {
       error.kind === "already-consumed",
   );
   const result = await firstCommit;
+  const committedMode: "preserve-styles" = result.mode;
+  assert.equal(committedMode, "preserve-styles");
   assert.equal(result.status, "applied");
   assert.equal(mock.reads.length, 2);
   assert.equal(mock.writes.length, 1);
@@ -72,7 +76,7 @@ Deno.test("review separates preparation from one explicit commit", async () => {
 
 Deno.test("review can be explicitly discarded without writing", async () => {
   const mock = transport();
-  const review = await prepareGoogleDocsReview(
+  const review: GoogleDocsStyledReview = await prepareGoogleDocsReview(
     mock.value,
     "live-fixture",
     "fr-FR",
@@ -98,7 +102,7 @@ Deno.test("review can be explicitly discarded without writing", async () => {
 
 Deno.test("review is nominal and cannot be reconstructed structurally", async () => {
   const mock = transport();
-  const review = await prepareGoogleDocsReview(
+  const review: GoogleDocsTextReview = await prepareGoogleDocsReview(
     mock.value,
     "live-fixture",
     "fr-FR",
@@ -135,6 +139,8 @@ Deno.test("transport applies once with exact read and revision contracts", async
     rules,
     { preserveStyles: true },
   );
+  const normalizedMode: "preserve-styles" = result.mode;
+  assert.equal(normalizedMode, "preserve-styles");
   assert.equal(result.status, "applied");
   assert.equal(mock.reads.length, 2);
   assert.deepEqual(mock.reads[0], {

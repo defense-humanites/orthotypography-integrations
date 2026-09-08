@@ -203,7 +203,9 @@ reviewing.
 Every review exposes a stable `mode` discriminant. `"text"` contains only delete
 and insert requests; `"preserve-styles"` may additionally contain supported
 style restoration requests. Consumers should narrow on this field rather than
-infer the payload shape from application state.
+infer the payload shape from application state. Literal `preserveStyles`
+options also select precise return types for preparation and immediate
+normalization, and committing a review preserves its mode in the result type.
 
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including

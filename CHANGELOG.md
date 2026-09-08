@@ -3,7 +3,8 @@
 ## Non publié
 
 - Prévisualisations de revue Google Docs discriminées explicitement entre texte
-  seul et restauration limitée des styles.
+  seul et restauration limitée des styles, avec surcharges TypeScript conservant
+  ce mode dans les résultats.
 - Plans et lots du SDK rendus nominaux afin d'interdire leur reconstruction
   structurelle en TypeScript, conformément aux contrôles d'origine à l'exécution.
 - Points d'entrée expérimentaux distincts pour le SDK neutre et l'intégration

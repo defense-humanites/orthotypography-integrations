@@ -80,13 +80,19 @@ export interface GoogleDocsStyledReview extends GoogleDocsReviewBase {
 /** Session-local review returned only by prepareGoogleDocsReview. */
 export type GoogleDocsReview = GoogleDocsTextReview | GoogleDocsStyledReview;
 
-export type GoogleDocsNormalizationResult =
-  | (GoogleDocsReview & { readonly status: "unchanged" })
-  | (GoogleDocsReview & { readonly status: "revision-conflict" })
-  | (GoogleDocsReview & {
+export type GoogleDocsNormalizationResult<
+  TReview extends GoogleDocsReview = GoogleDocsReview,
+> =
+  | (TReview & { readonly status: "unchanged" })
+  | (TReview & { readonly status: "revision-conflict" })
+  | (TReview & {
     readonly status: "applied";
     readonly after: DocumentSnapshot;
   });
+
+export interface GoogleDocsReviewOptions {
+  readonly preserveStyles?: boolean;
+}
 
 interface GoogleDocsReviewState {
   readonly transport: GoogleDocsTransport;
@@ -211,13 +217,39 @@ function verifyReadback(
   }
 }
 
-/** Reads once and prepares an immutable, session-local review without writing. */
+/** Reads once and prepares a style-preserving review without writing. */
+export function prepareGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options: { readonly preserveStyles: true },
+): Promise<GoogleDocsStyledReview>;
+
+/** Reads once and prepares a text-only review without writing. */
+export function prepareGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options?: { readonly preserveStyles?: false },
+): Promise<GoogleDocsTextReview>;
+
+/** Reads once and preserves the review mode selected at runtime. */
+export function prepareGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options: GoogleDocsReviewOptions,
+): Promise<GoogleDocsReview>;
+
 export async function prepareGoogleDocsReview(
   transport: GoogleDocsTransport,
   documentId: string,
   locale: string,
   rules: readonly RuntimeRule[],
-  options: { readonly preserveStyles?: boolean } = {},
+  options: GoogleDocsReviewOptions = {},
 ): Promise<GoogleDocsReview> {
   const readOptions = Object.freeze({
     includeTabsContent: true as const,
@@ -264,10 +296,10 @@ export async function prepareGoogleDocsReview(
  * Commits one original review exactly once and verifies one full readback.
  * Revision conflicts consume the review and are returned without retry.
  */
-export async function commitGoogleDocsReview(
+export async function commitGoogleDocsReview<TReview extends GoogleDocsReview>(
   transport: GoogleDocsTransport,
-  review: GoogleDocsReview,
-): Promise<GoogleDocsNormalizationResult> {
+  review: TReview,
+): Promise<GoogleDocsNormalizationResult<TReview>> {
   const state = reviews.get(review);
   if (!state) {
     throw new GoogleDocsReviewError(
@@ -350,17 +382,39 @@ export function discardGoogleDocsReview(
   state.status = "discarded";
 }
 
-/**
- * Reads, plans, conditionally writes once, and verifies one full readback.
- * Use prepareGoogleDocsReview and commitGoogleDocsReview when acceptance must
- * occur between preview and write.
- */
+/** Reads, writes, and verifies a style-preserving normalization. */
+export function normalizeGoogleDocsDocument(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options: { readonly preserveStyles: true },
+): Promise<GoogleDocsNormalizationResult<GoogleDocsStyledReview>>;
+
+/** Reads, writes, and verifies a text-only normalization. */
+export function normalizeGoogleDocsDocument(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options?: { readonly preserveStyles?: false },
+): Promise<GoogleDocsNormalizationResult<GoogleDocsTextReview>>;
+
+/** Reads, writes, and verifies the normalization mode selected at runtime. */
+export function normalizeGoogleDocsDocument(
+  transport: GoogleDocsTransport,
+  documentId: string,
+  locale: string,
+  rules: readonly RuntimeRule[],
+  options: GoogleDocsReviewOptions,
+): Promise<GoogleDocsNormalizationResult>;
+
 export async function normalizeGoogleDocsDocument(
   transport: GoogleDocsTransport,
   documentId: string,
   locale: string,
   rules: readonly RuntimeRule[],
-  options: { readonly preserveStyles?: boolean } = {},
+  options: GoogleDocsReviewOptions = {},
 ): Promise<GoogleDocsNormalizationResult> {
   return await commitGoogleDocsReview(
     transport,
