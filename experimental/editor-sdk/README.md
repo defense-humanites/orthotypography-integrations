@@ -99,17 +99,17 @@ styles are retained on native ranges, outside the editor-neutral snapshot.
 `previewGoogleDocsStyledRequests` additionally restores source-node styles on
 interior insertions using an explicit reset mask. This opt-in mode requires
 style metadata for every range and rejects links, unsupported properties,
-ambiguous insertions, and paragraph-edge insertions. Its behavior is tested
-with synthetic request replay and a
+ambiguous insertions, and paragraph-edge insertions. Its behavior is tested with
+synthetic request replay and a
 [limited live Google Docs validation](../../docs/google-docs-live-validation.md)
 covering nested tabs, mixed styles, UTF-16 offsets, idempotence, and
 stale-revision rejection. This is not a general style-preservation guarantee.
 The original text-only preview remains unchanged.
 
-`normalizeGoogleDocsDocument` composes the
-extractor and either request compiler behind a minimal asynchronous transport
-interface. The host must provide complete inline-suggestions reads and map its
-provider responses to the explicit write result categories. The orchestrator:
+`normalizeGoogleDocsDocument` composes the extractor and either request compiler
+behind a minimal asynchronous transport interface. The host must provide
+complete inline-suggestions reads and map its provider responses to the explicit
+write result categories. The orchestrator:
 
 - reads and extracts once, prepares one plan, and writes its complete request
   batch once with the original required revision;
@@ -126,11 +126,11 @@ policy, or connector-specific response conversion. In particular, an adapter for
 a flattened connector response must reconstruct and validate native tab topology
 before returning it from `read`.
 
-`createGoogleDocsRestTransport` is the isolated
-Google Docs v1 implementation. It uses an injected `getAccessToken` callback and
-an injectable standards-compatible `fetch`; it does not acquire, refresh, store,
-or log credentials. Reads request complete tab content with inline suggestions.
-Writes send the compiler requests and `requiredRevisionId` unchanged to
+`createGoogleDocsRestTransport` is the isolated Google Docs v1 implementation.
+It uses an injected `getAccessToken` callback and an injectable
+standards-compatible `fetch`; it does not acquire, refresh, store, or log
+credentials. Reads request complete tab content with inline suggestions. Writes
+send the compiler requests and `requiredRevisionId` unchanged to
 `documents.batchUpdate`. HTTP 401/403 responses become permission failures,
 408/429/5xx responses become transient failures, and other 400 responses become
 invalid requests. The live-observed Google `INVALID_ARGUMENT` response is
