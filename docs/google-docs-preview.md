@@ -249,3 +249,16 @@ Les échecs réseau ne reproduisent pas leurs diagnostics bruts dans le résulta
 afin de ne pas propager accidentellement des détails sensibles. Les erreurs de
 lecture utilisent `GoogleDocsRestReadError`; les écritures renvoient les
 catégories du contrat commun.
+
+Un test d'intégration hors ligne relie l'adaptateur REST à l'orchestrateur avec
+les corps avant/après issus de la validation réelle. Il vérifie la séquence
+`GET`, `POST`, `GET`, les 24 requêtes stylées, la révision exigée, la relecture
+finale et l'absence du jeton dans le corps JSON. Ce test valide la composition
+et la sérialisation, pas l'accès réseau, le flux OAuth ou une nouvelle exécution
+contre le service Google.
+
+L'appel à `normalizeGoogleDocsDocument` constitue une demande d'écriture lorsque
+le plan n'est pas vide. Une interface imposant une revue humaine doit utiliser
+les fonctions de préparation et de prévisualisation de plus bas niveau, puis
+n'appeler sa frontière d'écriture qu'après acceptation explicite. Le SDK ne
+confond pas préparation d'un plan et consentement de l'utilisateur.

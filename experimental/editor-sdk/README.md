@@ -141,6 +141,32 @@ shapes remain `unknown` or `invalid-request`; they are never guessed to be safe
 conflicts. Network failures are classified without exposing their raw diagnostic
 messages.
 
+```ts
+import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
+import { createGoogleDocsRestTransport } from "./src/google-docs-rest.ts";
+import { normalizeGoogleDocsDocument } from "./src/google-docs-transport.ts";
+
+const transport = createGoogleDocsRestTransport({
+  // Credential acquisition and refresh remain application responsibilities.
+  getAccessToken: () => applicationAccessToken,
+});
+const result = await normalizeGoogleDocsDocument(
+  transport,
+  documentId,
+  "fr-FR",
+  IMPRIMERIE_NATIONALE_RULES,
+  { preserveStyles: true },
+);
+if (result.status === "revision-conflict") {
+  // Ask the user to review a newly prepared plan; never replay this one.
+}
+```
+
+Calling `normalizeGoogleDocsDocument` authorizes the transport to write when the
+prepared plan is nonempty. Applications that require human review should use the
+lower-level extraction and preview functions, display that immutable plan, and
+only invoke their write boundary after explicit acceptance.
+
 - Read text and its revision consistently. Advance the revision for relevant
   text, structure, formatting, language, and protection changes, including
   undo/redo.

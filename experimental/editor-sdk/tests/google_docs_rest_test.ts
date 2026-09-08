@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
+import { IMPRIMERIE_NATIONALE_PUNCTUATION_RULES as rules } from "@orthotypography/core";
 import {
   createGoogleDocsRestTransport,
   GoogleDocsRestReadError,
 } from "../src/google-docs-rest.ts";
+import { normalizeGoogleDocsDocument } from "../src/google-docs-transport.ts";
+import { after, before } from "./fixtures/google_docs_live.ts";
 
 const readOptions = {
   includeTabsContent: true as const,
@@ -15,6 +18,45 @@ function response(body: unknown, status = 200): Response {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+Deno.test("REST adapter completes read-plan-write-read verification", async () => {
+  const calls: { url: string; init?: RequestInit }[] = [];
+  let reads = 0;
+  let tokens = 0;
+  const transport = createGoogleDocsRestTransport({
+    getAccessToken: () => {
+      tokens++;
+      return "session-token";
+    },
+    fetch: (input, init) => {
+      calls.push({ url: String(input), init });
+      if (init?.method === "POST") return Promise.resolve(response({}));
+      return Promise.resolve(response(reads++ === 0 ? before : after));
+    },
+  });
+  const result = await normalizeGoogleDocsDocument(
+    transport,
+    "live-fixture",
+    "fr-FR",
+    rules,
+    { preserveStyles: true },
+  );
+  assert.equal(result.status, "applied");
+  assert.equal(result.preview.body.requests.length, 24);
+  assert.deepEqual(calls.map((call) => call.init?.method), [
+    "GET",
+    "POST",
+    "GET",
+  ]);
+  assert.equal(tokens, 3);
+  const batch = JSON.parse(String(calls[1].init?.body));
+  assert.deepEqual(batch, {
+    requests: result.preview.body.requests,
+    writeControl: { requiredRevisionId: "before" },
+  });
+  assert.ok(!JSON.stringify(batch).includes("session-token"));
+  assert.equal(result.after.revision, "after");
+});
 
 Deno.test("REST adapter issues complete reads with an injected token", async () => {
   const calls: { input: string; init?: RequestInit }[] = [];
