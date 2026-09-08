@@ -65,6 +65,11 @@ respectivement le contrat neutre et l'intégration Google Docs. Cette dernière
 couvre désormais l'extraction, la prévisualisation, la restauration limitée
 des styles, le transport conditionnel, la revue explicite et l'adaptateur REST.
 
-La publication du SDK nécessite toujours une nouvelle version du cœur, une
-décision de paquetage et son intégration explicite aux builds JSR/npm. Aucun
-de ces points d'entrée ne fait partie des paquets publiés à ce stade.
+La publication du SDK nécessite toujours une nouvelle version du cœur et son
+intégration explicite aux builds JSR/npm. Aucun de ces points d'entrée ne fait
+partie des paquets publiés à ce stade.
+
+La [proposition de paquetage](./editor-sdk-packaging-v0.1.md) retient un paquet
+`@orthotypography/editor-sdk` indépendant du groupe de versions Astro, avec les
+exports `.` et `./google-docs`. Elle énumère les blocages et les critères
+d'activation sans modifier les workflows de publication actuels.

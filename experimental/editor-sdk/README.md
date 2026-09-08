@@ -8,8 +8,14 @@ dependency.
 This is **unpublished and experimental**. Its standalone development
 configuration pins core commit `2d6af076bb32af2caa0e4171fbb7905396bd2c24`,
 because `applyTextChanges` is newer than core `0.1.0-alpha.1`. Existing
-workspace packages continue to use the published core. A new core release and a
-packaging decision are required before publishing this SDK.
+workspace packages continue to use the published core. A new core release and
+the remaining packaging gates are required before publishing this SDK.
+
+The proposed package is `@orthotypography/editor-sdk`, with `.` for the neutral
+contract and `./google-docs` for the provider-specific surface. It would use an
+independent version from the Astro integrations. The
+[packaging note](../../docs/editor-sdk-packaging-v0.1.md) defines the release
+gates; this directory intentionally has no package name or version yet.
 
 ## Prepare and validate
 

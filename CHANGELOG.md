@@ -2,6 +2,9 @@
 
 ## Non publié
 
+- Proposition de paquetage du SDK sous `@orthotypography/editor-sdk`, avec deux
+  exports et un cycle de version distinct des intégrations Astro ; activation
+  différée jusqu'à une nouvelle alpha du cœur et des contrôles dédiés.
 - Prévisualisations de revue Google Docs discriminées explicitement entre texte
   seul et restauration limitée des styles, avec surcharges TypeScript conservant
   ce mode dans les résultats.
