@@ -15,7 +15,7 @@ packaging decision are required before publishing this SDK.
 
 ```ts
 import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
-import { prepareDocumentPlan, validateDocumentPlan } from "./src/mod.ts";
+import { prepareDocumentPlan, validateDocumentPlan } from "./mod.ts";
 
 const source = {
   documentId: "document-42",
@@ -89,25 +89,24 @@ processes.
 ## Adapter responsibilities
 
 An initial [Google Docs request compiler](../../docs/google-docs-preview.md) is
-available separately in `src/google-docs.ts`. It produces review-only native
-request payloads from caller-supplied body-text ranges. The companion
-`extractGoogleDocsBody` function in `src/google-docs-extract.ts` extracts plain
-body paragraphs and ranges from a full Google Docs GET response, including
-nested tabs. It requires `SUGGESTIONS_INLINE`, rejects suggestions and
-unsupported body structures, and takes an explicit locale. Neither module
-performs network requests. Raw text styles are retained on native ranges,
-outside the editor-neutral snapshot. `previewGoogleDocsStyledRequests`, from
-`src/google-docs-style.ts`, additionally restores source-node styles on interior
-insertions using an explicit reset mask. This opt-in mode requires style
-metadata for every range and rejects links, unsupported properties, ambiguous
-insertions, and paragraph-edge insertions. Its behavior is tested with synthetic
-request replay and a
+available through the `google-docs.ts` entry point. It produces review-only
+native request payloads from caller-supplied body-text ranges. The companion
+`extractGoogleDocsBody` function extracts plain body paragraphs and ranges from
+a full Google Docs GET response, including nested tabs. It requires
+`SUGGESTIONS_INLINE`, rejects suggestions and unsupported body structures, and
+takes an explicit locale. Neither module performs network requests. Raw text
+styles are retained on native ranges, outside the editor-neutral snapshot.
+`previewGoogleDocsStyledRequests` additionally restores source-node styles on
+interior insertions using an explicit reset mask. This opt-in mode requires
+style metadata for every range and rejects links, unsupported properties,
+ambiguous insertions, and paragraph-edge insertions. Its behavior is tested
+with synthetic request replay and a
 [limited live Google Docs validation](../../docs/google-docs-live-validation.md)
 covering nested tabs, mixed styles, UTF-16 offsets, idempotence, and
 stale-revision rejection. This is not a general style-preservation guarantee.
 The original text-only preview remains unchanged.
 
-`normalizeGoogleDocsDocument`, from `src/google-docs-transport.ts`, composes the
+`normalizeGoogleDocsDocument` composes the
 extractor and either request compiler behind a minimal asynchronous transport
 interface. The host must provide complete inline-suggestions reads and map its
 provider responses to the explicit write result categories. The orchestrator:
@@ -127,7 +126,7 @@ policy, or connector-specific response conversion. In particular, an adapter for
 a flattened connector response must reconstruct and validate native tab topology
 before returning it from `read`.
 
-`createGoogleDocsRestTransport`, from `src/google-docs-rest.ts`, is the isolated
+`createGoogleDocsRestTransport` is the isolated
 Google Docs v1 implementation. It uses an injected `getAccessToken` callback and
 an injectable standards-compatible `fetch`; it does not acquire, refresh, store,
 or log credentials. Reads request complete tab content with inline suggestions.
@@ -143,8 +142,10 @@ messages.
 
 ```ts
 import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
-import { createGoogleDocsRestTransport } from "./src/google-docs-rest.ts";
-import { normalizeGoogleDocsDocument } from "./src/google-docs-transport.ts";
+import {
+  createGoogleDocsRestTransport,
+  normalizeGoogleDocsDocument,
+} from "./google-docs.ts";
 
 const transport = createGoogleDocsRestTransport({
   // Credential acquisition and refresh remain application responsibilities.
@@ -171,7 +172,7 @@ import {
   commitGoogleDocsReview,
   discardGoogleDocsReview,
   prepareGoogleDocsReview,
-} from "./src/google-docs-transport.ts";
+} from "./google-docs.ts";
 
 const review = await prepareGoogleDocsReview(
   transport,

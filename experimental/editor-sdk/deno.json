@@ -5,7 +5,7 @@
     "@orthotypography/core": "https://raw.githubusercontent.com/defense-humanites/orthotypography/2d6af076bb32af2caa0e4171fbb7905396bd2c24/src/mod.ts"
   },
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check src/*.ts tests/*.ts && deno doc src/mod.ts && deno doc src/google-docs.ts && deno doc src/google-docs-extract.ts && deno doc src/google-docs-style.ts && deno doc src/google-docs-transport.ts && deno doc src/google-docs-rest.ts",
+    "check": "deno fmt --check && deno lint && deno check mod.ts google-docs.ts src/*.ts tests/*.ts && deno doc mod.ts && deno doc google-docs.ts",
     "test": "deno test tests"
   }
 }

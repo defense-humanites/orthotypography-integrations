@@ -60,6 +60,11 @@ Ces révisions sont opaques et propres à la durée de vie d'une instance. Cette
 référence ne modélise ni les styles natifs, ni la sélection, ni l'historique
 d'annulation, ni la coordination entre processus.
 
-La prochaine étape est un premier adaptateur natif dont les garanties de
-transaction auront été vérifiées. La publication du SDK nécessite une nouvelle
-version du cœur et son intégration explicite aux builds JSR/npm.
+Les points d'entrée expérimentaux `mod.ts` et `google-docs.ts` séparent
+respectivement le contrat neutre et l'intégration Google Docs. Cette dernière
+couvre désormais l'extraction, la prévisualisation, la restauration limitée
+des styles, le transport conditionnel, la revue explicite et l'adaptateur REST.
+
+La publication du SDK nécessite toujours une nouvelle version du cœur, une
+décision de paquetage et son intégration explicite aux builds JSR/npm. Aucun
+de ces points d'entrée ne fait partie des paquets publiés à ce stade.

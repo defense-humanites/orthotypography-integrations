@@ -2,6 +2,8 @@
 
 ## Non publié
 
+- Points d'entrée expérimentaux distincts pour le SDK neutre et l'intégration
+  Google Docs, sans ajout au workspace ni aux paquets publiés.
 - Revue Google Docs en deux phases : préparation sans écriture puis consommation
   unique du même objet nominal et figé avec son transport et sa révision
   d'origine ; abandon explicite sans écriture et erreurs de cycle de vie typées.
