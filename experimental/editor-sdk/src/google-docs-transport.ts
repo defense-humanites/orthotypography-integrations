@@ -296,10 +296,25 @@ export async function prepareGoogleDocsReview(
  * Commits one original review exactly once and verifies one full readback.
  * Revision conflicts consume the review and are returned without retry.
  */
-export async function commitGoogleDocsReview<TReview extends GoogleDocsReview>(
+export function commitGoogleDocsReview(
   transport: GoogleDocsTransport,
-  review: TReview,
-): Promise<GoogleDocsNormalizationResult<TReview>> {
+  review: GoogleDocsStyledReview,
+): Promise<GoogleDocsNormalizationResult<GoogleDocsStyledReview>>;
+
+export function commitGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  review: GoogleDocsTextReview,
+): Promise<GoogleDocsNormalizationResult<GoogleDocsTextReview>>;
+
+export function commitGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  review: GoogleDocsReview,
+): Promise<GoogleDocsNormalizationResult>;
+
+export async function commitGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  review: GoogleDocsReview,
+): Promise<GoogleDocsNormalizationResult> {
   const state = reviews.get(review);
   if (!state) {
     throw new GoogleDocsReviewError(
