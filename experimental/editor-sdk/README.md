@@ -169,6 +169,7 @@ the two phases without reconstructing any SDK object:
 ```ts
 import {
   commitGoogleDocsReview,
+  discardGoogleDocsReview,
   prepareGoogleDocsReview,
 } from "./src/google-docs-transport.ts";
 
@@ -182,6 +183,8 @@ const review = await prepareGoogleDocsReview(
 // Display review.plan diagnostics and preview here; this has not written.
 if (accepted) {
   const outcome = await commitGoogleDocsReview(transport, review);
+} else {
+  discardGoogleDocsReview(transport, review);
 }
 ```
 
@@ -189,6 +192,9 @@ Only the original frozen review object can be committed, with the same transport
 instance that read it. A review is consumed before its single write attempt:
 success, conflict, failure, and concurrent calls cannot cause it to be replayed.
 Cloned, reconstructed, deserialized, or already consumed reviews are rejected.
+The review type is nominal, so ordinary TypeScript code cannot reconstruct it
+structurally. Explicitly discard a rejected or closed review to make that
+decision irreversible in the current module session.
 The server-side revision condition remains authoritative if the document changes
 while the user is reviewing.
 

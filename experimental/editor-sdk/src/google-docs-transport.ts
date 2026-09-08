@@ -57,7 +57,11 @@ export type GoogleDocsNormalizationPreview =
   | GoogleDocsRequestPreview
   | GoogleDocsStyledPreview;
 
+const googleDocsReviewBrand: unique symbol = Symbol("GoogleDocsReview");
+
+/** Opaque, session-local review returned only by prepareGoogleDocsReview. */
 export interface GoogleDocsReview {
+  readonly [googleDocsReviewBrand]: true;
   readonly before: DocumentSnapshot;
   readonly plan: DocumentPlan;
   readonly preview: GoogleDocsNormalizationPreview;
@@ -76,10 +80,23 @@ interface GoogleDocsReviewState {
   readonly source: ReturnType<typeof extractGoogleDocsBody>;
   readonly styled: boolean;
   readonly locale: string;
-  status: "prepared" | "committing" | "committed";
+  status: "prepared" | "committing" | "committed" | "discarded";
 }
 
 const reviews = new WeakMap<GoogleDocsReview, GoogleDocsReviewState>();
+
+export type GoogleDocsReviewErrorKind =
+  | "unknown-review"
+  | "transport-mismatch"
+  | "already-consumed";
+
+/** Invalid origin, transport, or lifecycle state for an opaque review. */
+export class GoogleDocsReviewError extends Error {
+  constructor(readonly kind: GoogleDocsReviewErrorKind, message: string) {
+    super(message);
+    this.name = "GoogleDocsReviewError";
+  }
+}
 
 /** Non-conflict write failure reported explicitly by the host adapter. */
 export class GoogleDocsTransportFailure extends Error {
@@ -206,7 +223,12 @@ export async function prepareGoogleDocsReview(
   const preview = styled
     ? previewGoogleDocsStyledRequests(plan, before.snapshot, before.ranges)
     : previewGoogleDocsRequests(plan, before.snapshot, before.ranges);
-  const review = Object.freeze({ before: before.snapshot, plan, preview });
+  const review: GoogleDocsReview = Object.freeze({
+    [googleDocsReviewBrand]: true as const,
+    before: before.snapshot,
+    plan,
+    preview,
+  });
   reviews.set(review, {
     transport,
     source: before,
@@ -227,15 +249,22 @@ export async function commitGoogleDocsReview(
 ): Promise<GoogleDocsNormalizationResult> {
   const state = reviews.get(review);
   if (!state) {
-    throw new Error(
+    throw new GoogleDocsReviewError(
+      "unknown-review",
       "Unknown Google Docs review; prepare it in this module session",
     );
   }
   if (state.transport !== transport) {
-    throw new Error("Google Docs review requires its original transport");
+    throw new GoogleDocsReviewError(
+      "transport-mismatch",
+      "Google Docs review requires its original transport",
+    );
   }
   if (state.status !== "prepared") {
-    throw new Error("Google Docs review was already committed");
+    throw new GoogleDocsReviewError(
+      "already-consumed",
+      "Google Docs review was already consumed",
+    );
   }
   state.status = "committing";
   if (review.preview.body.requests.length === 0) {
@@ -263,6 +292,36 @@ export async function commitGoogleDocsReview(
   );
   verifyReadback(state.source, review.plan, after, state.styled);
   return Object.freeze({ ...review, status: "applied", after: after.snapshot });
+}
+
+/**
+ * Irreversibly consumes an original review without writing. Applications should
+ * call this when a user rejects or closes a prepared review.
+ */
+export function discardGoogleDocsReview(
+  transport: GoogleDocsTransport,
+  review: GoogleDocsReview,
+): void {
+  const state = reviews.get(review);
+  if (!state) {
+    throw new GoogleDocsReviewError(
+      "unknown-review",
+      "Unknown Google Docs review; prepare it in this module session",
+    );
+  }
+  if (state.transport !== transport) {
+    throw new GoogleDocsReviewError(
+      "transport-mismatch",
+      "Google Docs review requires its original transport",
+    );
+  }
+  if (state.status !== "prepared") {
+    throw new GoogleDocsReviewError(
+      "already-consumed",
+      "Google Docs review was already consumed",
+    );
+  }
+  state.status = "discarded";
 }
 
 /**

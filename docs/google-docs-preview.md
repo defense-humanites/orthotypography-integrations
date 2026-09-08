@@ -263,10 +263,15 @@ effectue seulement la lecture, l'extraction et la prévisualisation ;
 `commitGoogleDocsReview` reçoit ensuite le même objet après acceptation
 explicite. Seul l'objet original, figé et associé à l'instance de transport qui
 l'a lu, est accepté. Les clones, reconstructions et objets désérialisés sont
-refusés.
+refusés. Le type nominal empêche également une reconstruction structurelle en
+TypeScript. Lors d'un refus ou de la fermeture de l'interface,
+`discardGoogleDocsReview` consomme explicitement la revue sans aucune écriture.
 
 Une revue est consommée avant son unique tentative d'écriture. Une réussite, un
 conflit, un autre échec ou deux appels concurrents ne peuvent donc pas rejouer
-le lot. La condition de révision du serveur reste la protection contre une
-modification intervenue pendant la revue. Après un conflit, l'application doit
-préparer et présenter une nouvelle revue depuis une nouvelle lecture.
+le lot. Une revue explicitement écartée ne peut pas être validée ensuite. Les
+erreurs de provenance, de transport ou de cycle de vie sont exposées par
+`GoogleDocsReviewError` avec une catégorie stable. La condition de révision du
+serveur reste la protection contre une modification intervenue pendant la
+revue. Après un conflit, l'application doit préparer et présenter une nouvelle
+revue depuis une nouvelle lecture.

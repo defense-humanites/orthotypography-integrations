@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { IMPRIMERIE_NATIONALE_PUNCTUATION_RULES as rules } from "@orthotypography/core";
 import {
   commitGoogleDocsReview,
+  discardGoogleDocsReview,
   GoogleDocsReadbackError,
+  type GoogleDocsReview,
+  GoogleDocsReviewError,
   type GoogleDocsTransport,
   GoogleDocsTransportFailure,
   normalizeGoogleDocsDocument,
@@ -43,21 +46,75 @@ Deno.test("review separates preparation from one explicit commit", async () => {
   assert.ok(Object.isFrozen(review));
   await assert.rejects(
     commitGoogleDocsReview(mock.value, structuredClone(review)),
-    /Unknown Google Docs review/,
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "unknown-review",
   );
   await assert.rejects(
     commitGoogleDocsReview(transport().value, review),
-    /original transport/,
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "transport-mismatch",
   );
   const firstCommit = commitGoogleDocsReview(mock.value, review);
   await assert.rejects(
     commitGoogleDocsReview(mock.value, review),
-    /already committed/,
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "already-consumed",
   );
   const result = await firstCommit;
   assert.equal(result.status, "applied");
   assert.equal(mock.reads.length, 2);
   assert.equal(mock.writes.length, 1);
+});
+
+Deno.test("review can be explicitly discarded without writing", async () => {
+  const mock = transport();
+  const review = await prepareGoogleDocsReview(
+    mock.value,
+    "live-fixture",
+    "fr-FR",
+    rules,
+    { preserveStyles: true },
+  );
+  discardGoogleDocsReview(mock.value, review);
+  assert.equal(mock.writes.length, 0);
+  await assert.rejects(
+    commitGoogleDocsReview(mock.value, review),
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "already-consumed",
+  );
+  assert.throws(
+    () => discardGoogleDocsReview(mock.value, review),
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "already-consumed",
+  );
+  assert.equal(mock.writes.length, 0);
+});
+
+Deno.test("review is nominal and cannot be reconstructed structurally", async () => {
+  const mock = transport();
+  const review = await prepareGoogleDocsReview(
+    mock.value,
+    "live-fixture",
+    "fr-FR",
+    rules,
+  );
+  // @ts-expect-error reconstructed data is not an opaque GoogleDocsReview
+  const reconstructed: GoogleDocsReview = {
+    before: review.before,
+    plan: review.plan,
+    preview: review.preview,
+  };
+  await assert.rejects(
+    commitGoogleDocsReview(mock.value, reconstructed),
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "unknown-review",
+  );
 });
 
 Deno.test("transport applies once with exact read and revision contracts", async () => {
@@ -102,7 +159,9 @@ Deno.test("transport returns revision conflicts without retry or readback", asyn
   assert.equal(mock.reads.length, 1);
   await assert.rejects(
     commitGoogleDocsReview(mock.value, review),
-    /already committed/,
+    (error) =>
+      error instanceof GoogleDocsReviewError &&
+      error.kind === "already-consumed",
   );
   assert.equal(mock.writes.length, 1);
 });
