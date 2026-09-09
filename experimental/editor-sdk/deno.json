@@ -1,6 +1,10 @@
 {
   "workspace": [],
   "lock": false,
+  "minimumDependencyAge": {
+    "age": "P1D",
+    "exclude": ["jsr:@orthotypography/core"]
+  },
   "imports": {
     "@orthotypography/core": "jsr:@orthotypography/core@0.1.0-alpha.2"
   },
