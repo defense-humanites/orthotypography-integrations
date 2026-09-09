@@ -1,13 +1,21 @@
 import { build, emptyDir } from "@deno/dnt";
 import astroConfig from "../packages/astro/deno.json" with { type: "json" };
+import editorSdkConfig from "../packages/editor-sdk/deno.json" with {
+  type: "json",
+};
 import rehypeConfig from "../packages/rehype/deno.json" with { type: "json" };
 import satteriConfig from "../packages/satteri/deno.json" with {
   type: "json",
 };
 
-type PackageName = "rehype" | "satteri" | "astro";
+type PackageName = "rehype" | "satteri" | "astro" | "editor-sdk";
 
-const packageNames: readonly PackageName[] = ["rehype", "satteri", "astro"];
+const packageNames: readonly PackageName[] = [
+  "rehype",
+  "satteri",
+  "astro",
+  "editor-sdk",
+];
 const selectedPackage = Deno.args[0] as PackageName | undefined;
 if (
   selectedPackage !== undefined && !packageNames.includes(selectedPackage)
@@ -217,6 +225,70 @@ await buildPackage("astro", {
     Deno.copyFileSync(
       "packages/astro/README.md",
       "npm/astro/README.md",
+    );
+  },
+});
+
+await buildPackage("editor-sdk", {
+  entryPoints: [
+    "./packages/editor-sdk/mod.ts",
+    {
+      name: "./google-docs",
+      path: "./packages/editor-sdk/google-docs.ts",
+    },
+  ],
+  outDir: "./npm/editor-sdk",
+  esModule: true,
+  scriptModule: false,
+  declaration: "separate",
+  declarationMap: true,
+  typeCheck: false,
+  test: false,
+  compilerOptions: { target: "ES2022" },
+  shims: {},
+  package: {
+    name: editorSdkConfig.name,
+    version: editorSdkConfig.version,
+    description:
+      "Guarded document editor plans and Google Docs transport primitives",
+    author: "Antoine Boquet",
+    license: editorSdkConfig.license,
+    homepage:
+      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/editor-sdk#readme",
+    repository: {
+      type: "git",
+      url:
+        "git+https://github.com/defense-humanites/orthotypography-integrations.git",
+      directory: "packages/editor-sdk",
+    },
+    bugs: {
+      url:
+        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+    },
+    keywords: [
+      "editor",
+      "google-docs",
+      "typography",
+      "orthotypography",
+      "unicode",
+    ],
+    engines: { node: ">=18" },
+    sideEffects: false,
+    dependencies: {
+      "@orthotypography/core": "0.1.0-alpha.2",
+    },
+  },
+  mappings: {
+    "@orthotypography/core": {
+      name: "@orthotypography/core",
+      version: "0.1.0-alpha.2",
+    },
+  },
+  postBuild() {
+    Deno.copyFileSync("LICENSE", "npm/editor-sdk/LICENSE");
+    Deno.copyFileSync(
+      "packages/editor-sdk/README.md",
+      "npm/editor-sdk/README.md",
     );
   },
 });

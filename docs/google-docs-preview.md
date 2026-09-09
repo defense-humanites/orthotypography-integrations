@@ -25,8 +25,8 @@ puis une insertion au même indice.
 
 ```ts
 import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
-import { prepareDocumentPlan } from "../experimental/editor-sdk/src/mod.ts";
-import { previewGoogleDocsRequests } from "../experimental/editor-sdk/src/google-docs.ts";
+import { prepareDocumentPlan } from "@orthotypography/editor-sdk";
+import { previewGoogleDocsRequests } from "@orthotypography/editor-sdk/google-docs";
 
 // Exemple synthétique : dans un adaptateur, ces données viennent du même GET.
 const snapshot = {
@@ -105,7 +105,7 @@ réseau. Les deux objets proviennent ainsi de la même lecture et sont
 profondément figés.
 
 ```ts
-import { extractGoogleDocsBody } from "../experimental/editor-sdk/src/google-docs-extract.ts";
+import { extractGoogleDocsBody } from "@orthotypography/editor-sdk/google-docs";
 
 // response : réponse complète de documents.get obtenue par le futur transport.
 const { snapshot, ranges } = extractGoogleDocsBody(response, "fr-FR");
@@ -153,7 +153,7 @@ Références officielles vérifiées le 6 septembre 2026 :
 ## Prévisualisation avec styles : sous-ensemble prudent
 
 ```ts
-import { previewGoogleDocsStyledRequests } from "../experimental/editor-sdk/src/google-docs-style.ts";
+import { previewGoogleDocsStyledRequests } from "@orthotypography/editor-sdk/google-docs";
 
 const styledPreview = previewGoogleDocsStyledRequests(plan, snapshot, ranges);
 ```
@@ -272,9 +272,9 @@ conflit, un autre échec ou deux appels concurrents ne peuvent donc pas rejouer
 le lot. Une revue explicitement écartée ne peut pas être validée ensuite. Les
 erreurs de provenance, de transport ou de cycle de vie sont exposées par
 `GoogleDocsReviewError` avec une catégorie stable. La condition de révision du
-serveur reste la protection contre une modification intervenue pendant la
-revue. Après un conflit, l'application doit préparer et présenter une nouvelle
-revue depuis une nouvelle lecture.
+serveur reste la protection contre une modification intervenue pendant la revue.
+Après un conflit, l'application doit préparer et présenter une nouvelle revue
+depuis une nouvelle lecture.
 
 Le champ discriminant `mode` vaut `text` pour une prévisualisation textuelle et
 `preserve-styles` lorsque les requêtes de restauration des styles sont incluses.

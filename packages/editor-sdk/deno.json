@@ -1,12 +1,16 @@
 {
-  "workspace": [],
-  "lock": false,
-  "minimumDependencyAge": {
-    "age": "P1D",
-    "exclude": ["jsr:@orthotypography/core"]
+  "name": "@orthotypography/editor-sdk",
+  "version": "0.1.0-alpha.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./mod.ts",
+    "./google-docs": "./google-docs.ts"
   },
   "imports": {
     "@orthotypography/core": "jsr:@orthotypography/core@0.1.0-alpha.2"
+  },
+  "publish": {
+    "include": ["README.md", "mod.ts", "google-docs.ts", "src/**/*.ts"]
   },
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check mod.ts google-docs.ts src/*.ts tests/*.ts && deno doc mod.ts && deno doc google-docs.ts",

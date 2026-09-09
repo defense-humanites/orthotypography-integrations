@@ -2,14 +2,15 @@
 
 ## Non publié
 
-- Proposition de paquetage du SDK sous `@orthotypography/editor-sdk`, avec deux
-  exports et un cycle de version distinct des intégrations Astro ; activation
-  différée jusqu'à une nouvelle alpha du cœur et des contrôles dédiés.
+- Activation du paquet `@orthotypography/editor-sdk@0.1.0-alpha.0`, avec les
+  exports `.` et `./google-docs`, un cycle de version et un workflow de release
+  distincts des intégrations Astro, sans publication dans cette PR.
 - Prévisualisations de revue Google Docs discriminées explicitement entre texte
   seul et restauration limitée des styles, avec surcharges TypeScript conservant
   ce mode dans les résultats.
 - Plans et lots du SDK rendus nominaux afin d'interdire leur reconstruction
-  structurelle en TypeScript, conformément aux contrôles d'origine à l'exécution.
+  structurelle en TypeScript, conformément aux contrôles d'origine à
+  l'exécution.
 - Points d'entrée expérimentaux distincts pour le SDK neutre et l'intégration
   Google Docs, sans ajout au workspace ni aux paquets publiés.
 - Revue Google Docs en deux phases : préparation sans écriture puis consommation

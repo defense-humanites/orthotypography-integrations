@@ -1,9 +1,9 @@
-import {
-  type GoogleDocsReadOptions,
-  type GoogleDocsTransport,
-  type GoogleDocsWriteFailureKind,
-  type GoogleDocsWriteInput,
-  type GoogleDocsWriteResult,
+import type {
+  GoogleDocsReadOptions,
+  GoogleDocsTransport,
+  GoogleDocsWriteFailureKind,
+  GoogleDocsWriteInput,
+  GoogleDocsWriteResult,
 } from "./google-docs-transport.ts";
 
 /** Explicit dependencies for the provider-specific Google Docs REST adapter. */

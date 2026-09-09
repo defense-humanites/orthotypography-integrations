@@ -20,7 +20,9 @@ concurrency:
 
 jobs:
   publish:
-    if: vars.PUBLISH_ENABLED == 'true'
+    if: >-
+      vars.PUBLISH_ENABLED == 'true' &&
+      startsWith(github.event.release.tag_name || inputs.tag, 'v')
     environment: release
     runs-on: ubuntu-latest
     steps:
