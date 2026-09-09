@@ -1,5 +1,40 @@
 # Historique des changements
 
+## Non publié
+
+- Proposition de paquetage du SDK sous `@orthotypography/editor-sdk`, avec deux
+  exports et un cycle de version distinct des intégrations Astro ; activation
+  différée jusqu'à une nouvelle alpha du cœur et des contrôles dédiés.
+- Prévisualisations de revue Google Docs discriminées explicitement entre texte
+  seul et restauration limitée des styles, avec surcharges TypeScript conservant
+  ce mode dans les résultats.
+- Plans et lots du SDK rendus nominaux afin d'interdire leur reconstruction
+  structurelle en TypeScript, conformément aux contrôles d'origine à l'exécution.
+- Points d'entrée expérimentaux distincts pour le SDK neutre et l'intégration
+  Google Docs, sans ajout au workspace ni aux paquets publiés.
+- Revue Google Docs en deux phases : préparation sans écriture puis consommation
+  unique du même objet nominal et figé avec son transport et sa révision
+  d'origine ; abandon explicite sans écriture et erreurs de cycle de vie typées.
+- Adaptateur REST Google Docs isolé avec `fetch` et fournisseur de jeton
+  injectés, sans stockage d'identifiants ni nouvelle tentative automatique ;
+  test de composition complet sur la fixture issue de la validation réelle.
+- Contrat de transport Google Docs sans authentification intégrée : lecture
+  complète, écriture conditionnelle unique, conflits typés et relecture
+  vérifiée.
+- Prévisualisation Google Docs avec restauration explicite des styles des
+  insertions intérieures, hors liens et frontières de paragraphes.
+- Extraction des paragraphes Google Docs et de leurs plages UTF-16, avec
+  parcours des onglets imbriqués et refus des structures non prises en charge.
+
+- Prévisualisation de requêtes Google Docs : traduction des corrections en
+  opérations natives ordonnées avec révision obligatoire, sans accès réseau.
+- Adaptateur de référence en mémoire : commit atomique de lots complets,
+  contrôle des conflits et simulation d'éditions concurrentes.
+- Ajout d’un SDK expérimental pour les éditeurs de documents : plans immuables,
+  diagnostics source, lots de corrections et validation de la révision
+  documentaire.
+- Tests séparés contre le commit du cœur introduisant `applyTextChanges`.
+
 ## 0.1.0-alpha.1 — 2026-09-05
 
 - Ajout de l’adaptateur natif `@orthotypography/satteri` fondé sur les hooks
@@ -8,8 +43,8 @@
   l’adaptateur natif et Unified reçoit l’adaptateur rehype.
 - Maintien de `processorOptions` comme chemin de compatibilité explicite vers
   Unified.
-- Ajout des validations de rendu Sätteri direct et Astro, des diagnostics et
-  des segments exclus.
+- Ajout des validations de rendu Sätteri direct et Astro, des diagnostics et des
+  segments exclus.
 - Extension de la publication coordonnée et de sa reprise partielle aux trois
   paquets sur JSR et npm.
 - Mise à niveau vers `@orthotypography/core@0.1.0-alpha.1`.
@@ -25,5 +60,5 @@
 - Association des diagnostics aux segments textuels sources.
 - Ajout de l’intégration `@orthotypography/astro` pour le processeur Unified
   d’Astro 7 et sa configuration Markdown/MDX héritée.
-- Génération des deux paquets npm et publication coordonnée sur JSR et npm,
-  avec reprise explicite des publications partielles.
+- Génération des deux paquets npm et publication coordonnée sur JSR et npm, avec
+  reprise explicite des publications partielles.

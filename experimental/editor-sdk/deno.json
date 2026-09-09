@@ -1,0 +1,15 @@
+{
+  "workspace": [],
+  "lock": false,
+  "minimumDependencyAge": {
+    "age": "P1D",
+    "exclude": ["jsr:@orthotypography/core"]
+  },
+  "imports": {
+    "@orthotypography/core": "jsr:@orthotypography/core@0.1.0-alpha.2"
+  },
+  "tasks": {
+    "check": "deno fmt --check && deno lint && deno check mod.ts google-docs.ts src/*.ts tests/*.ts && deno doc mod.ts && deno doc google-docs.ts",
+    "test": "deno test tests"
+  }
+}
