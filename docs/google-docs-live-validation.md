@@ -8,6 +8,10 @@ contre un document Google Docs jetable créé avec autorisation. Le transport
 utilisé est le connecteur Google Drive de la session ; aucun transport ni
 identifiant OAuth n'est ajouté au SDK.
 
+Ce même état du cœur est désormais publié sous la version immuable
+`@orthotypography/core@0.1.0-alpha.2`, utilisée par la configuration autonome du
+SDK pour ses vérifications courantes.
+
 Le scénario utilise `IMPRIMERIE_NATIONALE_PUNCTUATION_RULES` et la langue
 `fr-FR`, pas le preset typographique complet. Il couvre deux paragraphes dans
 l'onglet principal, un paragraphe dans un onglet enfant, leurs paragraphes vides
@@ -69,9 +73,10 @@ brute archivée.
 `google_docs_live_test.ts` vérifie le nombre de corrections et de requêtes, puis
 compare le texte et les styles source au résultat observé, indépendamment de la
 fusion éventuelle des TextRun par Google. Un second test vérifie l'idempotence.
-Ces tests restent hors ligne : ils ne réexécutent pas le conflit distant. Les 48
-tests SDK passent localement sous Deno 2.9.6 et Node 24.19.0, avec résolution
-locale du cœur au commit épinglé (et transformation TypeScript sous Node).
+Ces tests restent hors ligne : ils ne réexécutent pas le conflit distant. Lors
+de cette validation, les 48 tests SDK passaient localement sous Deno 2.9.6 et
+Node 24.19.0, avec résolution locale du cœur au commit alors épinglé (et
+transformation TypeScript sous Node).
 
 ## Limites et suite
 

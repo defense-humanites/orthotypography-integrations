@@ -6,10 +6,10 @@ editor transaction. The module contains no editor API or Deno runtime
 dependency.
 
 This is **unpublished and experimental**. Its standalone development
-configuration pins core commit `2d6af076bb32af2caa0e4171fbb7905396bd2c24`,
-because `applyTextChanges` is newer than core `0.1.0-alpha.1`. Existing
-workspace packages continue to use the published core. A new core release and
-the remaining packaging gates are required before publishing this SDK.
+configuration uses `@orthotypography/core@0.1.0-alpha.2`, the first published
+core release that includes `applyTextChanges`. Existing workspace packages
+continue to use core `0.1.0-alpha.1`. The remaining packaging gates must be met
+before publishing this SDK.
 
 The proposed package is `@orthotypography/editor-sdk`, with `.` for the neutral
 contract and `./google-docs` for the provider-specific surface. It would use an

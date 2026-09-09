@@ -42,11 +42,11 @@ prévisualisation tant que cette garantie n'est pas résolue.
 
 ## Versionnement et suite
 
-L'alpha publiée du cœur précède `applyTextChanges`. La configuration autonome
-pointe donc vers le commit immuable `2d6af076bb32af2caa0e4171fbb7905396bd2c24`.
-Ce module ne figure pas dans le workspace des paquets publiés et ne sera pas
-publié par les workflows existants. Deno sert uniquement au développement ; le
-code de production utilise des fonctions JavaScript standard.
+La configuration autonome dépend de la version immuable publiée
+`@orthotypography/core@0.1.0-alpha.2`, qui contient `applyTextChanges` sur JSR et
+npm. Ce module ne figure pas dans le workspace des paquets publiés et ne sera
+pas publié par les workflows existants. Deno sert uniquement au développement ;
+le code de production utilise des fonctions JavaScript standard.
 
 L'adaptateur de référence `createMemoryDocument` expose `read`, `commit` et
 `replaceRuns`. Il accepte uniquement les lots originaux du module, revalide le
@@ -65,9 +65,9 @@ respectivement le contrat neutre et l'intégration Google Docs. Cette dernière
 couvre désormais l'extraction, la prévisualisation, la restauration limitée
 des styles, le transport conditionnel, la revue explicite et l'adaptateur REST.
 
-La publication du SDK nécessite toujours une nouvelle version du cœur et son
-intégration explicite aux builds JSR/npm. Aucun de ces points d'entrée ne fait
-partie des paquets publiés à ce stade.
+La publication du SDK nécessite toujours son intégration explicite aux builds
+JSR/npm. Aucun de ces points d'entrée ne fait partie des paquets publiés à ce
+stade.
 
 La [proposition de paquetage](./editor-sdk-packaging-v0.1.md) retient un paquet
 `@orthotypography/editor-sdk` indépendant du groupe de versions Astro, avec les

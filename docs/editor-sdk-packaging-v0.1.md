@@ -43,17 +43,16 @@ Les en-têtes, pieds de page, notes, tableaux, objets incorporés, liens lors de
 insertions stylées, OAuth, stockage de jetons, retries et interface utilisateur
 restent exclus. Ces limites doivent apparaître dans le README publié.
 
-## Blocages actuels
+## État des prérequis
 
-Le paquet n'est pas publiable tant que `applyTextChanges` n'existe que sur le
-commit `2d6af076bb32af2caa0e4171fbb7905396bd2c24`. Il doit dépendre d'une version
-immuable publiée de `@orthotypography/core`, identique sur JSR et npm. Le cœur
-doit donc publier une nouvelle alpha avant l'activation du paquetage.
+`@orthotypography/core@0.1.0-alpha.2`, qui contient `applyTextChanges`, est
+publié sous la même version immuable sur JSR et npm. La configuration autonome
+du SDK utilise désormais cette version plutôt qu'une URL de commit.
 
 Le répertoire `experimental/editor-sdk` reste hors du workspace racine, des
 tâches `publish:check`, du workflow de publication et du registre de reprise
-partielle. Aucune métadonnée `name` ou `version` n'est ajoutée à son
-`deno.json` avant la levée de ces blocages.
+partielle. Aucune métadonnée `name` ou `version` n'est ajoutée à son `deno.json`
+dans la présente PR.
 
 ## Critères d'activation
 
@@ -62,9 +61,9 @@ activer sa publication seulement lorsque tous les points suivants seront
 satisfaits :
 
 1. publier une nouvelle alpha de `@orthotypography/core` contenant
-   `applyTextChanges` ;
-2. remplacer l'URL de commit par cette version dans les imports JSR et les
-   correspondances npm ;
+   `applyTextChanges` — fait avec `0.1.0-alpha.2` ;
+2. remplacer l'URL de commit par cette version dans les imports JSR — fait ;
+   ajouter sa correspondance npm lors de l'activation du build ;
 3. déclarer les exports `.` et `./google-docs` dans le `deno.json` du paquet ;
 4. construire les deux points d'entrée avec dnt et vérifier leurs déclarations
    sous Node ;
