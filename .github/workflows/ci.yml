@@ -35,6 +35,7 @@ jobs:
       - run: deno task npm:build:rehype
       - run: deno task npm:build:satteri
       - run: deno task npm:build:astro
+      - run: deno task npm:build:editor-sdk
       - run: deno task npm:install
       - run: deno task npm:smoke
       - run: deno task npm:pack
@@ -43,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: experimental/editor-sdk
+        working-directory: packages/editor-sdk
     steps:
       - uses: actions/checkout@v5
       - uses: denoland/setup-deno@v2

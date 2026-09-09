@@ -1,6 +1,6 @@
 # SDK pour éditeurs de documents : première base expérimentale
 
-Le module `experimental/editor-sdk` appartient aux intégrations. Le cœur reste
+Le paquet `packages/editor-sdk` appartient aux intégrations. Le cœur reste
 indépendant de Word, Google Docs, ONLYOFFICE et LibreOffice. Aucune API propre à
 ces éditeurs n'est introduite dans cette étape.
 
@@ -43,8 +43,8 @@ prévisualisation tant que cette garantie n'est pas résolue.
 ## Versionnement et suite
 
 La configuration autonome dépend de la version immuable publiée
-`@orthotypography/core@0.1.0-alpha.2`, qui contient `applyTextChanges` sur JSR et
-npm. Ce module ne figure pas dans le workspace des paquets publiés et ne sera
+`@orthotypography/core@0.1.0-alpha.2`, qui contient `applyTextChanges` sur JSR
+et npm. Ce module ne figure pas dans le workspace des paquets publiés et ne sera
 pas publié par les workflows existants. Deno sert uniquement au développement ;
 le code de production utilise des fonctions JavaScript standard.
 
@@ -62,14 +62,13 @@ d'annulation, ni la coordination entre processus.
 
 Les points d'entrée expérimentaux `mod.ts` et `google-docs.ts` séparent
 respectivement le contrat neutre et l'intégration Google Docs. Cette dernière
-couvre désormais l'extraction, la prévisualisation, la restauration limitée
-des styles, le transport conditionnel, la revue explicite et l'adaptateur REST.
+couvre désormais l'extraction, la prévisualisation, la restauration limitée des
+styles, le transport conditionnel, la revue explicite et l'adaptateur REST.
 
-La publication du SDK nécessite toujours son intégration explicite aux builds
-JSR/npm. Aucun de ces points d'entrée ne fait partie des paquets publiés à ce
-stade.
+Le SDK est intégré aux builds et contrôles JSR/npm sous la version indépendante
+`0.1.0-alpha.0`. Aucun paquet n'est publié par cette PR d'activation.
 
 La [proposition de paquetage](./editor-sdk-packaging-v0.1.md) retient un paquet
 `@orthotypography/editor-sdk` indépendant du groupe de versions Astro, avec les
-exports `.` et `./google-docs`. Elle énumère les blocages et les critères
-d'activation sans modifier les workflows de publication actuels.
+exports `.` et `./google-docs`. Un workflow distinct applique son propre tag de
+release et sa reprise partielle sans modifier les versions des adaptateurs.

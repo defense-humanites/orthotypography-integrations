@@ -63,7 +63,7 @@ styles n'a été employé.
 
 ## Régression conservée dans le dépôt
 
-`experimental/editor-sdk/tests/fixtures/google_docs_live.ts` conserve les corps
+`packages/editor-sdk/tests/fixtures/google_docs_live.ts` conserve les corps
 avant/après observés et la topologie reconstruite. Les identifiants
 documentaires, d'onglets et de révisions sont remplacés par des valeurs de
 fixture ; les URL et métadonnées sans rapport avec le scénario sont omises. Ce

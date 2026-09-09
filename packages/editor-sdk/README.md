@@ -1,28 +1,40 @@
-# Experimental document editor SDK
+# `@orthotypography/editor-sdk`
 
 A JavaScript-compatible foundation for document editor adapters. It prepares
 immutable correction plans and validates their complete source before a native
 editor transaction. The module contains no editor API or Deno runtime
 dependency.
 
-This is **unpublished and experimental**. Its standalone development
-configuration uses `@orthotypography/core@0.1.0-alpha.2`, the first published
-core release that includes `applyTextChanges`. Existing workspace packages
-continue to use core `0.1.0-alpha.1`. The remaining packaging gates must be met
-before publishing this SDK. The exact import is exempt from the 24-hour minimum
-dependency age so release-follow-up CI can verify it immediately.
+This is an alpha release. Its API may change before `1.0.0`. It uses
+`@orthotypography/core@0.1.0-alpha.2`, the first published core release that
+includes `applyTextChanges`.
 
-The proposed package is `@orthotypography/editor-sdk`, with `.` for the neutral
-contract and `./google-docs` for the provider-specific surface. It would use an
-independent version from the Astro integrations. The
-[packaging note](../../docs/editor-sdk-packaging-v0.1.md) defines the release
-gates; this directory intentionally has no package name or version yet.
+The package exposes `.` for the neutral contract and `./google-docs` for the
+provider-specific surface. It uses an independent version from the Astro
+integrations. The
+[packaging note](https://github.com/defense-humanites/orthotypography-integrations/blob/main/docs/editor-sdk-packaging-v0.1.md)
+records that decision.
+
+## Installation
+
+```sh
+npm install @orthotypography/editor-sdk@alpha
+```
+
+With Deno or another JSR client:
+
+```sh
+deno add jsr:@orthotypography/editor-sdk@0.1.0-alpha.0
+```
 
 ## Prepare and validate
 
 ```ts
 import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
-import { prepareDocumentPlan, validateDocumentPlan } from "./mod.ts";
+import {
+  prepareDocumentPlan,
+  validateDocumentPlan,
+} from "@orthotypography/editor-sdk";
 
 const source = {
   documentId: "document-42",
@@ -66,7 +78,7 @@ corrections produce an empty batch. All changed runs form one indivisible batch.
 ## In-memory reference adapter
 
 ```ts
-import { createMemoryDocument } from "./src/mod.ts";
+import { createMemoryDocument } from "@orthotypography/editor-sdk";
 
 const document = createMemoryDocument(source);
 const snapshot = document.read();
@@ -152,7 +164,7 @@ import { IMPRIMERIE_NATIONALE_RULES } from "@orthotypography/core";
 import {
   createGoogleDocsRestTransport,
   normalizeGoogleDocsDocument,
-} from "./google-docs.ts";
+} from "@orthotypography/editor-sdk/google-docs";
 
 const transport = createGoogleDocsRestTransport({
   // Credential acquisition and refresh remain application responsibilities.
@@ -179,7 +191,7 @@ import {
   commitGoogleDocsReview,
   discardGoogleDocsReview,
   prepareGoogleDocsReview,
-} from "./google-docs.ts";
+} from "@orthotypography/editor-sdk/google-docs";
 
 const review = await prepareGoogleDocsReview(
   transport,

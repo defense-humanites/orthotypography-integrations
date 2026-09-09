@@ -1,0 +1,79 @@
+name: Publish editor SDK
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing editor SDK release tag to resume
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      vars.PUBLISH_ENABLED == 'true' &&
+      startsWith(github.event.release.tag_name || inputs.tag, 'editor-sdk-v')
+    environment: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          registry-url: https://registry.npmjs.org
+      - name: Resolve editor SDK release metadata
+        id: release
+        run: >-
+          deno run --allow-read --allow-env --allow-write
+          scripts/editor_release_metadata.ts
+          "${{ github.event.release.tag_name || inputs.tag }}"
+      - run: deno task editor:check
+      - run: deno task editor:test
+      - run: >-
+          deno publish --dry-run --check
+          --config packages/editor-sdk/deno.json
+      - run: deno task npm:build:editor-sdk
+      - run: node scripts/npm_editor_smoke.mjs
+      - run: node scripts/npm_editor_pack_check.mjs
+      - name: Resolve editor SDK registry state
+        id: registry
+        run: >-
+          deno run --allow-net=jsr.io,registry.npmjs.org
+          --allow-read --allow-env --allow-write
+          scripts/editor_release_registry.ts
+      - name: Publish editor SDK to JSR
+        if: steps.registry.outputs.editor_jsr_exists != 'true'
+        run: >-
+          deno publish --check
+          --config packages/editor-sdk/deno.json
+      - name: Install trusted-publishing npm client
+        if: steps.registry.outputs.editor_npm_exists != 'true'
+        run: npm install --global npm@11.5.1
+      - name: Publish editor SDK to npm
+        if: steps.registry.outputs.editor_npm_exists != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: >-
+          npm publish ./npm/editor-sdk
+          --tag "${{ steps.release.outputs.npm_tag }}"
+          --access public
+          --provenance
+      - name: Verify complete editor SDK release
+        run: >-
+          deno run --allow-net=jsr.io,registry.npmjs.org
+          --allow-read scripts/editor_release_registry.ts --require-all

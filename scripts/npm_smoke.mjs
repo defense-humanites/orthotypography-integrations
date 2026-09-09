@@ -9,11 +9,11 @@ function esmTarget(entry) {
   }
 }
 
-async function importPackage(directory) {
+async function importPackage(directory, exportName = ".") {
   const packageJson = JSON.parse(
     await readFile(`npm/${directory}/package.json`, "utf8"),
   );
-  const target = esmTarget(packageJson.exports["."]);
+  const target = esmTarget(packageJson.exports[exportName]);
   assert.equal(typeof target, "string", "npm package must expose an ESM entry");
   const module = await import(pathToFileURL(`npm/${directory}/${target}`).href);
   return { module, packageJson };
@@ -46,3 +46,19 @@ assert.equal(
   astro.packageJson.version,
 );
 assert.equal(astro.packageJson.peerDependencies.astro, "^7.0.0");
+
+const editorSdk = await importPackage("editor-sdk");
+assert.equal(typeof editorSdk.module.prepareDocumentPlan, "function");
+assert.equal(typeof editorSdk.module.createMemoryDocument, "function");
+assert.equal(
+  editorSdk.packageJson.dependencies["@orthotypography/core"],
+  "0.1.0-alpha.2",
+);
+
+const googleDocs = await importPackage("editor-sdk", "./google-docs");
+assert.equal(typeof googleDocs.module.extractGoogleDocsBody, "function");
+assert.equal(typeof googleDocs.module.prepareGoogleDocsReview, "function");
+assert.equal(
+  typeof googleDocs.module.createGoogleDocsRestTransport,
+  "function",
+);
