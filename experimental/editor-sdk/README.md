@@ -9,7 +9,8 @@ This is **unpublished and experimental**. Its standalone development
 configuration uses `@orthotypography/core@0.1.0-alpha.2`, the first published
 core release that includes `applyTextChanges`. Existing workspace packages
 continue to use core `0.1.0-alpha.1`. The remaining packaging gates must be met
-before publishing this SDK.
+before publishing this SDK. The exact import is exempt from the 24-hour minimum
+dependency age so release-follow-up CI can verify it immediately.
 
 The proposed package is `@orthotypography/editor-sdk`, with `.` for the neutral
 contract and `./google-docs` for the provider-specific surface. It would use an
