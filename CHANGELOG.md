@@ -7,9 +7,19 @@ and Astro adapters (`rehype`, `satteri`, and `astro`) share one version and the
 
 ## Unreleased
 
-- Editor SDK: publish every `0.x` version under the npm `latest` tag instead of
-  `alpha`, verify the tag at the end of each release, and publish to npm through
-  trusted publishing only.
+## Editor SDK 0.1.0-alpha.1 - 2026-09-26
+
+- Upgrade from `@orthotypography/core@0.1.0-alpha.2` to `0.1.0-alpha.3`. Plans
+  prepared with the Imprimerie nationale compositions can include comma spacing
+  and, with the full composition, the `etc.` rule; their changes carry the
+  atomic high-punctuation rule IDs. On the live Google Docs fixture, the planned
+  text is unchanged but takes nine changes and 26 requests instead of eight and
+  24.
+- Publish every `0.x` version under the npm `latest` tag instead of `alpha`,
+  verify the tag at the end of each release, and publish to npm through trusted
+  publishing only. The package installs without the `@alpha` suffix.
+- Derive the version and core dependency checked in the generated npm package
+  from the Deno manifest.
 
 ## Adapters 0.1.0-alpha.2 - 2026-09-26
 

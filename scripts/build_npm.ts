@@ -26,6 +26,9 @@ function pinnedCoreVersion(specifier: string): string {
 const adapterCoreVersion = pinnedCoreVersion(
   rootConfig.imports["@orthotypography/core"],
 );
+const editorCoreVersion = pinnedCoreVersion(
+  editorSdkConfig.imports["@orthotypography/core"],
+);
 
 const packageNames: readonly PackageName[] = [
   "rehype",
@@ -292,13 +295,13 @@ await buildPackage("editor-sdk", {
     engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
-      "@orthotypography/core": "0.1.0-alpha.2",
+      "@orthotypography/core": editorCoreVersion,
     },
   },
   mappings: {
     "@orthotypography/core": {
       name: "@orthotypography/core",
-      version: "0.1.0-alpha.2",
+      version: editorCoreVersion,
     },
   },
   postBuild() {

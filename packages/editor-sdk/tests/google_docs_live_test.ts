@@ -14,8 +14,11 @@ Deno.test("live Google Docs readback matches planned text and every source style
     source.snapshot,
     source.ranges,
   );
-  assert.equal(preview.body.requests.length, 24);
-  assert.equal(plan.runs.reduce((n, run) => n + run.changes.length, 0), 8);
+  // The live run used core 0.1.0-alpha.2, whose eight changes produced 24
+  // requests. Core 0.1.0-alpha.3 reports the space after an exclamation mark as
+  // a separate atomic change; the planned text still equals the live readback.
+  assert.equal(preview.body.requests.length, 26);
+  assert.equal(plan.runs.reduce((n, run) => n + run.changes.length, 0), 9);
   assert.equal(observed.snapshot.runs.length, 5);
   for (const [i, run] of plan.runs.entries()) {
     const expected = run.preview.flatMap((node) => {

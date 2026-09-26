@@ -1,13 +1,13 @@
 {
   "name": "@orthotypography/editor-sdk",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "license": "MIT",
   "exports": {
     ".": "./mod.ts",
     "./google-docs": "./google-docs.ts"
   },
   "imports": {
-    "@orthotypography/core": "jsr:@orthotypography/core@0.1.0-alpha.2"
+    "@orthotypography/core": "jsr:@orthotypography/core@0.1.0-alpha.3"
   },
   "publish": {
     "include": ["README.md", "mod.ts", "google-docs.ts", "src/**/*.ts"]

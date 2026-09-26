@@ -63,6 +63,12 @@ function fixture() {
   return { source, ranges, plan: prepareDocumentPlan(source, rules) };
 }
 
+// A catalogue definition without dependencies, so that a synthetic rule can run
+// alone whatever the order of the core composition.
+const standaloneDefinition =
+  rules.find(({ definition }) =>
+    definition.id === "punctuation.exclamation.nnbsp-before"
+  )!.definition;
 Deno.test("Google Docs requests reproduce previews across nodes, runs and tabs", () => {
   const { source, ranges, plan } = fixture();
   const preview = previewGoogleDocsRequests(plan, source, ranges);
@@ -214,7 +220,7 @@ Deno.test("Google Docs compiler rejects text stripped or structurally changed by
   };
   for (const replacement of ["\n", "\u0000", "\ue000", "\ufffc", "\ud800"]) {
     const rule: RuntimeRule = {
-      definition: rules[rules.length - 1].definition,
+      definition: standaloneDefinition,
       apply: (value, context) =>
         context.mode === "lint" ? { value } : ({
           value: replacement,
@@ -273,7 +279,7 @@ Deno.test("Google Docs refuses a correction splitting an astral character", () =
     runs: [{ id: "p", locale: "fr-FR", nodes: [{ id: "n", value: "😀" }] }],
   };
   const rule: RuntimeRule = {
-    definition: rules[rules.length - 1].definition,
+    definition: standaloneDefinition,
     apply: (value, context) =>
       context.mode === "lint" ? { value } : ({
         value: "😁",

@@ -92,5 +92,15 @@ conflits et relecture. Il reste indépendant des connecteurs de cette session et
 ne reconstruit jamais un plan ancien après un conflit. Un adaptateur REST Google
 Docs isolé le complète désormais avec `fetch` et un fournisseur de jeton
 injectés. Il reste à valider cet adaptateur directement contre l'API avec des
-identifiants fournis par l'application hôte. Aucun paquet n'a été publié et
-aucun adaptateur natif général n'est annoncé.
+identifiants fournis par l'application hôte. Le SDK a depuis été publié en
+`0.1.0-alpha.0` ; aucun adaptateur natif général n'est annoncé.
+
+## Portée après le passage au cœur `0.1.0-alpha.3`
+
+Ce compte rendu reste attaché au cœur `0.1.0-alpha.2`. Avec
+`0.1.0-alpha.3`, l'espace après un point d'exclamation devient une correction
+atomique distincte : les fixtures hors ligne de ce scénario produisent neuf
+corrections et 26 requêtes au lieu de huit et 24, pour un texte planifié
+toujours identique à la relecture réelle, styles compris. Ce lot de 26 requêtes
+n'a pas été exécuté dans Google Docs ; seule la validation hors ligne couvre le
+SDK `0.1.0-alpha.1`.
