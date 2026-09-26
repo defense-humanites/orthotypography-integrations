@@ -6,8 +6,7 @@ editor transaction. The module contains no editor API or Deno runtime
 dependency.
 
 This is an alpha release. Its API may change before `1.0.0`. It uses
-`@orthotypography/core@0.1.0-alpha.2`, the first published core release that
-includes `applyTextChanges`.
+`@orthotypography/core@0.1.0-alpha.3`.
 
 The package exposes `.` for the neutral contract and `./google-docs` for the
 provider-specific surface. It uses an independent version from the Astro
@@ -24,7 +23,7 @@ npm install @orthotypography/editor-sdk
 With Deno or another JSR client:
 
 ```sh
-deno add jsr:@orthotypography/editor-sdk@0.1.0-alpha.0
+deno add jsr:@orthotypography/editor-sdk@0.1.0-alpha.1
 ```
 
 ## Prepare and validate
@@ -244,7 +243,8 @@ and committing a review preserves its mode in the result type.
 
 If the host cannot guarantee an atomic conditional commit, this contract
 supports preview and diagnostics only until the adapter supplies an equivalent
-mechanism. No native adapter is implemented here yet.
+mechanism. The in-memory reference adapter and the `./google-docs` entry point
+implement this contract.
 
 ## Development
 

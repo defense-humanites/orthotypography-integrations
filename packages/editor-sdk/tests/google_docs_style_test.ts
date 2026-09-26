@@ -48,6 +48,12 @@ function fixture(style: Record<string, unknown> = {}) {
   return { response, ...extractGoogleDocsBody(response, "fr-FR") };
 }
 
+// A catalogue definition without dependencies, so that a synthetic rule can run
+// alone whatever the order of the core composition.
+const standaloneDefinition =
+  rules.find(({ definition }) =>
+    definition.id === "punctuation.exclamation.nnbsp-before"
+  )!.definition;
 Deno.test("styled preview restores source-node styles after each insertion", () => {
   const { snapshot, ranges } = fixture({ italic: true, bold: false });
   const plan = prepareDocumentPlan(snapshot, rules);
@@ -215,7 +221,7 @@ Deno.test("styled preview rejects paragraph boundaries including after earlier d
         value.slice(edit.end);
     }
     const rule: RuntimeRule = {
-      definition: rules[rules.length - 1].definition,
+      definition: standaloneDefinition,
       apply: (original, context) =>
         context.mode === "lint" ? { value: original } : { value, edits },
     };

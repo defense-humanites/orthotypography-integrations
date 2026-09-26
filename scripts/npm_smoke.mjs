@@ -5,6 +5,11 @@ import { pathToFileURL } from "node:url";
 const rootConfig = JSON.parse(await readFile("deno.json", "utf8"));
 const adapterCoreVersion = rootConfig.imports["@orthotypography/core"]
   .replace(/^jsr:@orthotypography\/core@/, "");
+const editorConfig = JSON.parse(
+  await readFile("packages/editor-sdk/deno.json", "utf8"),
+);
+const editorCoreVersion = editorConfig.imports["@orthotypography/core"]
+  .replace(/^jsr:@orthotypography\/core@/, "");
 
 function esmTarget(entry) {
   if (typeof entry === "string") return entry;
@@ -56,7 +61,7 @@ assert.equal(typeof editorSdk.module.prepareDocumentPlan, "function");
 assert.equal(typeof editorSdk.module.createMemoryDocument, "function");
 assert.equal(
   editorSdk.packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.2",
+  editorCoreVersion,
 );
 
 const googleDocs = await importPackage("editor-sdk", "./google-docs");

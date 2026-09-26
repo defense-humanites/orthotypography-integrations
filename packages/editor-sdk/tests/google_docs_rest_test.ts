@@ -42,7 +42,7 @@ Deno.test("REST adapter completes read-plan-write-read verification", async () =
     { preserveStyles: true },
   );
   assert.equal(result.status, "applied");
-  assert.equal(result.preview.body.requests.length, 24);
+  assert.equal(result.preview.body.requests.length, 26);
   assert.deepEqual(calls.map((call) => call.init?.method), [
     "GET",
     "POST",

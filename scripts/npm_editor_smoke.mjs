@@ -12,6 +12,9 @@ function esmTarget(entry) {
 const packageJson = JSON.parse(
   await readFile("npm/editor-sdk/package.json", "utf8"),
 );
+const editorConfig = JSON.parse(
+  await readFile("packages/editor-sdk/deno.json", "utf8"),
+);
 
 async function importEntry(exportName) {
   const target = esmTarget(packageJson.exports[exportName]);
@@ -29,8 +32,11 @@ assert.equal(typeof googleDocs.prepareGoogleDocsReview, "function");
 assert.equal(typeof googleDocs.createGoogleDocsRestTransport, "function");
 
 assert.equal(packageJson.name, "@orthotypography/editor-sdk");
-assert.equal(packageJson.version, "0.1.0-alpha.0");
+assert.equal(packageJson.version, editorConfig.version);
 assert.equal(
   packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.2",
+  editorConfig.imports["@orthotypography/core"].replace(
+    /^jsr:@orthotypography\/core@/,
+    "",
+  ),
 );
