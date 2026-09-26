@@ -5,8 +5,9 @@
 après la fusion de la [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3) : publication npm de confiance sans jeton,
 tag npm `latest` pour toute version `0.x` et guide de contribution. Le cœur
 `0.1.0-alpha.3` est publié. La [PR nº 4](https://github.com/defense-humanites/orthotypography-integrations/pull/4) traduit le `CHANGELOG` et la
-[PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) prépare les adaptateurs `0.1.0-alpha.2` sur ce cœur ; aucune
-n’est fusionnée ni publiée à cette date. Les tâches ci-dessous sont proposées,
+[PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) prépare les adaptateurs `0.1.0-alpha.2` sur ce cœur, et la
+[PR nº 6](https://github.com/defense-humanites/orthotypography-integrations/pull/6) le SDK `0.1.0-alpha.1` ; aucune n’est fusionnée ni publiée à
+cette date. Les tâches ci-dessous sont proposées,
 sans engagement de date.
 
 ## État acquis
@@ -16,11 +17,11 @@ sans engagement de date.
 | Markdown / Astro           | Rehype, Sätteri et Astro publiés en `0.1.0-alpha.1`, cible Astro 7 ; processeur configuré préservé, diagnostics et changements localisés exposés | [Release](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/v0.1.0-alpha.1), [configuration](../deno.json)                                 |
 | Dépendance des adaptateurs | Cœur `0.1.0-alpha.1` publié ; passage au cœur `0.1.0-alpha.3` préparé dans la [PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5), testé hors ligne ; mise à niveau indépendante du SDK | [Configuration](../deno.json)                                                                                                                                           |
 | SDK neutre                 | `@orthotypography/editor-sdk@0.1.0-alpha.0` publié ; instantanés et plans immuables, validation complète, adaptateur atomique en mémoire         | [Release SDK](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/editor-sdk-v0.1.0-alpha.0), [README SDK](../packages/editor-sdk/README.md) |
-| Dépendance du SDK          | Cœur `0.1.0-alpha.2`, contenant `applyTextChanges`                                                                                               | [Manifeste SDK](../packages/editor-sdk/deno.json)                                                                                                                       |
+| Dépendance du SDK          | Cœur `0.1.0-alpha.2` publié ; passage au cœur `0.1.0-alpha.3` et SDK `0.1.0-alpha.1` préparés dans la [PR nº 6](https://github.com/defense-humanites/orthotypography-integrations/pull/6), testés hors ligne | [Manifeste SDK](../packages/editor-sdk/deno.json)                                                                                                                       |
 | Google Docs                | Extraction des paragraphes et onglets imbriqués, coordonnées UTF-16, compilation conditionnelle, restauration limitée des styles                 | [Périmètre](google-docs-preview.md), [README SDK](../packages/editor-sdk/README.md)                                                                                     |
 | Transport et révision      | Transport REST injecté, relecture vérifiée, préparation / validation / abandon d'une révision proposée ; objets à usage unique                   | [README SDK](../packages/editor-sdk/README.md)                                                                                                                          |
-| Tests SDK                  | 67 tests annoncés pour la release alpha.0, vérification des deux points d'entrée npm sous Node                                                   | Release SDK ; ce nombre n'est pas une nouvelle exécution                                                                                                                |
-| Validation réelle          | Scénario limité exécuté via le connecteur Google Drive le 6 septembre ; transport REST direct encore à valider en conditions réelles             | [Compte rendu](google-docs-live-validation.md)                                                                                                                          |
+| Tests SDK                  | 67 tests annoncés pour la release alpha.0 ; 67 tests exécutés hors ligne contre le cœur `0.1.0-alpha.3` sur la branche de préparation d'alpha.1 | Release SDK ; ce nombre n'est pas une nouvelle exécution                                                                                                                |
+| Validation réelle          | Scénario limité exécuté via le connecteur Google Drive le 6 septembre avec le cœur `0.1.0-alpha.2`, non rejoué avec `0.1.0-alpha.3` ; transport REST direct encore à valider en conditions réelles | [Compte rendu](google-docs-live-validation.md)                                                                                                                          |
 
 Le SDK est dans `packages/editor-sdk`. L'ancien état expérimental non publié ne
 décrit plus la situation courante. Les deux points d'entrée `.` et
