@@ -48,8 +48,10 @@ partielle sont hors du contrat actuel.
    README SDK et les notes documentaires. Traduire en anglais la prose hors de
    `docs/` et auditer les autres fichiers. `RELEASING.md` est traduit dans la
    [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3),
-   qui retire aussi le jeton npm des workflows de publication ; reste notamment
-   `CHANGELOG.md`. Terminé lorsque
+   qui retire aussi le jeton npm des workflows de publication ; `CHANGELOG.md`
+   est traduit et réparti par voie de release dans la
+   [PR nº 4](https://github.com/defense-humanites/orthotypography-integrations/pull/4).
+   Terminé lorsque
    l'état publié, les limites et la politique linguistique concordent sans
    modifier les données de test.
 2. **Markdown / Astro : vérifier la prochaine dépendance au cœur.** Évaluer
