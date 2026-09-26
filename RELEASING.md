@@ -71,8 +71,8 @@ entry points are always published together in one package.
 
 ## npm distribution tags
 
-The workflows derive the npm distribution tag from the version: `alpha`,
-`beta`, or `next` for prereleases and `latest` for stable versions. Publishing a
+The workflows derive the npm distribution tag from the version: `alpha`, `beta`,
+or `next` for prereleases and `latest` for stable versions. Publishing a
 prerelease therefore never moves `latest`, and npm trusted publishing cannot
 change distribution tags.
 
