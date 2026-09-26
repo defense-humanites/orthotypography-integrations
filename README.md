@@ -35,13 +35,19 @@ document correction plans and validates revisions and source context before
 native editor transactions. Its Google Docs subpath adds extraction, guarded
 review and an authentication-neutral REST transport.
 
-## License
-
-[MIT](./LICENSE) License. Contributions are accepted under the same license; see [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
-Copyright (c) 2026 Antoine Boquet.
-
 ```sh
 deno task editor:check
 deno task editor:test
 ```
+
+## Contributing
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the development setup, the Deno
+tasks, and the checks expected for each kind of change.
+
+## License
+
+[MIT](./LICENSE) License. Contributions are accepted under the same license; see
+[`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+Copyright (c) 2026 Antoine Boquet.
