@@ -7,8 +7,25 @@ import rehypeConfig from "../packages/rehype/deno.json" with { type: "json" };
 import satteriConfig from "../packages/satteri/deno.json" with {
   type: "json",
 };
+import rootConfig from "../deno.json" with { type: "json" };
 
 type PackageName = "rehype" | "satteri" | "astro" | "editor-sdk";
+
+/** Reads the exact core version pinned by a Deno import specifier. */
+function pinnedCoreVersion(specifier: string): string {
+  const prefix = "jsr:@orthotypography/core@";
+  const version = specifier.startsWith(prefix)
+    ? specifier.slice(prefix.length)
+    : "";
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
+    throw new Error(`Core must be pinned to an exact version: ${specifier}`);
+  }
+  return version;
+}
+
+const adapterCoreVersion = pinnedCoreVersion(
+  rootConfig.imports["@orthotypography/core"],
+);
 
 const packageNames: readonly PackageName[] = [
   "rehype",
@@ -71,13 +88,13 @@ await buildPackage("rehype", {
     engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
-      "@orthotypography/core": "0.1.0-alpha.1",
+      "@orthotypography/core": adapterCoreVersion,
     },
   },
   mappings: {
     "@orthotypography/core": {
       name: "@orthotypography/core",
-      version: "0.1.0-alpha.1",
+      version: adapterCoreVersion,
     },
   },
   postBuild() {
@@ -126,14 +143,14 @@ await buildPackage("satteri", {
     engines: { node: ">=18" },
     sideEffects: false,
     dependencies: {
-      "@orthotypography/core": "0.1.0-alpha.1",
+      "@orthotypography/core": adapterCoreVersion,
       "satteri": "^0.10.5",
     },
   },
   mappings: {
     "@orthotypography/core": {
       name: "@orthotypography/core",
-      version: "0.1.0-alpha.1",
+      version: adapterCoreVersion,
     },
     "satteri": {
       name: "satteri",

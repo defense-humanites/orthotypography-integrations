@@ -14,7 +14,7 @@ npm install @orthotypography/core @orthotypography/satteri satteri
 With Deno or another JSR client:
 
 ```sh
-deno add jsr:@orthotypography/core@0.1.0-alpha.1 jsr:@orthotypography/satteri@0.1.0-alpha.1 npm:satteri@0.10.5
+deno add jsr:@orthotypography/core@0.1.0-alpha.3 jsr:@orthotypography/satteri@0.1.0-alpha.2 npm:satteri@0.10.5
 ```
 
 ## Usage

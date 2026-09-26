@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
+const rootConfig = JSON.parse(await readFile("deno.json", "utf8"));
+const adapterCoreVersion = rootConfig.imports["@orthotypography/core"]
+  .replace(/^jsr:@orthotypography\/core@/, "");
+
 function esmTarget(entry) {
   if (typeof entry === "string") return entry;
   if (entry && typeof entry === "object") {
@@ -23,14 +27,14 @@ const rehype = await importPackage("rehype");
 assert.equal(typeof rehype.module.rehypeOrthotypography, "function");
 assert.equal(
   rehype.packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.1",
+  adapterCoreVersion,
 );
 
 const satteri = await importPackage("satteri");
 assert.equal(typeof satteri.module.satteriOrthotypography, "function");
 assert.equal(
   satteri.packageJson.dependencies["@orthotypography/core"],
-  "0.1.0-alpha.1",
+  adapterCoreVersion,
 );
 assert.equal(satteri.packageJson.dependencies.satteri, "^0.10.5");
 
