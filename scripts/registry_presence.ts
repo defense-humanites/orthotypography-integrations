@@ -1,3 +1,5 @@
+import { npmDistTag } from "./npm_dist_tag.ts";
+
 export interface RegistryPresence {
   readonly jsr: boolean;
   readonly npm: boolean;
@@ -85,4 +87,45 @@ export async function fetchRegistryPresence(
     jsr: hasVersion(jsrMetadata, version, "JSR"),
     npm,
   };
+}
+
+/** Resolves the npm distribution tags of a package. */
+export async function fetchNpmDistTags(
+  packageName: string,
+  fetcher: RegistryFetcher = fetch,
+): Promise<Readonly<Record<string, string>>> {
+  const response = await fetcher(
+    `https://registry.npmjs.org/-/package/${
+      encodeURIComponent(packageName)
+    }/dist-tags`,
+    {
+      cache: "no-store",
+      headers: {
+        accept: "application/json",
+        "cache-control": "no-cache",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error(
+      `npm registry returned ${response.status} ${response.statusText}`,
+    );
+  }
+  const tags: unknown = await response.json();
+  if (
+    typeof tags !== "object" || tags === null || Array.isArray(tags) ||
+    Object.values(tags).some((value) => typeof value !== "string")
+  ) {
+    throw new Error("Invalid npm dist-tags metadata");
+  }
+  return tags as Readonly<Record<string, string>>;
+}
+
+/** Resolves the version npm reports for the tag selected for a version. */
+export async function fetchSelectedNpmTag(
+  packageName: string,
+  version: string,
+  fetcher: RegistryFetcher = fetch,
+): Promise<string | undefined> {
+  return (await fetchNpmDistTags(packageName, fetcher))[npmDistTag(version)];
 }

@@ -1,3 +1,4 @@
+import { npmDistTag } from "./npm_dist_tag.ts";
 import astroConfig from "../packages/astro/deno.json" with { type: "json" };
 import rehypeConfig from "../packages/rehype/deno.json" with { type: "json" };
 import satteriConfig from "../packages/satteri/deno.json" with {
@@ -19,14 +20,7 @@ if (tag !== expectedTag) {
   throw new Error(`Release tag ${tag} does not match ${expectedTag}.`);
 }
 
-const prerelease = rehypeConfig.version.split("-", 2)[1];
-const npmTag = prerelease === undefined
-  ? "latest"
-  : prerelease.startsWith("beta")
-  ? "beta"
-  : prerelease.startsWith("alpha")
-  ? "alpha"
-  : "next";
+const npmTag = npmDistTag(rehypeConfig.version);
 const outputPath = Deno.env.get("GITHUB_OUTPUT");
 if (outputPath === undefined) {
   throw new Error("GITHUB_OUTPUT is not available.");

@@ -71,18 +71,23 @@ entry points are always published together in one package.
 
 ## npm distribution tags
 
-The workflows derive the npm distribution tag from the version: `alpha`, `beta`,
-or `next` for prereleases and `latest` for stable versions. Publishing a
-prerelease therefore never moves `latest`, and npm trusted publishing cannot
-change distribution tags.
+npm trusted publishing cannot change distribution tags after publication, so
+`scripts/npm_dist_tag.ts` selects the tag passed to `npm publish` in both lanes:
 
-Until a stable version exists, `latest` follows the newest published alpha so
-that an unversioned `npm install` does not resolve to an obsolete preview. After
-each authorized prerelease, a maintainer moves it manually for every package
-published by the release:
+- every `0.x` version, prereleases included, is published as `latest`, so that
+  an unversioned `npm install` resolves to the newest preview;
+- from `1.0.0`, stable versions are published as `latest`, and prereleases as
+  `alpha`, `beta`, or `next`, so they never displace a stable version.
+
+The final workflow step fails unless npm reports the selected tag on each
+published version. An explicit `--tag latest` also moves `latest` to a lower
+version, so never publish an older `0.x` version after a newer one.
+
+The `alpha` tags used by the first previews are no longer updated. Removing them
+is a manual registry operation, for example:
 
 ```sh
-npm dist-tag add @orthotypography/<package>@<version> latest
+npm dist-tag rm @orthotypography/rehype alpha
 ```
 
 ## Partial publication recovery
@@ -90,7 +95,7 @@ npm dist-tag add @orthotypography/<package>@<version> latest
 Before each write, the workflows check the exact version of each package on JSR
 and npm separately. A version already present is left untouched; only the
 missing package-registry pairs are published. The final step waits until every
-expected version is visible.
+expected version is visible with its selected npm distribution tag.
 
 To resume a partial publication, rerun the failed workflow or dispatch `Publish`
 or `Publish editor SDK` manually with the existing release tag. The tag must

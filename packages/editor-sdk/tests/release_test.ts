@@ -7,11 +7,18 @@ Deno.test("editor release tags are independent from adapter tags", () => {
       "editor-sdk-v0.1.0-alpha.0",
       "0.1.0-alpha.0",
     ),
-    { version: "0.1.0-alpha.0", npmTag: "alpha" },
+    { version: "0.1.0-alpha.0", npmTag: "latest" },
   );
   assert.deepEqual(
     resolveEditorReleaseMetadata("editor-sdk-v1.0.0", "1.0.0"),
     { version: "1.0.0", npmTag: "latest" },
+  );
+  assert.deepEqual(
+    resolveEditorReleaseMetadata(
+      "editor-sdk-v1.0.0-beta.1",
+      "1.0.0-beta.1",
+    ),
+    { version: "1.0.0-beta.1", npmTag: "beta" },
   );
   assert.throws(
     () => resolveEditorReleaseMetadata("v0.1.0-alpha.0", "0.1.0-alpha.0"),

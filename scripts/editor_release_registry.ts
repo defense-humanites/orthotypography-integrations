@@ -1,7 +1,11 @@
 import editorSdkConfig from "../packages/editor-sdk/deno.json" with {
   type: "json",
 };
-import { fetchRegistryPresence } from "./registry_presence.ts";
+import { npmDistTag } from "./npm_dist_tag.ts";
+import {
+  fetchRegistryPresence,
+  fetchSelectedNpmTag,
+} from "./registry_presence.ts";
 
 async function presence() {
   return await fetchRegistryPresence(
@@ -30,10 +34,15 @@ async function requireCompleteRelease(): Promise<void> {
   const attempts = 30;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     const state = await presence();
-    if (state.jsr && state.npm) return;
+    const tagged = state.npm
+      ? await fetchSelectedNpmTag(editorSdkConfig.name, editorSdkConfig.version)
+      : undefined;
+    if (state.jsr && state.npm && tagged === editorSdkConfig.version) return;
     if (attempt === attempts) {
       throw new Error(
-        `Incomplete release: ${editorSdkConfig.name}@${editorSdkConfig.version}(JSR=${state.jsr}, npm=${state.npm})`,
+        `Incomplete release: ${editorSdkConfig.name}@${editorSdkConfig.version}(JSR=${state.jsr}, npm=${state.npm}, npm ${
+          npmDistTag(editorSdkConfig.version)
+        }=${tagged ?? "unverified"})`,
       );
     }
     await new Promise((resolve) => setTimeout(resolve, 10_000));

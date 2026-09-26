@@ -5,8 +5,10 @@ import satteriConfig from "../packages/satteri/deno.json" with {
 };
 import {
   fetchRegistryPresence,
+  fetchSelectedNpmTag,
   type RegistryPresence,
 } from "./registry_presence.ts";
+import { npmDistTag } from "./npm_dist_tag.ts";
 
 export { fetchRegistryPresence } from "./registry_presence.ts";
 
@@ -59,12 +61,23 @@ async function requireCompleteRelease(): Promise<void> {
   const attempts = 30;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     const states = await allPresence();
-    if (states.every(([, presence]) => presence.jsr && presence.npm)) return;
+    const tagged = await Promise.all(
+      states.map(([pkg, presence]) =>
+        presence.npm ? fetchSelectedNpmTag(pkg.name, pkg.version) : undefined
+      ),
+    );
+    if (
+      states.every(([pkg, presence], index) =>
+        presence.jsr && presence.npm && tagged[index] === pkg.version
+      )
+    ) return;
     if (attempt === attempts) {
       throw new Error(
         `Incomplete release: ${
-          states.map(([pkg, presence]) =>
-            `${pkg.name}@${pkg.version}(JSR=${presence.jsr}, npm=${presence.npm})`
+          states.map(([pkg, presence], index) =>
+            `${pkg.name}@${pkg.version}(JSR=${presence.jsr}, npm=${presence.npm}, npm ${
+              npmDistTag(pkg.version)
+            }=${tagged[index] ?? "unverified"})`
           ).join(", ")
         }`,
       );
