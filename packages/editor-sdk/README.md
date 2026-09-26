@@ -18,7 +18,7 @@ records that decision.
 ## Installation
 
 ```sh
-npm install @orthotypography/editor-sdk@alpha
+npm install @orthotypography/editor-sdk
 ```
 
 With Deno or another JSR client:

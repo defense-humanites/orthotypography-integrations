@@ -8,7 +8,7 @@ This is an alpha release. Its API may change before `1.0.0`.
 ## Installation
 
 ```sh
-npm install @orthotypography/core@alpha @orthotypography/rehype@alpha
+npm install @orthotypography/core @orthotypography/rehype
 ```
 
 With Deno or another JSR client:

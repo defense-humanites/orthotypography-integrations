@@ -46,7 +46,10 @@ partielle sont hors du contrat actuel.
 1. **Cohérence documentaire et linguistique.** Actualiser les mentions « non
    publié » et « aucun adaptateur natif » devenues obsolètes, notamment dans le
    README SDK et les notes documentaires. Traduire en anglais la prose hors de
-   `docs/`, dont `RELEASING.md`, et auditer les autres fichiers. Terminé lorsque
+   `docs/` et auditer les autres fichiers. `RELEASING.md` est traduit dans la
+   [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3),
+   qui retire aussi le jeton npm des workflows de publication ; reste notamment
+   `CHANGELOG.md`. Terminé lorsque
    l'état publié, les limites et la politique linguistique concordent sans
    modifier les données de test.
 2. **Markdown / Astro : vérifier la prochaine dépendance au cœur.** Évaluer

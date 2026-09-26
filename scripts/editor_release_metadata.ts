@@ -1,3 +1,4 @@
+import { npmDistTag } from "./npm_dist_tag.ts";
 import editorSdkConfig from "../packages/editor-sdk/deno.json" with {
   type: "json",
 };
@@ -16,15 +17,7 @@ export function resolveEditorReleaseMetadata(
   if (tag !== expectedTag) {
     throw new Error(`Release tag ${tag} does not match ${expectedTag}.`);
   }
-  const prerelease = version.split("-", 2)[1];
-  const npmTag = prerelease === undefined
-    ? "latest"
-    : prerelease.startsWith("beta")
-    ? "beta"
-    : prerelease.startsWith("alpha")
-    ? "alpha"
-    : "next";
-  return { version, npmTag };
+  return { version, npmTag: npmDistTag(version) };
 }
 
 if (import.meta.main) {
