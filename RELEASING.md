@@ -1,81 +1,100 @@
-# Publication
+# Releasing
 
-Chaque paquet conserve le même nom et la même version sur JSR et npm. La
-publication est déclenchée par une release GitHub et utilise la publication de
-confiance. Elle reste bloquée tant que la variable de dépôt `PUBLISH_ENABLED`
-n’est pas égale à `true`.
+Publishing requires explicit authorization covering the release. Merging a pull
+request, a green CI run, or a documentation change does not authorize
+publication.
 
-Deux voies de release sont indépendantes :
+Each package keeps the same name and version on JSR and npm. Publication is
+triggered by a published GitHub release and stays blocked while the repository
+variable `PUBLISH_ENABLED` is not `true`.
 
-- `v<version>` publie ensemble `rehype`, `satteri` et `astro` avec leur version
-  commune via `publish.yml` ;
-- `editor-sdk-v<version>` publie uniquement `editor-sdk` via
-  `publish-editor-sdk.yml`.
+The repository has two independent release lanes:
 
-Une release d'une voie ne vérifie, ne construit et ne publie aucun paquet de
-l'autre voie.
+- `v<version>` publishes `rehype`, `satteri`, and `astro` together at their
+  shared version through `.github/workflows/publish.yml`;
+- `editor-sdk-v<version>` publishes only `editor-sdk` through
+  `.github/workflows/publish-editor-sdk.yml`.
 
-## Adaptateurs Astro
+A release in one lane never checks, builds, or publishes a package of the other
+lane.
 
-Avant la première publication :
+## Publication setup
 
-1. publier une version compatible de `@orthotypography/core` ;
-2. valider les métadonnées JSR et npm ;
-3. créer les paquets `@orthotypography/rehype`, `@orthotypography/satteri` et
-   `@orthotypography/astro` sur JSR ;
-4. créer une release portant la version commune aux trois paquets.
+- Each package is linked to this repository on JSR, which publishes with the
+  workflow's short-lived OIDC token; no JSR secret is used.
+- Each npm package publishes through trusted publishing (OIDC). The trusted
+  publisher of `@orthotypography/rehype`, `@orthotypography/satteri`, and
+  `@orthotypography/astro` is `publish.yml`; the trusted publisher of
+  `@orthotypography/editor-sdk` is `publish-editor-sdk.yml`. Both use the
+  `release` environment. No npm token is stored in the repository or its
+  environments. The workflows install npm `11.5.1` or later on Node `22.14.0` or
+  later for this purpose, and npm attaches provenance to each version.
+- Keep the `release` environment protected and restricted to release tags.
+- Keep `PUBLISH_ENABLED` absent or `false` outside an authorized publication
+  window.
 
-Les paquets npm sont créés par leur première publication et n’ont pas à être
-réservés. Comme leur publication de confiance ne peut être configurée qu’après
-leur création, la première release utilise le secret d’environnement
-`NPM_TOKEN`, contenant un jeton granulaire avec contournement de la 2FA. Le
-workflow ne l’expose qu’aux trois commandes `npm publish`. Après cette release,
-configurer `.github/workflows/publish.yml` et l’environnement `release` comme
-éditeur de confiance de chaque paquet, puis supprimer `NPM_TOKEN` ; les releases
-suivantes utiliseront automatiquement OIDC.
+Renaming a Publish workflow file or the `release` environment breaks npm trusted
+publishing until the affected packages' trusted publishers are updated on npm.
 
-Les adaptateurs `rehype` et `satteri` sont toujours publiés avant `astro`, qui
-dépend des deux. Les trois paquets conservent une version commune pendant la
-phase alpha.
+## Markdown and Astro adapters
 
-## Reprise d’une publication partielle
+1. Open a pull request that sets the same version in
+   `packages/rehype/deno.json`, `packages/satteri/deno.json`, and
+   `packages/astro/deno.json`, and updates `CHANGELOG.md`, the package table in
+   `README.md`, and `docs/roadmap.md`. The adapters depend on a published core
+   version declared in the root `deno.json`.
+2. Before merging, run `deno task check`, `deno task test`,
+   `deno task publish:check`, and `deno task npm:check`, and confirm that CI
+   passes.
+3. Once publication is authorized, create a GitHub release tagged `v<version>`
+   on the merged commit, marked as a prerelease for prerelease versions, and set
+   `PUBLISH_ENABLED` to `true` for the publication window only.
 
-Avant chaque écriture, le workflow vérifie séparément la version exacte de
-chaque paquet sur JSR et npm. Une version déjà présente est laissée intacte ;
-seuls les couples paquet-registre manquants sont publiés. La vérification finale
-attend que les six versions soient visibles.
+The workflow requires the three versions to match the tag. `rehype` and
+`satteri` are always published before `astro`, which depends on both. The three
+packages keep a shared version during the alpha series.
 
-Pour reprendre une publication, relancer le workflow échoué ou déclencher
-manuellement `Publish` avec le tag de release existant. Le tag doit toujours
-correspondre à la version commune déclarée dans les trois fichiers `deno.json`.
+## Editor SDK
 
-## SDK pour éditeurs
+`@orthotypography/editor-sdk` has its own version. Its `.` and `./google-docs`
+entry points are always published together in one package.
 
-`@orthotypography/editor-sdk` possède sa propre version. Ses deux points
-d'entrée, `.` et `./google-docs`, sont toujours publiés ensemble dans un seul
-paquet. Pour préparer une release :
+1. Open a pull request that updates `packages/editor-sdk/deno.json` without
+   changing the adapter versions, and updates `CHANGELOG.md`, `README.md`, and
+   `docs/roadmap.md`.
+2. Before merging, run `deno task editor:check`, `deno task editor:test`,
+   `deno task npm:build:editor-sdk`, `node scripts/npm_editor_smoke.mjs`, and
+   `node scripts/npm_editor_pack_check.mjs`, and confirm that CI passes.
+3. Once publication is authorized, create a GitHub release with the exact tag
+   `editor-sdk-v<version>`, for example `editor-sdk-v0.1.0-alpha.1`, and set
+   `PUBLISH_ENABLED` to `true` for the publication window only.
 
-1. mettre à jour `packages/editor-sdk/deno.json` sans modifier les versions des
-   trois adaptateurs ;
-2. exécuter `deno task editor:check`, `deno task editor:test`,
-   `deno task npm:build:editor-sdk`, `node scripts/npm_editor_smoke.mjs` et les
-   contrôles d'archives avec `node scripts/npm_editor_pack_check.mjs` ;
-3. créer une release avec le tag exact `editor-sdk-v<version>`, par exemple
-   `editor-sdk-v0.1.0-alpha.0`.
+## npm distribution tags
 
-Avant la première publication JSR, créer `@orthotypography/editor-sdk` dans le
-scope existant et lier le paquet au dépôt GitHub
-`defense-humanites/orthotypography-integrations`. La publication utilise alors
-le jeton OIDC éphémère du workflow, sans secret JSR.
+The workflows derive the npm distribution tag from the version: `alpha`,
+`beta`, or `next` for prereleases and `latest` for stable versions. Publishing a
+prerelease therefore never moves `latest`, and npm trusted publishing cannot
+change distribution tags.
 
-Avant la première publication npm, le secret d'environnement `NPM_TOKEN` doit
-autoriser la création du paquet public dans le scope `@orthotypography`. Après
-cette première publication, configurer `publish-editor-sdk.yml` avec
-l'environnement `release` comme éditeur de confiance du paquet npm et autoriser
-explicitement l'action directe `npm publish`. Le jeton d'amorçage pourra alors
-être retiré du workflow et révoqué.
+Until a stable version exists, `latest` follows the newest published alpha so
+that an unversioned `npm install` does not resolve to an obsolete preview. After
+each authorized prerelease, a maintainer moves it manually for every package
+published by the release:
 
-Le workflow vérifie séparément la présence exacte du SDK sur JSR et npm. Pour
-reprendre une publication partielle, relancer le workflow échoué ou déclencher
-manuellement `Publish editor SDK` avec le tag existant ; une version déjà
-présente n'est jamais republiée.
+```sh
+npm dist-tag add @orthotypography/<package>@<version> latest
+```
+
+## Partial publication recovery
+
+Before each write, the workflows check the exact version of each package on JSR
+and npm separately. A version already present is left untouched; only the
+missing package-registry pairs are published. The final step waits until every
+expected version is visible.
+
+To resume a partial publication, rerun the failed workflow or dispatch `Publish`
+or `Publish editor SDK` manually with the existing release tag. The tag must
+still match the versions declared in the package manifests, and
+`PUBLISH_ENABLED` must be `true`. Never increment a version merely to recover a
+missing registry, and verify that an existing version belongs to this release
+before resuming: the workflows treat it as immutable and never republish it.
