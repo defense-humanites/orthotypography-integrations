@@ -7,10 +7,22 @@ and Astro adapters (`rehype`, `satteri`, and `astro`) share one version and the
 
 ## Unreleased
 
-- Publish every `0.x` version of all packages under the npm `latest` tag instead
-  of `alpha`, and verify the tag at the end of each release. The packages
-  install without the `@alpha` suffix.
-- Publish to npm through trusted publishing only, without a long-lived token.
+- Editor SDK: publish every `0.x` version under the npm `latest` tag instead of
+  `alpha`, verify the tag at the end of each release, and publish to npm through
+  trusted publishing only.
+
+## Adapters 0.1.0-alpha.2 - 2026-09-26
+
+- Upgrade `rehype`, `satteri`, and `astro` from
+  `@orthotypography/core@0.1.0-alpha.1` to `0.1.0-alpha.3`. Hosts can use the
+  new core rules, and `onChange` and `orthotypographyChanges` report the atomic
+  high-punctuation rule IDs. Core compositions such as
+  `IMPRIMERIE_NATIONALE_RULES` can produce more changes than before.
+- Publish every `0.x` version under the npm `latest` tag instead of `alpha`,
+  verify the tag at the end of each release, and publish to npm through trusted
+  publishing only. The packages install without the `@alpha` suffix.
+- Derive the core version declared in the generated npm packages from the Deno
+  manifest instead of repeating it in the build and smoke scripts.
 
 ## Editor SDK 0.1.0-alpha.0 - 2026-09-09
 

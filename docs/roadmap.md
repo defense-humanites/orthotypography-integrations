@@ -1,19 +1,20 @@
 # Feuille de route des intégrations
 
-État vérifié le 9 septembre 2026 sur
-[`cd374d62`](https://github.com/defense-humanites/orthotypography-integrations/commit/cd374d6221e5089441660321ad09529d70dba332),
-avant l'ajout de cette feuille de route. Les PR
-[#1](https://github.com/defense-humanites/orthotypography-integrations/pull/1)
-et
-[#2](https://github.com/defense-humanites/orthotypography-integrations/pull/2)
-sont fusionnées. Les tâches ci-dessous sont proposées, sans engagement de date.
+État vérifié le 26 septembre 2026 sur
+[`4127a9f`](https://github.com/defense-humanites/orthotypography-integrations/commit/4127a9f),
+après la fusion de la [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3) : publication npm de confiance sans jeton,
+tag npm `latest` pour toute version `0.x` et guide de contribution. Le cœur
+`0.1.0-alpha.3` est publié. La [PR nº 4](https://github.com/defense-humanites/orthotypography-integrations/pull/4) traduit le `CHANGELOG` et la
+[PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) prépare les adaptateurs `0.1.0-alpha.2` sur ce cœur ; aucune
+n’est fusionnée ni publiée à cette date. Les tâches ci-dessous sont proposées,
+sans engagement de date.
 
 ## État acquis
 
 | Chantier                   | État vérifié                                                                                                                                     | Preuve                                                                                                                                                                  |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Markdown / Astro           | Rehype, Sätteri et Astro publiés en `0.1.0-alpha.1`, cible Astro 7 ; processeur configuré préservé, diagnostics et changements localisés exposés | [Release](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/v0.1.0-alpha.1), [configuration](../deno.json)                                 |
-| Dépendance des adaptateurs | Cœur `0.1.0-alpha.1` ; mise à niveau indépendante du SDK                                                                                         | [Configuration](../deno.json)                                                                                                                                           |
+| Dépendance des adaptateurs | Cœur `0.1.0-alpha.1` publié ; passage au cœur `0.1.0-alpha.3` préparé dans la [PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5), testé hors ligne ; mise à niveau indépendante du SDK | [Configuration](../deno.json)                                                                                                                                           |
 | SDK neutre                 | `@orthotypography/editor-sdk@0.1.0-alpha.0` publié ; instantanés et plans immuables, validation complète, adaptateur atomique en mémoire         | [Release SDK](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/editor-sdk-v0.1.0-alpha.0), [README SDK](../packages/editor-sdk/README.md) |
 | Dépendance du SDK          | Cœur `0.1.0-alpha.2`, contenant `applyTextChanges`                                                                                               | [Manifeste SDK](../packages/editor-sdk/deno.json)                                                                                                                       |
 | Google Docs                | Extraction des paragraphes et onglets imbriqués, coordonnées UTF-16, compilation conditionnelle, restauration limitée des styles                 | [Périmètre](google-docs-preview.md), [README SDK](../packages/editor-sdk/README.md)                                                                                     |
@@ -54,11 +55,12 @@ partielle sont hors du contrat actuel.
    Terminé lorsque
    l'état publié, les limites et la politique linguistique concordent sans
    modifier les données de test.
-2. **Markdown / Astro : vérifier la prochaine dépendance au cœur.** Évaluer
-   alpha.2 dans une tâche dédiée avec tests des deux processeurs, diagnostics,
-   changements localisés et contenu protégé. Décider ensuite d'une nouvelle
-   version des adaptateurs ; ne pas aligner automatiquement leurs versions sur
-   celle du SDK.
+2. **Markdown / Astro : passer au cœur publié.** La [PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) monte les
+   trois adaptateurs sur le cœur `0.1.0-alpha.3` et fixe leur version à
+   `0.1.0-alpha.2`. Les tests des deux processeurs, des diagnostics, des
+   changements localisés et du contenu protégé passent hors ligne contre ce
+   cœur ; la CI vérifie les paquets JSR et npm. Publier ensuite sur instruction
+   explicite, sans aligner la version des adaptateurs sur celle du SDK.
 3. **Google Docs : valider le transport REST réel.** Utiliser un document
    jetable et des identifiants fournis par l'application hôte. Vérifier
    préparation sans écriture, écriture conditionnelle, relecture, idempotence,
