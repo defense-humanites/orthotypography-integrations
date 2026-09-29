@@ -1,12 +1,12 @@
 # Feuille de route des intégrations
 
 État vérifié le 26 septembre 2026 sur
-[`4127a9f`](https://github.com/defense-humanites/orthotypography-integrations/commit/4127a9f),
-après la fusion de la [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3) : publication npm de confiance sans jeton,
+[`4127a9f`](https://github.com/orthotypography/orthotypography-integrations/commit/4127a9f),
+après la fusion de la [PR nº 3](https://github.com/orthotypography/orthotypography-integrations/pull/3) : publication npm de confiance sans jeton,
 tag npm `latest` pour toute version `0.x` et guide de contribution. Le cœur
-`0.1.0-alpha.3` est publié. La [PR nº 4](https://github.com/defense-humanites/orthotypography-integrations/pull/4) traduit le `CHANGELOG` et la
-[PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) prépare les adaptateurs `0.1.0-alpha.2` sur ce cœur, et la
-[PR nº 6](https://github.com/defense-humanites/orthotypography-integrations/pull/6) le SDK `0.1.0-alpha.1` ; aucune n’est fusionnée ni publiée à
+`0.1.0-alpha.3` est publié. La [PR nº 4](https://github.com/orthotypography/orthotypography-integrations/pull/4) traduit le `CHANGELOG` et la
+[PR nº 5](https://github.com/orthotypography/orthotypography-integrations/pull/5) prépare les adaptateurs `0.1.0-alpha.2` sur ce cœur, et la
+[PR nº 6](https://github.com/orthotypography/orthotypography-integrations/pull/6) le SDK `0.1.0-alpha.1` ; aucune n’est fusionnée ni publiée à
 cette date. Les tâches ci-dessous sont proposées,
 sans engagement de date.
 
@@ -14,10 +14,10 @@ sans engagement de date.
 
 | Chantier                   | État vérifié                                                                                                                                     | Preuve                                                                                                                                                                  |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Markdown / Astro           | Rehype, Sätteri et Astro publiés en `0.1.0-alpha.1`, cible Astro 7 ; processeur configuré préservé, diagnostics et changements localisés exposés | [Release](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/v0.1.0-alpha.1), [configuration](../deno.json)                                 |
-| Dépendance des adaptateurs | Cœur `0.1.0-alpha.1` publié ; passage au cœur `0.1.0-alpha.3` préparé dans la [PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5), testé hors ligne ; mise à niveau indépendante du SDK | [Configuration](../deno.json)                                                                                                                                           |
-| SDK neutre                 | `@orthotypography/editor-sdk@0.1.0-alpha.0` publié ; instantanés et plans immuables, validation complète, adaptateur atomique en mémoire         | [Release SDK](https://github.com/defense-humanites/orthotypography-integrations/releases/tag/editor-sdk-v0.1.0-alpha.0), [README SDK](../packages/editor-sdk/README.md) |
-| Dépendance du SDK          | Cœur `0.1.0-alpha.2` publié ; passage au cœur `0.1.0-alpha.3` et SDK `0.1.0-alpha.1` préparés dans la [PR nº 6](https://github.com/defense-humanites/orthotypography-integrations/pull/6), testés hors ligne | [Manifeste SDK](../packages/editor-sdk/deno.json)                                                                                                                       |
+| Markdown / Astro           | Rehype, Sätteri et Astro publiés en `0.1.0-alpha.1`, cible Astro 7 ; processeur configuré préservé, diagnostics et changements localisés exposés | [Release](https://github.com/orthotypography/orthotypography-integrations/releases/tag/v0.1.0-alpha.1), [configuration](../deno.json)                                 |
+| Dépendance des adaptateurs | Cœur `0.1.0-alpha.1` publié ; passage au cœur `0.1.0-alpha.3` préparé dans la [PR nº 5](https://github.com/orthotypography/orthotypography-integrations/pull/5), testé hors ligne ; mise à niveau indépendante du SDK | [Configuration](../deno.json)                                                                                                                                           |
+| SDK neutre                 | `@orthotypography/editor-sdk@0.1.0-alpha.0` publié ; instantanés et plans immuables, validation complète, adaptateur atomique en mémoire         | [Release SDK](https://github.com/orthotypography/orthotypography-integrations/releases/tag/editor-sdk-v0.1.0-alpha.0), [README SDK](../packages/editor-sdk/README.md) |
+| Dépendance du SDK          | Cœur `0.1.0-alpha.2` publié ; passage au cœur `0.1.0-alpha.3` et SDK `0.1.0-alpha.1` préparés dans la [PR nº 6](https://github.com/orthotypography/orthotypography-integrations/pull/6), testés hors ligne | [Manifeste SDK](../packages/editor-sdk/deno.json)                                                                                                                       |
 | Google Docs                | Extraction des paragraphes et onglets imbriqués, coordonnées UTF-16, compilation conditionnelle, restauration limitée des styles                 | [Périmètre](google-docs-preview.md), [README SDK](../packages/editor-sdk/README.md)                                                                                     |
 | Transport et révision      | Transport REST injecté, relecture vérifiée, préparation / validation / abandon d'une révision proposée ; objets à usage unique                   | [README SDK](../packages/editor-sdk/README.md)                                                                                                                          |
 | Tests SDK                  | 67 tests annoncés pour la release alpha.0 ; 67 tests exécutés hors ligne contre le cœur `0.1.0-alpha.3` sur la branche de préparation d'alpha.1 | Release SDK ; ce nombre n'est pas une nouvelle exécution                                                                                                                |
@@ -49,14 +49,14 @@ partielle sont hors du contrat actuel.
    publié » et « aucun adaptateur natif » devenues obsolètes, notamment dans le
    README SDK et les notes documentaires. Traduire en anglais la prose hors de
    `docs/` et auditer les autres fichiers. `RELEASING.md` est traduit dans la
-   [PR nº 3](https://github.com/defense-humanites/orthotypography-integrations/pull/3),
+   [PR nº 3](https://github.com/orthotypography/orthotypography-integrations/pull/3),
    qui retire aussi le jeton npm des workflows de publication ; `CHANGELOG.md`
    est traduit et réparti par voie de release dans la
-   [PR nº 4](https://github.com/defense-humanites/orthotypography-integrations/pull/4).
+   [PR nº 4](https://github.com/orthotypography/orthotypography-integrations/pull/4).
    Terminé lorsque
    l'état publié, les limites et la politique linguistique concordent sans
    modifier les données de test.
-2. **Markdown / Astro : passer au cœur publié.** La [PR nº 5](https://github.com/defense-humanites/orthotypography-integrations/pull/5) monte les
+2. **Markdown / Astro : passer au cœur publié.** La [PR nº 5](https://github.com/orthotypography/orthotypography-integrations/pull/5) monte les
    trois adaptateurs sur le cœur `0.1.0-alpha.3` et fixe leur version à
    `0.1.0-alpha.2`. Les tests des deux processeurs, des diagnostics, des
    changements localisés et du contenu protégé passent hors ligne contre ce
@@ -79,7 +79,7 @@ partielle sont hors du contrat actuel.
 
 Le chat Markdown / Astro pilote les trois adaptateurs ; le chat SDK / Google
 Docs pilote le contrat documentaire et son premier fournisseur. La
-[feuille du cœur](https://github.com/defense-humanites/orthotypography/blob/main/docs/roadmap.md)
+[feuille du cœur](https://github.com/orthotypography/orthotypography/blob/main/docs/roadmap.md)
 porte les règles et le contrat de changements. Coordonner toute évolution
 partagée avant des implémentations parallèles.
 
