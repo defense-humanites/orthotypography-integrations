@@ -1,7 +1,7 @@
 # orthotypography-integrations
 
 Integrations of
-[`@orthotypography/core`](https://github.com/defense-humanites/orthotypography)
+[`@orthotypography/core`](https://github.com/orthotypography/orthotypography)
 for tools across the JavaScript ecosystem.
 
 ## Packages

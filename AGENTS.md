@@ -2,7 +2,7 @@
 
 This workspace owns the rehype, Sätteri, Astro, and document-editor SDK
 packages. Core rules belong in
-[orthotypography](https://github.com/defense-humanites/orthotypography).
+[orthotypography](https://github.com/orthotypography/orthotypography).
 
 ## Language
 

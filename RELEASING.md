@@ -35,6 +35,8 @@ lane.
 
 Renaming a Publish workflow file or the `release` environment breaks npm trusted
 publishing until the affected packages' trusted publishers are updated on npm.
+Transferring or renaming the repository has the same effect on npm for all four
+packages and also requires updating each package's linked repository on JSR.
 
 ## Markdown and Astro adapters
 

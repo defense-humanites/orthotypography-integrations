@@ -11,7 +11,7 @@ This is an alpha release. Its API may change before `1.0.0`. It uses
 The package exposes `.` for the neutral contract and `./google-docs` for the
 provider-specific surface. It uses an independent version from the Astro
 integrations. The
-[packaging note](https://github.com/defense-humanites/orthotypography-integrations/blob/main/docs/editor-sdk-packaging-v0.1.md)
+[packaging note](https://github.com/orthotypography/orthotypography-integrations/blob/main/docs/editor-sdk-packaging-v0.1.md)
 records that decision.
 
 ## Installation

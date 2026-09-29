@@ -5,8 +5,8 @@ Thank you for helping improve Orthotypography integrations.
 ## Where a change belongs
 
 This repository adapts the published
-[orthotypography engine](https://github.com/defense-humanites/orthotypography)
-to other tools. It contains four packages:
+[orthotypography engine](https://github.com/orthotypography/orthotypography) to
+other tools. It contains four packages:
 
 | Package                                               | Purpose                                                                  |
 | ----------------------------------------------------- | ------------------------------------------------------------------------ |

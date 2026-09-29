@@ -76,16 +76,16 @@ await buildPackage("rehype", {
     author: "Antoine Boquet",
     license: rehypeConfig.license,
     homepage:
-      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/rehype#readme",
+      "https://github.com/orthotypography/orthotypography-integrations/tree/main/packages/rehype#readme",
     repository: {
       type: "git",
       url:
-        "git+https://github.com/defense-humanites/orthotypography-integrations.git",
+        "git+https://github.com/orthotypography/orthotypography-integrations.git",
       directory: "packages/rehype",
     },
     bugs: {
       url:
-        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+        "https://github.com/orthotypography/orthotypography-integrations/issues",
     },
     keywords: ["rehype", "typography", "orthotypography", "hast", "unicode"],
     engines: { node: ">=18" },
@@ -131,16 +131,16 @@ await buildPackage("satteri", {
     author: "Antoine Boquet",
     license: satteriConfig.license,
     homepage:
-      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/satteri#readme",
+      "https://github.com/orthotypography/orthotypography-integrations/tree/main/packages/satteri#readme",
     repository: {
       type: "git",
       url:
-        "git+https://github.com/defense-humanites/orthotypography-integrations.git",
+        "git+https://github.com/orthotypography/orthotypography-integrations.git",
       directory: "packages/satteri",
     },
     bugs: {
       url:
-        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+        "https://github.com/orthotypography/orthotypography-integrations/issues",
     },
     keywords: ["satteri", "astro", "typography", "orthotypography", "hast"],
     engines: { node: ">=18" },
@@ -191,16 +191,16 @@ await buildPackage("astro", {
     author: "Antoine Boquet",
     license: astroConfig.license,
     homepage:
-      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/astro#readme",
+      "https://github.com/orthotypography/orthotypography-integrations/tree/main/packages/astro#readme",
     repository: {
       type: "git",
       url:
-        "git+https://github.com/defense-humanites/orthotypography-integrations.git",
+        "git+https://github.com/orthotypography/orthotypography-integrations.git",
       directory: "packages/astro",
     },
     bugs: {
       url:
-        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+        "https://github.com/orthotypography/orthotypography-integrations/issues",
     },
     keywords: [
       "astro",
@@ -274,16 +274,16 @@ await buildPackage("editor-sdk", {
     author: "Antoine Boquet",
     license: editorSdkConfig.license,
     homepage:
-      "https://github.com/defense-humanites/orthotypography-integrations/tree/main/packages/editor-sdk#readme",
+      "https://github.com/orthotypography/orthotypography-integrations/tree/main/packages/editor-sdk#readme",
     repository: {
       type: "git",
       url:
-        "git+https://github.com/defense-humanites/orthotypography-integrations.git",
+        "git+https://github.com/orthotypography/orthotypography-integrations.git",
       directory: "packages/editor-sdk",
     },
     bugs: {
       url:
-        "https://github.com/defense-humanites/orthotypography-integrations/issues",
+        "https://github.com/orthotypography/orthotypography-integrations/issues",
     },
     keywords: [
       "editor",
